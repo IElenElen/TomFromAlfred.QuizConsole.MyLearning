@@ -75,6 +75,7 @@
             // Dodatkowa walidacja wyboru użytkownika
             while (userChoice != 'a' && userChoice != 'b' && userChoice != 'c')
             {
+                Console.WriteLine();
                 Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.");
                 Console.WriteLine();
                 Console.Write("Twój wybór (wpisz a, b lub c): ");
