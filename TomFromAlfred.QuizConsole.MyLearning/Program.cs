@@ -8,7 +8,7 @@
             Console.WriteLine();
 
             Console.WriteLine("Test Quizu");
-
+            Console.WriteLine();
             //Poniżej daję info użytkownikowi
             Console.WriteLine("Pytania poniższego quizu są jednokrotnego wyboru. Po zapoznaniu się z treścią pytania naciśnij a, b lub c");
             Console.WriteLine("wybierając odpowiedź według Ciebie poprawną.");
