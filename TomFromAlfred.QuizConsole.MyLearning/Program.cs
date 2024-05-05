@@ -13,6 +13,7 @@
             Console.WriteLine("Pytania poniższego quizu są jednokrotnego wyboru. Po zapoznaniu się z treścią pytania naciśnij a, b lub c");
             Console.WriteLine("wybierając odpowiedź według Ciebie poprawną.");
             Console.WriteLine("Za poprawną odpowiedż otrzymasz jeden punkt, za błędną brak punktu.");
+            Console.WriteLine();
 
             // Inicjalizuję obiekty dla pytań, wyborów i weryfikacji odpowiedzi
             QuestionsSet questionsSet = new QuestionsSet();
@@ -42,11 +43,13 @@
                 Console.WriteLine($"Wybrana odpowiedź: {userChoice}");
 
                 // Następuje weryfikacja odpowiedzi i przyznawanie punktów
-                int points = answerVerifier.GetPointsForAnswer(question.QuestionNumber, userChoice);
+                bool result = answerVerifier.GetPointsForAnswer(question.QuestionNumber, userChoice);
+                Console.WriteLine();
 
                 // Wyświetlanie informacji o poprawności odpowiedzi
-                if (points == 1)
+                if (result)
                 {
+                    totalPoints++;
                     Console.WriteLine("Poprawna odpowiedź. Zdobywasz 1 punkt.");
                 }
                 else
@@ -62,12 +65,13 @@
                     Console.ReadLine();
                 }
             }
-            Console.WriteLine($"Twój wynik końcowy: {totalPoints} punktów.");  // Wyświetlanie końcowego wyniku 
+            Console.WriteLine($"Twój wynik końcowy: {totalPoints} pkt.");  // Wyświetlanie końcowego wyniku 
         }
 
         // Metoda do pobierania wyboru od użytkownika
         static char GetUserChoice()
         {
+            Console.WriteLine();
             Console.Write("Twój wybór (wpisz a, b lub c): ");
             char userChoice = char.ToLower(Console.ReadKey().KeyChar);
             Console.WriteLine();
@@ -80,6 +84,7 @@
                 Console.WriteLine();
                 Console.Write("Twój wybór (wpisz a, b lub c): ");
                 userChoice = char.ToLower(Console.ReadKey().KeyChar);
+                Console.WriteLine();
             }
             Console.WriteLine(); // Nowa linia po wprowadzeniu wyboru
             return userChoice;

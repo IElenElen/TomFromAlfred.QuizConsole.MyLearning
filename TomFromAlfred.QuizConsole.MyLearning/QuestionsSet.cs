@@ -8,16 +8,12 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 {
     public class QuestionsSet
     {
-        public List<Question> Questions { get; set; } //Lista pytań
+        public List<Question> Questions { get; set; } = new List<Question>(); //Lista pytań
 
-        public QuestionsSet() // Konstruktor inicjujący listę pytań
+        public QuestionsSet()
         {
-            Questions = new List<Question> // Inicjalizacja listy pytań przy użyciu statycznych instancji klasy Question
-            {
-                Question.Question0,
-                Question.Question1,
-                Question.Question2,
-            };
+            QuestionHandling questionHandling = new QuestionHandling();
+            Questions.AddRange(questionHandling.AllQuestions);
         }
     }
 }

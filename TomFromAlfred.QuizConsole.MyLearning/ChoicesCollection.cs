@@ -8,12 +8,18 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 {
     public class ChoicesCollection
     {
+        private ChoiceHandling choiceHandling; //prywatne pole
+        public ChoicesCollection()
+        {
+            choiceHandling = new ChoiceHandling();
+        }
         // Tablica wyborów dla pytania nr 0 itd
-        public static Choice[] Choice0Array => new Choice[] { Choice.Choice0A, Choice.Choice0B, Choice.Choice0C };
+        public Choice[] Choice0Array => new Choice[] { choiceHandling.Choice0A, choiceHandling.Choice0B, choiceHandling.Choice0C };
 
-        public static Choice[] Choice1Array => new Choice[] { Choice.Choice1A, Choice.Choice1B, Choice.Choice1C };
+        public Choice[] Choice1Array => new Choice[] { choiceHandling.Choice1A, choiceHandling.Choice1B, choiceHandling.Choice1C };
 
-        public static Choice[] Choice2Array => new Choice[] { Choice.Choice2A, Choice.Choice2B, Choice.Choice2C };
+        public Choice[] Choice2Array => new Choice[] { choiceHandling.Choice2A, choiceHandling.Choice2B, choiceHandling.Choice2C };
+
         public Choice[] GetChoicesForQuestion(int questionNumber) // Metoda zwraca wybory dla konkretnego pytania
         {
             switch (questionNumber) //Wybór tablicy dla danego pytania

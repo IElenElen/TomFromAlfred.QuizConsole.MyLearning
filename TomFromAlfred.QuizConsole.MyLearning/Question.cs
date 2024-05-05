@@ -11,9 +11,10 @@ namespace TomFromAlfred.QuizConsole.MyLearning
         public int QuestionNumber { get; set; } //numer pytania
         public string QuestionContent { get; set; } //treść pytania
 
-        // Statyczne instancje pytań, oznaczone numerem pytania
-        public static Question Question0 { get; } = new Question { QuestionNumber = 0, QuestionContent = "Naturalny kolor włosow to: " };
-        public static Question Question1 { get; } = new Question { QuestionNumber = 1, QuestionContent = "Pora roku następująca po zimie to: " };
-        public static Question Question2 { get; } = new Question { QuestionNumber = 2, QuestionContent = "Wskaż zioło: " };
+        public Question(int questionNumber, string questionContent) //konstruktor i jego ciało
+        {
+            QuestionNumber = questionNumber;
+            QuestionContent = questionContent;
+        }
     }
 }
