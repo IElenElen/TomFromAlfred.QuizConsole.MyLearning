@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TomFromAlfred.Quiz.ProjectApp.Learning.Services
+namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class UsersService
+    public class UsersManagerApp
     {
-        public char GetUserChoice()
+        public char GetUserChoice() //zostawiam ten styl kodu
         {
             Console.WriteLine();
             Console.Write("Twój wybór (wpisz a, b lub c): ");

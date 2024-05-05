@@ -1,5 +1,5 @@
-﻿using TomFromAlfred.Quiz.ProjectApp.Learning.Managers;
-using TomFromAlfred.Quiz.ProjectApp.Learning.Services;
+﻿using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 
 namespace TomFromAlfred.QuizConsole.MyLearning
 {
@@ -7,6 +7,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Refakto - marcowe zmagania.");
             Console.WriteLine("Refaktoryzacja - wstępna przymiarka 16.02.24.");
             Console.WriteLine("Moje kolejne... przeszłe już kroki w nauce konsoli c#.");
             Console.WriteLine();
@@ -21,9 +22,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             Console.WriteLine();
 
             // Inicjalizuję obiekty dla pytań, wyborów i weryfikacji odpowiedzi
-            QuestionsService questionsService = new QuestionsService();
-            ChoicesService choicesService = new ChoicesService();
-            AnswerVerifierManager answerVerifierManager = new AnswerVerifierManager();
+            QuestionsManagerApp questionsService = new QuestionsManagerApp();
+            ChoicesManagerApp choicesService = new ChoicesManagerApp();
+            AnswerVerifierServiceApp answerVerifierManager = new AnswerVerifierServiceApp();
 
             // Zmienna przechowująca łączną liczbę punktów uzyskanych przez użytkownika
             int totalPoints = 0;
@@ -44,7 +45,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 }
 
                 // Pobieranie wyboru od użytkownika
-                UsersService usersService = new UsersService();
+                UsersManagerApp usersService = new UsersManagerApp();
                 char userChoice = usersService.GetUserChoice();
                 Console.WriteLine();
 
@@ -68,7 +69,17 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                     Console.WriteLine("Naciśnij Enter, aby przejść do kolejnego pytania.");
 
                     // Czekanie na gotowość użytkownika przed przejściem do następnego pytania (jeśli nie jest to ostatnie pytanie)
+
+                    Console.WriteLine("Jeżeli zaś chcesz zakończyć zabawę z quiz naciśnij k, nastepnie Enter."); //zakończenie quizu na żądanie
+                    string? userInputX = Console.ReadLine();
+
+                    if (userInputX == "k" || userInputX == "K")
+                    {
+                        Console.WriteLine("Quiz został zatrzymany.");
+                        break;
+                    }
                     Console.ReadLine();
+                    Console.WriteLine();
                 }
             }
             Console.WriteLine($"Twój wynik końcowy: {totalPoints} pkt.");  // Wyświetlanie końcowego wyniku 

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
-using TomFromAlfred.Quiz.ProjectDomain.Learning.CommonDomain;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 {
-    public class BaseApp<T> : IOperations<T> where T : BaseEntity //baza dla projektu app //klasa generyczna po interfejsie
+    public class BaseApp<T> : IOperations<T> 
+        //klasa bazowa to klasa wspólnych cech, ktorych nie chcemy powtarzać w serwisach i / lub menadżerach...
     {
         public List<T> Entities { get; set; }
         public BaseApp()

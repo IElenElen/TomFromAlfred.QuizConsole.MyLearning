@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
-namespace TomFromAlfred.Quiz.ProjectApp.Learning.Managers
+namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
-    public class QuestionManager : BaseApp<Question> //kod z poprzedniego QuestionHandling
+    public class QuestionServiceApp : BaseApp<Question> //ten kod to poprawny serwis
     {
+        private int? questionNumber;
+
         public List<Question> AllQuestions { get; set; } = new List<Question>();
-        public QuestionManager()
+        public QuestionServiceApp()
         {
             AllQuestions.Add(new Question(0, "Z ilu części składa się powyższa powieść Alfreda Szklarskiego?"));
             AllQuestions.Add(new Question(1, "Jaki tytuł nosi ostatnia część o przygodach Tomka?"));
@@ -19,10 +21,21 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.Managers
             AllQuestions.Add(new Question(3, "Na kim mści się Tomek pod koniec roku szkolnego?"));
             AllQuestions.Add(new Question(4, "Ulubiony przedmiot Tomka to: "));
             AllQuestions.Add(new Question(5, "Jak ma na imię ciocia Tomka?"));
+            AllQuestions.Add(new Question(6, "Pytanie specjalnie do usuwania nr 1. Niech będzie odp A."));
+            AllQuestions.Add(new Question(7, "Pytanie do usuwania nr 2. Odp c."));
+            AllQuestions.Add(new Question(8, "Pytanie też do testu nr 3. Z odp b"));
         }
-        public void RemoveQuestion(Question questionToRemove) //w planach
+        public void GetQuestionByNumber(List<Question> AllQuestions, Question questionNumber)
         {
-            Remove(questionToRemove);
+            for (int i = 0; i < AllQuestions.Count; i++)
+            {
+                if (AllQuestions[i].Equals(questionNumber))
+                {
+                    Remove(questionNumber);
+                    return;
+                }
+            }
+            Console.WriteLine("Brak pytania do wyświetlenia");
         }
     }
 }
