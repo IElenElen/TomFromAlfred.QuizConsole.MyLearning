@@ -3,10 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TomFromAlfred.Quiz.ProjectDomain.Learning.CommonDomain;
 
 namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
-    public class Choice
+    public class Choice : BaseEntity //dziedziczenie selektywne
     {
+        public int ChoiceId { get; set; }
+        public char ChoiceLetter { get; set; }
+        public string? ChoiceContent { get; set; }
+        public Choice(int choiceId, char choiceLetter, string? choiceContent)
+        {
+            ChoiceId = choiceId;
+            ChoiceLetter = choiceLetter;
+            ChoiceContent = choiceContent;
+        }
     }
 }

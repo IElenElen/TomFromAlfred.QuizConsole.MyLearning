@@ -1,33 +1,38 @@
-﻿namespace TomFromAlfred.QuizConsole.MyLearning
+﻿using TomFromAlfred.Quiz.ProjectApp.Learning.Managers;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Services;
+
+namespace TomFromAlfred.QuizConsole.MyLearning
 {
     public class Program //zmiana widoczności kolejnych klas
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Refaktoryzacja - wstępna przymiarka 16.02.24.");
             Console.WriteLine("Moje kolejne... przeszłe już kroki w nauce konsoli c#.");
             Console.WriteLine();
 
             Console.WriteLine("Test Quizu");
             Console.WriteLine();
+
             //Poniżej daję info użytkownikowi
-            Console.WriteLine("Pytania poniższego quizu są jednokrotnego wyboru. Po zapoznaniu się z treścią pytania naciśnij a, b lub c");
+            Console.WriteLine("Pytania poniższego quizu są jednokrotnego wyboru. Po zapoznaniu się z treścią pytania naciśnij a, b lub c,");
             Console.WriteLine("wybierając odpowiedź według Ciebie poprawną.");
             Console.WriteLine("Za poprawną odpowiedż otrzymasz jeden punkt, za błędną brak punktu.");
             Console.WriteLine();
 
             // Inicjalizuję obiekty dla pytań, wyborów i weryfikacji odpowiedzi
-            QuestionsSet questionsSet = new QuestionsSet();
-            ChoicesCollection choicesCollection = new ChoicesCollection();
-            AnswerVerifier answerVerifier = new AnswerVerifier();
+            QuestionsService questionsService = new QuestionsService();
+            ChoicesService choicesService = new ChoicesService();
+            AnswerVerifierManager answerVerifierManager = new AnswerVerifierManager();
 
             // Zmienna przechowująca łączną liczbę punktów uzyskanych przez użytkownika
             int totalPoints = 0;
 
             // Tworzę pętlę przechodzącą przez każde pytanie w zestawie
-            for (int i = 0; i < questionsSet.Questions.Count; i++)
+            for (int i = 0; i < questionsService.Questions.Count; i++)
             {
-                var question = questionsSet.Questions[i];
-                var choices = choicesCollection.GetChoicesForQuestion(i);
+                var question = questionsService.Questions[i];
+                var choices = choicesService.GetChoicesForQuestion(i);
 
                 // Wyświetlanie pytania
                 Console.WriteLine($"Pytanie {question.QuestionNumber + 1}: {question.QuestionContent}");
@@ -39,11 +44,12 @@
                 }
 
                 // Pobieranie wyboru od użytkownika
-                char userChoice = GetUserChoice();
-                Console.WriteLine($"Wybrana odpowiedź: {userChoice}");
+                UsersService usersService = new UsersService();
+                char userChoice = usersService.GetUserChoice();
+                Console.WriteLine();
 
                 // Następuje weryfikacja odpowiedzi i przyznawanie punktów
-                bool result = answerVerifier.GetPointsForAnswer(question.QuestionNumber, userChoice);
+                bool result = answerVerifierManager.GetPointsForAnswer(question.QuestionNumber, userChoice); 
                 Console.WriteLine();
 
                 // Wyświetlanie informacji o poprawności odpowiedzi
@@ -56,7 +62,7 @@
                 {
                     Console.WriteLine("Odpowiedź błędna. Brak punktu.");
                 }
-                if (i < questionsSet.Questions.Count - 1)
+                if (i < questionsService.Questions.Count - 1)
                 {
                     Console.WriteLine($"Aktualna liczba punktów: {totalPoints}");
                     Console.WriteLine("Naciśnij Enter, aby przejść do kolejnego pytania.");
@@ -66,28 +72,6 @@
                 }
             }
             Console.WriteLine($"Twój wynik końcowy: {totalPoints} pkt.");  // Wyświetlanie końcowego wyniku 
-        }
-
-        // Metoda do pobierania wyboru od użytkownika
-        static char GetUserChoice()
-        {
-            Console.WriteLine();
-            Console.Write("Twój wybór (wpisz a, b lub c): ");
-            char userChoice = char.ToLower(Console.ReadKey().KeyChar);
-            Console.WriteLine();
-
-            // Dodatkowa walidacja wyboru użytkownika
-            while (userChoice != 'a' && userChoice != 'b' && userChoice != 'c')
-            {
-                Console.WriteLine();
-                Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.");
-                Console.WriteLine();
-                Console.Write("Twój wybór (wpisz a, b lub c): ");
-                userChoice = char.ToLower(Console.ReadKey().KeyChar);
-                Console.WriteLine();
-            }
-            Console.WriteLine(); // Nowa linia po wprowadzeniu wyboru
-            return userChoice;
         }
     }
 }
