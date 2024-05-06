@@ -66,6 +66,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 if (i < questionsService.Questions.Count - 1)
                 {
                     Console.WriteLine($"Aktualna liczba punktów: {totalPoints}");
+                    Console.WriteLine();
                     Console.WriteLine("Naciśnij Enter, aby przejść do kolejnego pytania.");
 
                     // Czekanie na gotowość użytkownika przed przejściem do następnego pytania (jeśli nie jest to ostatnie pytanie)
@@ -75,11 +76,11 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
                     if (userInputX == "k" || userInputX == "K")
                     {
+                        Console.WriteLine();
                         Console.WriteLine("Quiz został zatrzymany.");
                         break;
                     }
                     Console.ReadLine();
-                    Console.WriteLine();
                 }
             }
             Console.WriteLine($"Twój wynik końcowy: {totalPoints} pkt.");  // Wyświetlanie końcowego wyniku 
