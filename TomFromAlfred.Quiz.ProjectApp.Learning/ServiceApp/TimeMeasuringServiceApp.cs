@@ -57,7 +57,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             }
             else
             {
-                Console.WriteLine($"Czas pozostały: {timeLeftInFullSeconds} sekund");
+                Console.Write($"\rCzas pozostały: {timeLeftInFullSeconds} sekund     "); // Nadpisanie aktualnej linii konsoli
             }
         }
 

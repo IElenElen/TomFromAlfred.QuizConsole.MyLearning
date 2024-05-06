@@ -47,15 +47,14 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                     Console.WriteLine($"{choice.ChoiceLetter}: {choice.ChoiceContent}");
                 }
 
-                timeService.ResetTimer(); // Zresetowanie czasu dla nowego pytania
-                timeService.StartTimer();
-
                 // Pobieranie wyboru od użytkownika
                 UsersManagerApp usersService = new UsersManagerApp();
-                char userChoice = usersService.GetUserChoice();
-                Console.WriteLine();
+                char userChoice;
 
-                // Zatrzymanie pomiaru czasu po udzieleniu odpowiedzi
+                // Rozpoczęcie pomiaru czasu i pobranie odpowiedzi użytkownika
+                timeService.ResetTimer();
+                timeService.StartTimer();
+                userChoice = usersService.GetUserChoice();
                 timeService.StopTimer();
 
                 // Wyświetlenie odpowiedzi użytkownika
@@ -64,7 +63,6 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 // Wyświetlenie czasu trwania pytania
                 Console.WriteLine($"Czas trwania pytania: {timeService.GetElapsedTime()} sekund.");
                 Console.WriteLine();
-
 
                 // Następuje weryfikacja odpowiedzi i przyznawanie punktów
                 bool result = answerVerifierManager.GetPointsForAnswer(question.QuestionNumber, userChoice); 
