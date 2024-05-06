@@ -29,6 +29,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             // Zmienna przechowująca łączną liczbę punktów uzyskanych przez użytkownika
             int totalPoints = 0;
 
+            //odwołanie do serwisu dla czasu
+            var timeService = new TimeMeasuringServiceApp();
+
             // Tworzę pętlę przechodzącą przez każde pytanie w zestawie
             for (int i = 0; i < questionsService.Questions.Count; i++)
             {
@@ -44,10 +47,24 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                     Console.WriteLine($"{choice.ChoiceLetter}: {choice.ChoiceContent}");
                 }
 
+                timeService.ResetTimer(); // Zresetowanie czasu dla nowego pytania
+                timeService.StartTimer();
+
                 // Pobieranie wyboru od użytkownika
                 UsersManagerApp usersService = new UsersManagerApp();
                 char userChoice = usersService.GetUserChoice();
                 Console.WriteLine();
+
+                // Zatrzymanie pomiaru czasu po udzieleniu odpowiedzi
+                timeService.StopTimer();
+
+                // Wyświetlenie odpowiedzi użytkownika
+                Console.WriteLine($"Twoja odpowiedź to: {userChoice}");
+
+                // Wyświetlenie czasu trwania pytania
+                Console.WriteLine($"Czas trwania pytania: {timeService.GetElapsedTime()} sekund.");
+                Console.WriteLine();
+
 
                 // Następuje weryfikacja odpowiedzi i przyznawanie punktów
                 bool result = answerVerifierManager.GetPointsForAnswer(question.QuestionNumber, userChoice); 
