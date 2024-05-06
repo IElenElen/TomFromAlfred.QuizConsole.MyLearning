@@ -15,7 +15,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             Console.WriteLine("Test Quizu");
             Console.WriteLine();
 
-            //Poniżej daję info użytkownikowi
+            // Poniżej daję info użytkownikowi
             Console.WriteLine("Pytania poniższego quizu są jednokrotnego wyboru. Po zapoznaniu się z treścią pytania naciśnij a, b lub c,");
             Console.WriteLine("wybierając odpowiedź według Ciebie poprawną.");
             Console.WriteLine("Za poprawną odpowiedż otrzymasz jeden punkt, za błędną brak punktu.");
@@ -65,7 +65,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 Console.WriteLine();
 
                 // Następuje weryfikacja odpowiedzi i przyznawanie punktów
-                bool result = answerVerifierManager.GetPointsForAnswer(question.QuestionNumber, userChoice); 
+                bool result = answerVerifierManager.GetPointsForAnswer(question.QuestionNumber, userChoice);
                 Console.WriteLine();
 
                 // Wyświetlanie informacji o poprawności odpowiedzi
@@ -95,7 +95,6 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                         Console.WriteLine("Quiz został zatrzymany.");
                         break;
                     }
-                    Console.ReadLine();
                 }
             }
             Console.WriteLine($"Twój wynik końcowy: {totalPoints} pkt.");  // Wyświetlanie końcowego wyniku 

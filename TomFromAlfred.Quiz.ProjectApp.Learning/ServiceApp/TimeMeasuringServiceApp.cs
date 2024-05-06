@@ -9,7 +9,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
     public class TimeMeasuringServiceApp
     {
-        public const int TIME_PER_QUESTION_IN_FULL_SECONDS = 150;
+        public const int TIME_PER_QUESTION_IN_FULL_SECONDS = 15;
         private readonly System.Threading.Timer timer;
         private int timeLeftInFullSeconds;
         private bool isTimerRunning; // Dodajemy flagę do śledzenia czy timer jest włączony
@@ -65,7 +65,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         {
             TimeElapsed?.Invoke(this, EventArgs.Empty);
         }
-
         public event EventHandler? TimeElapsed;
     }
 }
