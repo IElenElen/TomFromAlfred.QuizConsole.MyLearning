@@ -29,8 +29,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             // Zmienna przechowująca łączną liczbę punktów uzyskanych przez użytkownika
             int totalPoints = 0;
 
-            //odwołanie do serwisu dla czasu
+            // Odwołanie do serwisu dla czasu
             var timeService = new TimeMeasuringServiceApp();
+            var userManager = new UsersManagerApp();
 
             // Tworzę pętlę przechodzącą przez każde pytanie w zestawie
             for (int i = 0; i < questionsService.Questions.Count; i++)
@@ -47,15 +48,17 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                     Console.WriteLine($"{choice.ChoiceLetter}: {choice.ChoiceContent}");
                 }
 
-                // Pobieranie wyboru od użytkownika
-                UsersManagerApp usersService = new UsersManagerApp();
-                char userChoice;
-
                 // Rozpoczęcie pomiaru czasu i pobranie odpowiedzi użytkownika
                 timeService.ResetTimer();
                 timeService.StartTimer();
-                userChoice = usersService.GetUserChoice();
-                timeService.StopTimer();
+                var userChoice = userManager.GetUserChoiceWithTimeout(timeService); timeService.StopTimer();
+
+                // Sprawdzenie, czy użytkownik nie odpowiedział w wyznaczonym czasie
+                if (userChoice == '\0')
+                {
+                    Console.WriteLine("Czas się skończył. Przechodzimy do następnego pytania.");
+                    continue;
+                }
 
                 // Wyświetlenie odpowiedzi użytkownika
                 Console.WriteLine($"Twoja odpowiedź to: {userChoice}");
@@ -78,6 +81,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 {
                     Console.WriteLine("Odpowiedź błędna. Brak punktu.");
                 }
+
                 if (i < questionsService.Questions.Count - 1)
                 {
                     Console.WriteLine($"Aktualna liczba punktów: {totalPoints}");
@@ -85,7 +89,6 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                     Console.WriteLine("Naciśnij Enter, aby przejść do kolejnego pytania.");
 
                     // Czekanie na gotowość użytkownika przed przejściem do następnego pytania (jeśli nie jest to ostatnie pytanie)
-
                     Console.WriteLine("Jeżeli zaś chcesz zakończyć zabawę z quiz naciśnij k, nastepnie Enter."); //zakończenie quizu na żądanie
                     string? userInputX = Console.ReadLine();
 
