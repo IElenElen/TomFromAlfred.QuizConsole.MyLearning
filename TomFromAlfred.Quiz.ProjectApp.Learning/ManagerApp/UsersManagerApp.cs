@@ -9,7 +9,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
     public class UsersManagerApp
     {
-        // Metoda do pobierania odpowiedzi użytkownika z uwzględnieniem czasu
+        // Metoda do pobierania odpowiedzi użytkownika
         public char GetUserChoiceWithTimeout(TimeMeasuringServiceApp timeService)
         {
             char userInput;
@@ -35,7 +35,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
         private char GetUserChoiceOrTimeout(TimeMeasuringServiceApp timeService)
         {
             var initialTime = DateTime.Now;
-
             while (DateTime.Now - initialTime < TimeSpan.FromSeconds(TimeMeasuringServiceApp.TIME_PER_QUESTION_IN_FULL_SECONDS))
             {
                 if (Console.KeyAvailable)
@@ -47,8 +46,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                         return key;
                     }
                 }
+                // Wyświetlanie aktualnego czasu i pozostawionego czasu w tej samej linii
+                Console.Write($"\rCzas pozostały: {TimeMeasuringServiceApp.TIME_PER_QUESTION_IN_FULL_SECONDS - (DateTime.Now - initialTime).Seconds} sekund  ");
             }
-
             Console.WriteLine(); // Nowa linia po przekroczeniu czasu
             return '\0'; // Zwracamy pusty znak, jeśli użytkownik nie zdążył odpowiedzieć
         }
