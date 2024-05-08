@@ -7,14 +7,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Refakto - marcowe zmagania.");
-            Console.WriteLine("W marcu próba wprowadzenia odliczania czasu. Bez satysfakcji.");
-            Console.WriteLine("Refaktoryzacja - wstępna przymiarka 16.02.24.");
-            Console.WriteLine("Moje kolejne... przeszłe już kroki w nauce konsoli c#.");
-            Console.WriteLine();
-
-            Console.WriteLine("Test Quizu");
-            Console.WriteLine();
+            Console.WriteLine("Majowa wersja - bez opcji czasu: wersja gotowa do pracy z modułem 4: Testy.");
 
             // Poniżej daję info użytkownikowi
             Console.WriteLine("Pytania poniższego quizu są jednokrotnego wyboru. Po zapoznaniu się z treścią pytania naciśnij a, b lub c,");
@@ -26,12 +19,10 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             QuestionsManagerApp questionsService = new QuestionsManagerApp();
             ChoicesManagerApp choicesService = new ChoicesManagerApp();
             AnswerVerifierServiceApp answerVerifierManager = new AnswerVerifierServiceApp();
+            UsersManagerApp usersService = new UsersManagerApp(); 
 
             // Zmienna przechowująca łączną liczbę punktów uzyskanych przez użytkownika
             int totalPoints = 0;
-
-            //Odwołanie do serwisu dla czasu
-            var timeService = new TimeMeasuringServiceApp();
 
             // Tworzę pętlę przechodzącą przez każde pytanie w zestawie
             for (int i = 0; i < questionsService.Questions.Count; i++)
@@ -49,21 +40,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 }
 
                 // Pobieranie wyboru od użytkownika
-                UsersManagerApp usersService = new UsersManagerApp();
-                char userChoice;
-
-                // Rozpoczęcie pomiaru czasu i pobranie odpowiedzi użytkownika
-                timeService.ResetTimer();
-                timeService.StartTimer();
-                userChoice = usersService.GetUserChoice();
-                timeService.StopTimer();
-
-                // Wyświetlenie odpowiedzi użytkownika
-                Console.WriteLine($"Twoja odpowiedź to: {userChoice}");
-
-                // Wyświetlenie czasu trwania pytania
-                Console.WriteLine($"Czas trwania pytania: {timeService.GetElapsedTime()} sekund.");
-                Console.WriteLine();
+               char userChoice = usersService.GetUserChoice();
 
                 // Następuje weryfikacja odpowiedzi i przyznawanie punktów
                 bool result = answerVerifierManager.GetPointsForAnswer(question.QuestionNumber, userChoice);
