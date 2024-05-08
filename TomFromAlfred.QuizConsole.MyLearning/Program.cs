@@ -8,6 +8,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
         static void Main(string[] args)
         {
             Console.WriteLine("Refakto - marcowe zmagania.");
+            Console.WriteLine("W marcu próba wprowadzenia odliczania czasu. Bez satysfakcji.");
             Console.WriteLine("Refaktoryzacja - wstępna przymiarka 16.02.24.");
             Console.WriteLine("Moje kolejne... przeszłe już kroki w nauce konsoli c#.");
             Console.WriteLine();
@@ -29,31 +30,37 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             // Zmienna przechowująca łączną liczbę punktów uzyskanych przez użytkownika
             int totalPoints = 0;
 
-            //odwołanie do serwisu dla czasu
+            //Odwołanie do serwisu dla czasu
             var timeService = new TimeMeasuringServiceApp();
+
             // Tworzę pętlę przechodzącą przez każde pytanie w zestawie
             for (int i = 0; i < questionsService.Questions.Count; i++)
             {
                 var question = questionsService.Questions[i];
                 var choices = choicesService.GetChoicesForQuestion(i);
+
                 // Wyświetlanie pytania
                 Console.WriteLine($"Pytanie {question.QuestionNumber + 1}: {question.QuestionContent}");
+
                 // Wyświetlanie dostępnych wyborów w pętli
                 foreach (var choice in choices)
                 {
                     Console.WriteLine($"{choice.ChoiceLetter}: {choice.ChoiceContent}");
                 }
+
                 // Pobieranie wyboru od użytkownika
                 UsersManagerApp usersService = new UsersManagerApp();
                 char userChoice;
+
                 // Rozpoczęcie pomiaru czasu i pobranie odpowiedzi użytkownika
                 timeService.ResetTimer();
                 timeService.StartTimer();
-                userChoice = usersService.GetUserChoiceWithTimeout(timeService);
+                userChoice = usersService.GetUserChoice();
                 timeService.StopTimer();
 
                 // Wyświetlenie odpowiedzi użytkownika
                 Console.WriteLine($"Twoja odpowiedź to: {userChoice}");
+
                 // Wyświetlenie czasu trwania pytania
                 Console.WriteLine($"Czas trwania pytania: {timeService.GetElapsedTime()} sekund.");
                 Console.WriteLine();
@@ -72,11 +79,13 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 {
                     Console.WriteLine("Odpowiedź błędna. Brak punktu.");
                 }
+
                 if (i < questionsService.Questions.Count - 1)
                 {
                     Console.WriteLine($"Aktualna liczba punktów: {totalPoints}");
                     Console.WriteLine();
                     Console.WriteLine("Naciśnij Enter, aby przejść do kolejnego pytania.");
+
                     // Czekanie na gotowość użytkownika przed przejściem do następnego pytania (jeśli nie jest to ostatnie pytanie)
                     Console.WriteLine("Jeżeli zaś chcesz zakończyć zabawę z quiz naciśnij k, nastepnie Enter."); //zakończenie quizu na żądanie
                     string? userInputX = Console.ReadLine();
@@ -90,6 +99,5 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             }
             Console.WriteLine($"Twój wynik końcowy: {totalPoints} pkt.");  // Wyświetlanie końcowego wyniku 
         }
-    }
-        
+    }   
 }

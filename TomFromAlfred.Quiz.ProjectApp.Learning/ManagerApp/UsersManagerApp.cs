@@ -9,48 +9,24 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
     public class UsersManagerApp
     {
-        // Metoda do pobierania odpowiedzi użytkownika
-        public char GetUserChoiceWithTimeout(TimeMeasuringServiceApp timeService)
+        public char GetUserChoice() //zostawiam ten styl kodu
         {
-            char userInput;
+            Console.WriteLine();
+            Console.Write("Twój wybór (wpisz a, b lub c): ");
+            char userChoice = char.ToLower(Console.ReadKey().KeyChar);
 
-            do
+            // Dodatkowa walidacja wyboru użytkownika
+            while (userChoice != 'a' && userChoice != 'b' && userChoice != 'c')
             {
                 Console.WriteLine();
+                Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.");
+                Console.WriteLine();
                 Console.Write("Twój wybór (wpisz a, b lub c): ");
-                userInput = GetUserChoiceOrTimeout(timeService);
-
-                if (userInput != 'a' && userInput != 'b' && userInput != 'c')
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.");
-                }
-            } while (userInput != 'a' && userInput != 'b' && userInput != 'c');
-
-            Console.WriteLine(); // Nowa linia po wprowadzeniu wyboru
-            return userInput;
-        }
-
-        // Metoda do pobierania odpowiedzi użytkownika z uwzględnieniem czasu
-        private char GetUserChoiceOrTimeout(TimeMeasuringServiceApp timeService)
-        {
-            var initialTime = DateTime.Now;
-            while (DateTime.Now - initialTime < TimeSpan.FromSeconds(TimeMeasuringServiceApp.TIME_PER_QUESTION_IN_FULL_SECONDS))
-            {
-                if (Console.KeyAvailable)
-                {
-                    var key = Console.ReadKey(intercept: true).KeyChar;
-                    if (key == 'a' || key == 'b' || key == 'c')
-                    {
-                        Console.WriteLine(); // Nowa linia po wprowadzeniu wyboru
-                        return key;
-                    }
-                }
-                // Wyświetlanie aktualnego czasu i pozostawionego czasu w tej samej linii
-                Console.Write($"\rCzas pozostały: {TimeMeasuringServiceApp.TIME_PER_QUESTION_IN_FULL_SECONDS - (DateTime.Now - initialTime).Seconds} sekund  ");
+                userChoice = char.ToLower(Console.ReadKey().KeyChar);
             }
-            Console.WriteLine(); // Nowa linia po przekroczeniu czasu
-            return '\0'; // Zwracamy pusty znak, jeśli użytkownik nie zdążył odpowiedzieć
+            Console.WriteLine(); // Nowa linia po wprowadzeniu wyboru
+            return userChoice;
         }
     }
 }
+    
