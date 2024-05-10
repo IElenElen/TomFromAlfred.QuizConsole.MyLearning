@@ -16,22 +16,25 @@ namespace TomFromAlfred.Quiz.Tests
         public void Constructor_AddsAllQuestionsFromQuestionService()
         {
             // Arrange
-            var mockQuestionService = new Mock<QuestionServiceApp>(); // Tworzenie fałszywego obiektu QuestionServiceApp
             var fakeQuestions = new List<Question>
                 {
-            new Question { QuestionNumber = 9, QuestionContent = "xyz"}
-            //new Question { QuestionNumber = 11, QuestionContent = "Example question 11" },
-        };
-            mockQuestionService.Setup(x => x.AllQuestions).Returns(fakeQuestions); // Konfiguracja zachowania fałszywego obiektu
+                new Question(9, "xyz"),
+                new Question(11, "Example question 11"),
+                };
+
+            var mockQuestionService = new Mock<QuestionServiceApp>();
+
+            // Konfiguracja zachowania fałszywego obiektu
+            mockQuestionService.Setup(x => x.AllQuestions).Returns(fakeQuestions);
 
             // Act
-            var managerApp = new QuestionsManagerApp();
+            var managerApp = new QuestionsManagerApp(mockQuestionService.Object);
             var actualQuestions = managerApp.Questions;
 
             // Assert
             Assert.Equal(fakeQuestions.Count, actualQuestions.Count); // Sprawdzenie, czy liczba pytań zgadza się
                                                                       
-            // Sprawdź, czy wszystkie pytania z QuestionServiceApp zostały dodane do listy Questions
+            // Czy wszystkie pytania z QuestionServiceApp zostały dodane do listy Questions
             foreach (var expectedQuestion in fakeQuestions)
             {
                 Assert.Contains(expectedQuestion, actualQuestions);

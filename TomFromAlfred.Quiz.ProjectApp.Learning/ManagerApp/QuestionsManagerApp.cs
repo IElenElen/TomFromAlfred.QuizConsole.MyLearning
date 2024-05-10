@@ -11,9 +11,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
     public class QuestionsManagerApp //to kod z serwisu przeniesiony do managera app
     {
         public List<Question> Questions { get; set; } = new List<Question>();
-        public QuestionsManagerApp()
+        public QuestionsManagerApp(QuestionServiceApp questionServiceApp) //kod zmieniony
         {
-            QuestionServiceApp questionServiceApp = new QuestionServiceApp();
             Questions.AddRange(questionServiceApp.AllQuestions);
         }
     }
