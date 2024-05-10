@@ -8,19 +8,16 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
-    public class QuestionServiceApp : BaseApp<Question> //ten kod to poprawny serwis
+    public class QuestionServiceApp : BaseApp<Question> 
     {
         private int? questionNumber;
         public virtual IEnumerable<Question> AllQuestions { get; }
-
-        //public List<Question> AllQuestions { get; set; } = new List<Question>(); usuwam, bo dla testu wprowadzam IEnumerable
         public QuestionServiceApp()
         {
             // Inicjalizacja listy pytań
-            AllQuestions = new List<Question> //tu za to daję listę
-            //AllQuestions.Add(new Question(0, "Z ilu części składa się powyższa powieść Alfreda Szklarskiego?")); ten format usuwam!!!
+            AllQuestions = new List<Question>
             {
-                new Question(0, "Z ilu części składa się powyższa powieść Alfreda Szklarskiego? "),
+                new Question(0, "Z ilu części składa się powyższa powieść Alfreda Szklarskiego? "), //nowy format pytań przygotowany pod test
                 new Question(1, "Jaki tytuł nosi ostatnia część o przygodach Tomka?"),
                 new Question(2, "Tomek przed pierwszą przygodą mieszka w: "),
                 new Question(3, "Na kim mści się Tomek pod koniec roku szkolnego?"),
@@ -31,7 +28,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 new Question(8, "Pytanie też do testu nr 3. Z odp b"),
             };
         }
-        public void GetQuestionByNumber(List<Question> allQuestions, Question questionNumber) //poprawiona metoda Get
+        public void GetQuestionByNumber(List<Question> allQuestions, Question questionNumber) 
         {
             for (int i = 0; i < allQuestions.Count; i++)
             {
