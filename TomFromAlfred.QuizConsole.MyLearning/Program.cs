@@ -1,5 +1,6 @@
 ﻿using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
+using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.MyLearning
 {
@@ -16,7 +17,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             Console.WriteLine();
 
             // Inicjalizuję obiekty dla pytań, wyborów i weryfikacji odpowiedzi
-            QuestionsManagerApp questionsService = new QuestionsManagerApp();
+            QuestionServiceApp questionServiceApp = new QuestionServiceApp();
+            QuestionsManagerApp questionsManagerApp = new QuestionsManagerApp(questionServiceApp); // Instancja QuestionsManagerApp i przekazuję questionServiceApp jako parametr
+
             ChoicesManagerApp choicesService = new ChoicesManagerApp();
             AnswerVerifierServiceApp answerVerifierManager = new AnswerVerifierServiceApp();
             UsersManagerApp usersService = new UsersManagerApp(); 
@@ -24,10 +27,13 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             // Zmienna przechowująca łączną liczbę punktów uzyskanych przez użytkownika
             int totalPoints = 0;
 
+            // Pobranie wszystkich pytań
+            List<Question> allQuestions = questionServiceApp.AllQuestions.ToList();
+
             // Tworzę pętlę przechodzącą przez każde pytanie w zestawie
-            for (int i = 0; i < questionsService.Questions.Count; i++)
+            for (int i = 0; i < allQuestions.Count; i++)
             {
-                var question = questionsService.Questions[i];
+                var question = allQuestions[i];
                 var choices = choicesService.GetChoicesForQuestion(i);
 
                 // Wyświetlanie pytania
@@ -57,7 +63,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                     Console.WriteLine("Odpowiedź błędna. Brak punktu.");
                 }
 
-                if (i < questionsService.Questions.Count - 1)
+                if (i < allQuestions.Count - 1)
                 {
                     Console.WriteLine($"Aktualna liczba punktów: {totalPoints}");
                     Console.WriteLine();
