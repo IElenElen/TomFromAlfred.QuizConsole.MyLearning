@@ -16,11 +16,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             _inputReader = inputReader;
         }
 
-        public char GetUserChoice() //zostawiam ten styl kodu
+    public char GetUserChoice() //zostawiam ten styl kodu
         {
             Console.WriteLine();
             Console.Write("Twój wybór (wpisz a, b lub c): ");
             char userChoice = char.ToLower(_inputReader.ReadKey().KeyChar);
+
             // Dodatkowa walidacja wyboru użytkownika
             while (userChoice != 'a' && userChoice != 'b' && userChoice != 'c')
             {

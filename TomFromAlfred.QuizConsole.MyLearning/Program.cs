@@ -1,6 +1,7 @@
 ﻿using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
+using TomFromAlfred.Quiz.Tests;
 
 namespace TomFromAlfred.QuizConsole.MyLearning
 {
@@ -23,8 +24,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             ChoicesManagerApp choicesService = new ChoicesManagerApp();
             AnswerVerifierServiceApp answerVerifierManager = new AnswerVerifierServiceApp();
 
-            IUserInputReader userInputReader = new ConsoleUserInputReader(); //znowu problem!!!
-            UsersManagerApp usersService = new UsersManagerApp(userInputReader);
+            IUserInputReader userInputReader = new FakeUserInputReader( new ConsoleKeyInfo()); // Tworzę instancję implementacji IUserInputReader
+            UsersManagerApp usersService = new UsersManagerApp(userInputReader); // Tu przekazuję implementację IUserInputReader do konstruktora
+
             // Zmienna przechowująca łączną liczbę punktów uzyskanych przez użytkownika
             int totalPoints = 0;
 

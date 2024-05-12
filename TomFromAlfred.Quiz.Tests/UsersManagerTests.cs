@@ -24,17 +24,21 @@ namespace TomFromAlfred.Quiz.Tests
         }
 
         [Fact]
-        public void GetUserChoice_InvalidChoice_ReturnsDefaultChoice() //problem z 2 testem
+        public void GetUserChoice_InvalidChoice_ShouldRepeatUntilValidChoice()
         {
             // Arrange
-            var fakeInputReader1 = new FakeUserInputReader1('p'); // Symulujemy wprowadzenie nieprawidłowego wyboru
+            var fakeInputReader1 = new FakeUserInputReader2(new List<ConsoleKeyInfo> 
+            {
+                new ConsoleKeyInfo('p', ConsoleKey.P, false, false, false), // Symulacja: wprowadzenie nieprawidłowego wyboru
+                new ConsoleKeyInfo('a', ConsoleKey.A, false, false, false) // Teraz poprawny wybór
+            });
             var usersManagerApp = new UsersManagerApp(fakeInputReader1);
 
             // Act
             var result = usersManagerApp.GetUserChoice();
 
             // Assert
-            Assert.Equal(default(char), result);
+            Assert.NotEqual(default(char), result);
 
             // Debug
             Console.WriteLine("Test completed.");
