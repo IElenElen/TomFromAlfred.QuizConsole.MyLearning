@@ -22,8 +22,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
             ChoicesManagerApp choicesService = new ChoicesManagerApp();
             AnswerVerifierServiceApp answerVerifierManager = new AnswerVerifierServiceApp();
-            UsersManagerApp usersService = new UsersManagerApp(); 
 
+            IUserInputReader userInputReader = new ConsoleUserInputReader(); //znowu problem!!!
+            UsersManagerApp usersService = new UsersManagerApp(userInputReader);
             // Zmienna przechowująca łączną liczbę punktów uzyskanych przez użytkownika
             int totalPoints = 0;
 
@@ -46,8 +47,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 }
 
                 // Pobieranie wyboru od użytkownika
-               char userChoice = usersService.GetUserChoice();
-
+                char userChoice = usersService.GetUserChoice();
                 // Następuje weryfikacja odpowiedzi i przyznawanie punktów
                 bool result = answerVerifierManager.GetPointsForAnswer(question.QuestionNumber, userChoice);
                 Console.WriteLine();

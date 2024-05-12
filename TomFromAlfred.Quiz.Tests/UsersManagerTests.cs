@@ -12,38 +12,32 @@ namespace TomFromAlfred.Quiz.Tests
         [Fact]
         public void GetUserChoice_ValidChoice_ReturnsChoice()
         {
-            //Arrange
-            var usersManagerApp = new UsersManagerApp();
-            
-            //Act
-            //var result = usersManagerApp.GetUserChoice('b'); tu mi blokuje metodę Get
-            using (var sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Console.SetIn(new StringReader("b"));
+            // Arrange
+            var fakeInputReader = new FakeUserInputReader(new ConsoleKeyInfo('b', ConsoleKey.B, false, false, false));
+            var usersManagerApp = new UsersManagerApp(fakeInputReader);
 
-                // Act
-                var result = usersManagerApp.GetUserChoice();
-                //Assert
-                Assert.Equal('b', result);
-            }
+            // Act
+            var result = usersManagerApp.GetUserChoice();
+
+            // Assert
+            Assert.Equal('b', result);
         }
 
         [Fact]
-        public void GetUserChoice_InvalidChoice_ReturnsDefaultChoice()
+        public void GetUserChoice_InvalidChoice_ReturnsDefaultChoice() //problem z 2 testem
         {
-            //Arrange
-            var usersManagerApp = new UsersManagerApp();
+            // Arrange
+            var fakeInputReader1 = new FakeUserInputReader1('p'); // Symulujemy wprowadzenie nieprawidłowego wyboru
+            var usersManagerApp = new UsersManagerApp(fakeInputReader1);
 
-            using (var sw = new StringWriter())
-            {
-                Console.SetOut(sw);
-                Console.SetIn(new StringReader("p"));
-            //Act
+            // Act
             var result = usersManagerApp.GetUserChoice();
-            //Assert
+
+            // Assert
             Assert.Equal(default(char), result);
-            }
+
+            // Debug
+            Console.WriteLine("Test completed.");
         }
     }
 }
