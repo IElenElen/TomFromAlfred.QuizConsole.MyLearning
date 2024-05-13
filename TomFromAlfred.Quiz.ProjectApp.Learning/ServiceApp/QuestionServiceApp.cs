@@ -28,18 +28,39 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 new Question(8, "Pytanie też do testu nr 3. Z odp b"),
             };
         }
-        public void GetQuestionByNumber(List<Question> allQuestions, Question questionNumber) 
+        public bool GetQuestionByNumber(List<Question> allQuestions, int questionNumber) //metoda poprawiona
         {
+            if (allQuestions == null)
+            {
+                Console.WriteLine("Lista pytań jest pusta.");
+                return false;
+            }
+
             for (int i = 0; i < allQuestions.Count; i++)
             {
-                if (allQuestions[i].Equals(questionNumber))
+                if (allQuestions[i].QuestionNumber == questionNumber)
                 {
-                    allQuestions.RemoveAt(i); // Usuwanie pytania z listy
+                    Console.WriteLine("Pytanie zostało znalezione.");
+                    return true;
+                }
+            }
+
+            Console.WriteLine("Brak pytania o podanym numerze.");
+            return false;
+        }
+
+        public void RemoveQuestionByNumber(int questionNumber)
+        {
+            foreach (Question question in AllQuestions)
+            {
+                if (question.QuestionNumber == questionNumber)
+                {
+                    ((List<Question>)AllQuestions).Remove(question); // Usuwanie pytania z listy
                     Console.WriteLine("Pytanie zostało usunięte");
                     return;
                 }
             }
-            Console.WriteLine("Brak pytania do wyświetlenia");
+            Console.WriteLine("Brak pytania o podanym numerze");
         }
     }
 }
