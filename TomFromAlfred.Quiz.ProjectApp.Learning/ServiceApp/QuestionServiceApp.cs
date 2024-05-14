@@ -28,17 +28,17 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 new Question(8, "Pytanie też do testu nr 3. Z odp b"),
             };
         }
-        public bool GetQuestionByNumber(List<Question> allQuestions, int questionNumber) //metoda poprawiona ale i tak do zmiany, bo test nie przechodzi
+        public bool GetQuestionByNumber(List<Question> allQuestions, int questionNumber)
         {
-            if(allQuestions == null || allQuestions.Count == 0)
+            if (allQuestions == null || allQuestions.Count == 0)
             {
                 Console.WriteLine("Lista pytań jest pusta.");
                 return false;
             }
-            
-            for(int i = 0; i < allQuestions.Count; i++)
+
+            foreach (var question in allQuestions)
             {
-                if (allQuestions[i].QuestionNumber == questionNumber)
+                if (question.QuestionNumber == questionNumber)
                 {
                     Console.WriteLine("Pytanie znalezione.");
                     return true;
