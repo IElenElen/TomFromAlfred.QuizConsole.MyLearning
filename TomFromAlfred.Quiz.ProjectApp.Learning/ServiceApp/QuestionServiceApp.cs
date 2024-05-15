@@ -10,8 +10,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
     public class QuestionServiceApp : BaseApp<Question> 
     {
-        private int? questionNumber;
         public virtual IEnumerable<Question> AllQuestions { get; }
+
+        public QuestionServiceApp(IEnumerable<Question> allQuestions)
+        {
+            AllQuestions = allQuestions;
+        }
         public QuestionServiceApp()
         {
             // Inicjalizacja listy pytań
@@ -29,45 +33,25 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             };
         }
 
-        public Question GetQuestionByNumber(List<Question> AllQuestions, int questionNumber) //ta metoda z pętlą for była na początku właśnie pożądana 
+        public Question GetQuestionByNumber(int questionNumber)
         {
-            for (int i = 0; i < AllQuestions.Count; i++)
+            for (int i = 0; i < ((List<Question>)AllQuestions).Count; i++)
             {
-                if (AllQuestions[i].QuestionNumber == questionNumber)
+                if (((List<Question>)AllQuestions)[i].QuestionNumber == questionNumber)
                 {
-                    return AllQuestions[i];
+                    return ((List<Question>)AllQuestions)[i];
                 }
             }
-            return null; // Jeśli nie znaleziono pytania o podanym numerze, zwróć null
+            return null;
         }
-
-        /*public bool GetQuestionByNumber(List<Question> allQuestions, int questionNumber) //problematyczna metoda przy testowaniu
-        {
-            if (allQuestions == null || allQuestions.Count == 0)
-            {
-                Console.WriteLine("Lista pytań jest pusta.");
-                return false;
-            }
-
-            foreach (var question in allQuestions)
-            {
-                if (question.QuestionNumber == questionNumber)
-                {
-                    Console.WriteLine("Pytanie znalezione.");
-                    return true;
-                }
-            }
-            Console.WriteLine("Brak pytania o podanym numerze.");
-            return false;
-        }*/
 
         public void RemoveQuestionByNumber(int questionNumber)
         {
-            foreach (Question question in AllQuestions)
+            for (int i = AllQuestions.Count() - 1; i >= 0; i--)
             {
-                if (question.QuestionNumber == questionNumber)
+                if (AllQuestions.ElementAt(i).QuestionNumber == questionNumber)
                 {
-                    ((List<Question>)AllQuestions).Remove(question); // Usuwanie pytania z listy
+                    ((List<Question>)AllQuestions).RemoveAt(i); // Usuwanie pytania z listy
                     Console.WriteLine("Pytanie zostało usunięte");
                     return;
                 }
