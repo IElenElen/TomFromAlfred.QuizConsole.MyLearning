@@ -28,7 +28,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 new Question(8, "Pytanie też do testu nr 3. Z odp b"),
             };
         }
-        public bool GetQuestionByNumber(List<Question> allQuestions, int questionNumber)
+        /*public bool GetQuestionByNumber(List<Question> allQuestions, int questionNumber)
         {
             if (allQuestions == null || allQuestions.Count == 0)
             {
@@ -46,7 +46,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             }
             Console.WriteLine("Brak pytania o podanym numerze.");
             return false;
-        }
+        }*/
 
         public void RemoveQuestionByNumber(int questionNumber)
         {
