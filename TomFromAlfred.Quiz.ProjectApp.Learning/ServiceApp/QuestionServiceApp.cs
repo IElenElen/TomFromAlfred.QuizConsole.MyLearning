@@ -28,7 +28,20 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 new Question(8, "Pytanie też do testu nr 3. Z odp b"),
             };
         }
-        /*public bool GetQuestionByNumber(List<Question> allQuestions, int questionNumber)
+
+        public Question GetQuestionByNumber(List<Question> AllQuestions, int questionNumber) //ta metoda z pętlą for była na początku właśnie pożądana 
+        {
+            for (int i = 0; i < AllQuestions.Count; i++)
+            {
+                if (AllQuestions[i].QuestionNumber == questionNumber)
+                {
+                    return AllQuestions[i];
+                }
+            }
+            return null; // Jeśli nie znaleziono pytania o podanym numerze, zwróć null
+        }
+
+        /*public bool GetQuestionByNumber(List<Question> allQuestions, int questionNumber) //problematyczna metoda przy testowaniu
         {
             if (allQuestions == null || allQuestions.Count == 0)
             {
