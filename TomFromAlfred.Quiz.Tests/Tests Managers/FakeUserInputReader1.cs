@@ -7,7 +7,7 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 
 namespace TomFromAlfred.Quiz.Tests
 {
-    public class FakeUserInputReader1 : IUserInputReader
+    public class FakeUserInputReader1 : IUserInputReader //na potrzeby testu
     {
         private readonly char _keyChar;
 

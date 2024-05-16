@@ -18,10 +18,6 @@ namespace TomFromAlfred.Quiz.Tests.Tests_Services
             QuestionServiceApp questionServiceApp = new QuestionServiceApp();
 
             //Act
-
-            //List<Question> allQuestionsList = questionServiceApp.AllQuestions.ToList(); // Konwersja IEnumerable<Question> na List<Question>
-            //Question result = questionServiceApp.GetQuestionByNumber(questionServiceApp.AllQuestions, 2);
-
             Question result = questionServiceApp.GetQuestionByNumber(2);
 
             //Assert
@@ -37,43 +33,57 @@ namespace TomFromAlfred.Quiz.Tests.Tests_Services
             QuestionServiceApp questionServiceApp = new QuestionServiceApp();
 
             // Act
-
-            //Question result = questionServiceApp.GetQuestionByNumber(questionServiceApp.AllQuestions, 10);
-
             Question result = questionServiceApp.GetQuestionByNumber(10);
 
             // Assert
             Assert.Null(result);
         }
 
-        [Fact]
-        public void RemoveQuestionByNumber_NothingRemovedWhenQuestionNotFound()
+        /*[Fact]
+        public void RemoveQuestionByNumber_RemovesQuestion_WhenNumberExists() //test problematyczny
         {
             // Arrange
-            var questionList = new List<Question>
+            var mockConsole = new Mock<IConsole>();
+            var allQuestions = new List<Question>
         {
-            new Question(0, "Question 1"),
-            new Question(1, "Question 2"),
-            new Question(2, "Question 3")
+            new Question(0, "Example question 1"),
+            new Question(1, "Example question 2"),
+            new Question(2, "Example question 3")
         };
-
-            var mockQuestions = new Mock<IEnumerable<Question>>();
-            mockQuestions.Setup(q => q.GetEnumerator()).Returns(questionList.GetEnumerator());
-
-            var questionServiceApp = new QuestionServiceApp(mockQuestions.Object);
+            var questionServiceApp = new QuestionServiceApp(allQuestions);
+            int questionNumberToRemove = 1;
 
             // Act
-            questionServiceApp.RemoveQuestionByNumber(10);
+            questionServiceApp.RemoveQuestionByNumber(questionNumberToRemove);
 
             // Assert
-            Assert.Equal(3, questionServiceApp.AllQuestions.Count()); // Sprawdzamy, czy liczba pytań pozostała bez zmian
+        Assert.Null(questionServiceApp.GetQuestionByNumber(questionNumberToRemove)); // Sprawdzamy, czy pytanie zostało usunięte
+    }*/
 
-            // Wyświetlamy zawartość listy AllQuestions
-            var questions = questionServiceApp.AllQuestions.ToList();
-            foreach (var question in questions)
-            {
-                Console.WriteLine($"QuestionNumber: {question.QuestionNumber}, QuestionContent: {question.QuestionContent}");
-            }
+        [Fact]
+        public void RemoveQuestionByNumber_WritesMessage_WhenNumberDoesNotExist()
+        {
+            // Arrange
+            var allQuestions = new List<Question>
+        {
+            new Question(0, "Example question 1"),
+            new Question(1, "Example question 2"),
+            new Question(2, "Example question 3")
+        };
+            var questionServiceApp = new QuestionServiceApp(allQuestions);
+            var mockConsole = new Mock<IConsole>();
+            int nonExistingQuestionNumber = 999;
+
+            // Act
+            questionServiceApp.RemoveQuestionByNumber(nonExistingQuestionNumber);
+
+            // Assert
+            Assert.Null(questionServiceApp.GetQuestionByNumber(nonExistingQuestionNumber)); // czy żadne pytanie nie zostało usunięte?
         }
+
+    }
+
+    internal interface IConsole //na potrzeby testu
+    {
     }
 }

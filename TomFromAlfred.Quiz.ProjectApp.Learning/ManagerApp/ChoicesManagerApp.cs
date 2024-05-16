@@ -50,7 +50,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
                 default:
 
-                    return new Choice[0]; // Domyślnie zwraca pustą tablicę
+                    return new Choice[0]; // domyślnie zwraca pustą tablicę
             }
         }
     }

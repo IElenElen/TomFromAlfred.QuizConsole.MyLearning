@@ -24,7 +24,7 @@ namespace TomFromAlfred.Quiz.Tests
 
             var mockQuestionService = new Mock<QuestionServiceApp>();
 
-            // Konfiguracja zachowania fałszywego obiektu
+            // Symulacja zachowania fałszywego obiektu
             mockQuestionService.Setup(x => x.AllQuestions).Returns(fakeQuestions);
 
             // Act
@@ -32,9 +32,9 @@ namespace TomFromAlfred.Quiz.Tests
             var actualQuestions = managerApp.Questions;
 
             // Assert
-            Assert.Equal(fakeQuestions.Count, actualQuestions.Count); // Sprawdzenie, czy liczba pytań zgadza się
+            Assert.Equal(fakeQuestions.Count, actualQuestions.Count); // sprawdzenie, czy liczba pytań zgadza się
                                                                       
-            // Czy wszystkie pytania z QuestionServiceApp zostały dodane do listy Questions
+            // Czy wszystkie pytania z QuestionServiceApp zostały dodane do listy Questions?
             foreach (var expectedQuestion in fakeQuestions)
             {
                 Assert.Contains(expectedQuestion, actualQuestions);

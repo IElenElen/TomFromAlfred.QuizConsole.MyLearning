@@ -45,13 +45,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             return null;
         }
 
-        public void RemoveQuestionByNumber(int questionNumber)
+        public void RemoveQuestionByNumber(int questionNumber) //metoda problematyczna do kodowania....
         {
-            for (int i = AllQuestions.Count() - 1; i >= 0; i--)
+            var questionsCopy = AllQuestions.ToList(); // kopia listy pytań
+
+            for (int i = questionsCopy.Count() - 1; i >= 0; i--)
             {
-                if (AllQuestions.ElementAt(i).QuestionNumber == questionNumber)
+                if (questionsCopy[i].QuestionNumber == questionNumber)
                 {
-                    ((List<Question>)AllQuestions).RemoveAt(i); // Usuwanie pytania z listy
+                    questionsCopy.RemoveAt(i); // usuwanie pytania z kopii listy
                     Console.WriteLine("Pytanie zostało usunięte");
                     return;
                 }

@@ -29,8 +29,8 @@ namespace TomFromAlfred.Quiz.Tests
             // Arrange
             var fakeInputReader1 = new FakeUserInputReader2(new List<ConsoleKeyInfo> 
             {
-                new ConsoleKeyInfo('p', ConsoleKey.P, false, false, false), // Symulacja: wprowadzenie nieprawidłowego wyboru
-                new ConsoleKeyInfo('a', ConsoleKey.A, false, false, false) // Teraz poprawny wybór
+                new ConsoleKeyInfo('p', ConsoleKey.P, false, false, false), // symulacja: wprowadzenie nieprawidłowego wyboru
+                new ConsoleKeyInfo('a', ConsoleKey.A, false, false, false) // teraz poprawny wybór
             });
             var usersManagerApp = new UsersManagerApp(fakeInputReader1);
 

@@ -17,15 +17,15 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             Console.WriteLine("Za poprawną odpowiedż otrzymasz jeden punkt, za błędną brak punktu.");
             Console.WriteLine();
 
-            // Inicjalizuję obiekty dla pytań, wyborów i weryfikacji odpowiedzi
+            // Inicjalizuję obiekty dla pytań, wyborów i weryfikacji odpowiedzi itd
             QuestionServiceApp questionServiceApp = new QuestionServiceApp();
-            QuestionsManagerApp questionsManagerApp = new QuestionsManagerApp(questionServiceApp); // Instancja QuestionsManagerApp i przekazuję questionServiceApp jako parametr
+            QuestionsManagerApp questionsManagerApp = new QuestionsManagerApp(questionServiceApp); // instancja QuestionsManagerApp i przekazuję questionServiceApp jako parametr
 
             ChoicesManagerApp choicesService = new ChoicesManagerApp();
             AnswerVerifierServiceApp answerVerifierManager = new AnswerVerifierServiceApp();
 
-            IUserInputReader userInputReader = new FakeUserInputReader( new ConsoleKeyInfo()); // Tworzę instancję implementacji IUserInputReader
-            UsersManagerApp usersService = new UsersManagerApp(userInputReader); // Tu przekazuję implementację IUserInputReader do konstruktora
+            IUserInputReader userInputReader = new FakeUserInputReader( new ConsoleKeyInfo()); // tworzę instancję implementacji IUserInputReader - na potrzeby testu
+            UsersManagerApp usersService = new UsersManagerApp(userInputReader); // przekazuję implementację IUserInputReader do konstruktora
 
             // Zmienna przechowująca łączną liczbę punktów uzyskanych przez użytkownika
             int totalPoints = 0;
@@ -50,6 +50,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
                 // Pobieranie wyboru od użytkownika
                 char userChoice = usersService.GetUserChoice();
+
                 // Następuje weryfikacja odpowiedzi i przyznawanie punktów
                 bool result = answerVerifierManager.GetPointsForAnswer(question.QuestionNumber, userChoice);
                 Console.WriteLine();
@@ -82,7 +83,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                     }
                 }
             }
-            Console.WriteLine($"Twój wynik końcowy: {totalPoints} pkt.");  // Wyświetlanie końcowego wyniku 
+            Console.WriteLine($"Twój wynik końcowy: {totalPoints} pkt.");  // wyświetlanie końcowego wyniku 
         }
     }   
 }

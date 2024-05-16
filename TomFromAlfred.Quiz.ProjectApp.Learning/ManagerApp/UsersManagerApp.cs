@@ -9,7 +9,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
     public class UsersManagerApp
     {
-        private readonly IUserInputReader _inputReader;
+        private readonly IUserInputReader _inputReader; //na potrzeby testu
 
         public UsersManagerApp(IUserInputReader inputReader)
         {
@@ -31,7 +31,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 Console.Write("Twój wybór (wpisz a, b lub c): ");
                 userChoice = char.ToLower(_inputReader.ReadKey().KeyChar);
             }
-            Console.WriteLine(); // Nowa linia po wprowadzeniu wyboru
+            Console.WriteLine(); // nowa linia po wprowadzeniu wyboru
             return userChoice;
         }
     }

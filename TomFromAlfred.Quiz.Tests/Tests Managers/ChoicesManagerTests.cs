@@ -16,8 +16,10 @@ namespace TomFromAlfred.Quiz.Tests
         {
             //Arrange
             ChoicesManagerApp choicesManager;
+
             //Act
             choicesManager = new ChoicesManagerApp();
+
             //Assert
             Assert.NotNull(choicesManager);
             Assert.NotNull(choicesManager.Choice0Array);
@@ -35,6 +37,7 @@ namespace TomFromAlfred.Quiz.Tests
             // Assert
             Assert.All(choice0Array, choice => Assert.NotNull(choice));
         }
+
         [Theory]
         [InlineData(0)]
         [InlineData(1)]
@@ -49,8 +52,9 @@ namespace TomFromAlfred.Quiz.Tests
 
             // Assert
             Assert.NotNull(choices);
-            Assert.NotEmpty(choices); // Sprawdź, czy tablica nie jest pusta
+            Assert.NotEmpty(choices); // czy tablica nie jest pusta?
         }
+
         [Fact]
         public void GetChoicesForQuestion_ReturnsEmptyArrayForInvalidQuestionNumber()
         {
@@ -60,7 +64,7 @@ namespace TomFromAlfred.Quiz.Tests
             Choice[] choices = choicesManager.GetChoicesForQuestion(-3);
             //Assert
             Assert.NotNull(choices);
-            Assert.Empty(choices); //sprawdź, czy tablica jest pusta
+            Assert.Empty(choices); //czy tablica jest pusta?
         }
     }
 }

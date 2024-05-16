@@ -7,7 +7,7 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 
 namespace TomFromAlfred.Quiz.Tests
 {
-    public class FakeUserInputReader2 : IUserInputReader
+    public class FakeUserInputReader2 : IUserInputReader //na potrzeby testu
     {
         private Queue<ConsoleKeyInfo> _inputQueue;
 
