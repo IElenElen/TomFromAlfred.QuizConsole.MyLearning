@@ -48,7 +48,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         public Choice Choice8B => new Choice(8, 'b', "dobra");
         public Choice Choice8C => new Choice(8, 'c', "nie");
 
-        public Choice Choice9A => new Choice(9, 'a', "Nowy wybór"); //na potrzeby testu
+        public Choice Choice9A { get; set; } = new Choice(9, 'a', "Nowy wybór"); // do odczytu i zapisu na potrzeby testu
 
         public void RemoveChoice(Choice choiceToRemove) //w planach
         {

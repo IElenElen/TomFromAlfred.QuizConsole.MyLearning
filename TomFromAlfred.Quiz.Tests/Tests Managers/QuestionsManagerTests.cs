@@ -13,7 +13,7 @@ namespace TomFromAlfred.Quiz.Tests
     public class QuestionsManagerTests
     {
         [Fact]
-        public void Constructor_AddsAllQuestionsFromQuestionService()
+        public void Constructor_AddsAllQuestionsFromQuestionService() //test 3xA z mock i fake
         {
             // Arrange
             var fakeQuestions = new List<Question>
@@ -24,7 +24,6 @@ namespace TomFromAlfred.Quiz.Tests
 
             var mockQuestionService = new Mock<QuestionServiceApp>();
 
-            // Symulacja zachowania fałszywego obiektu
             mockQuestionService.Setup(x => x.AllQuestions).Returns(fakeQuestions);
 
             // Act

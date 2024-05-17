@@ -13,15 +13,16 @@ namespace TomFromAlfred.Quiz.Tests.Tests_Services
     public class ChoiceServiceTests
     {
         [Fact]
-        public void AddChoice_ShouldAddNewChoice()
+        public void AddChoice_ShouldAddNewChoice() //test 3xA //test i testowana klasa do analizy!!!
         {
-            //Arrange
+            // Arrange
             var choiceService = new ChoiceServiceApp();
             var newChoice = new Choice(9, 'a', "Nowy wybór");
 
-            //Act brak
+            // Act
+            choiceService.Choice9A = newChoice; // Ustaw nowy wybór
 
-            //Asert
+            // Assert
             Assert.Equal(newChoice, choiceService.Choice9A);
         }
     }

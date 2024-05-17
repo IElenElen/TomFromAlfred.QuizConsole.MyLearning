@@ -12,7 +12,7 @@ namespace TomFromAlfred.Quiz.Tests.Tests_Services
     public class QuestionServiceTests
     {
         [Fact]
-        public void GetQuestionByNumber_ReturnCorrectQuestion()
+        public void GetQuestionByNumber_ReturnCorrectQuestion() //test 3xA
         {
             //Arrange
             QuestionServiceApp questionServiceApp = new QuestionServiceApp();
@@ -27,7 +27,7 @@ namespace TomFromAlfred.Quiz.Tests.Tests_Services
         }
 
         [Fact]
-        public void GetQuestionByNumber_ReturnsNullWhenQuestionNotFound()
+        public void GetQuestionByNumber_ReturnsNullWhenQuestionNotFound() //test 3xA
         {
             // Arrange
             QuestionServiceApp questionServiceApp = new QuestionServiceApp();
@@ -61,7 +61,7 @@ namespace TomFromAlfred.Quiz.Tests.Tests_Services
     }*/
 
         [Fact]
-        public void RemoveQuestionByNumber_WritesMessage_WhenNumberDoesNotExist()
+        public void RemoveQuestionByNumber_WritesMessage_WhenNumberDoesNotExist() //test 3xA z mock
         {
             // Arrange
             var allQuestions = new List<Question>

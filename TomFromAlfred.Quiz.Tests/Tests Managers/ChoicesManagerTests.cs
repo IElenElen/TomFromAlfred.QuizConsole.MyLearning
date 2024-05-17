@@ -12,7 +12,7 @@ namespace TomFromAlfred.Quiz.Tests
     public class ChoicesManagerTests
     {
         [Fact]
-        public void Constructor_InitializesChoiceServiceApp()
+        public void Constructor_InitializesChoiceServiceApp() //test 3xA
         {
             //Arrange
             ChoicesManagerApp choicesManager;
@@ -26,7 +26,7 @@ namespace TomFromAlfred.Quiz.Tests
         }
         
         [Fact]
-        public void Choice0Array_DoesNotContainNulls()
+        public void Choice0Array_DoesNotContainNulls() //test 3xA
         {
             // Arrange
             ChoicesManagerApp choicesManager = new ChoicesManagerApp();
@@ -42,7 +42,7 @@ namespace TomFromAlfred.Quiz.Tests
         [InlineData(0)]
         [InlineData(1)]
         [InlineData(2)]
-        public void GetChoicesForQuestion_ReturnsCorrectChoices(int questionNumber)
+        public void GetChoicesForQuestion_ReturnsCorrectChoices(int questionNumber) //test 3xA
         {
             // Arrange
             ChoicesManagerApp choicesManager = new ChoicesManagerApp();
@@ -56,7 +56,7 @@ namespace TomFromAlfred.Quiz.Tests
         }
 
         [Fact]
-        public void GetChoicesForQuestion_ReturnsEmptyArrayForInvalidQuestionNumber()
+        public void GetChoicesForQuestion_ReturnsEmptyArrayForInvalidQuestionNumber() //test 3xA
         {
             //Arrange
             ChoicesManagerApp choicesManager = new ChoicesManagerApp();

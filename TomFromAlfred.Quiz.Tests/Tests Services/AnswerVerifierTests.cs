@@ -10,7 +10,7 @@ namespace TomFromAlfred.Quiz.Tests
     public class AnswerVerifierTests
     {
         [Fact]
-        public void GetPointsForAnswer_CorrectAnswer_ReturnTrue()
+        public void GetPointsForAnswer_CorrectAnswer_ReturnTrue() //test 3xA
         {
             //Arrange
             var answerVerifierServiceApp = new AnswerVerifierServiceApp();
@@ -23,7 +23,7 @@ namespace TomFromAlfred.Quiz.Tests
         }
 
         [Fact]
-        public void GetPointsForAnswer_IncorrectAnswer_ReturnFalse()
+        public void GetPointsForAnswer_IncorrectAnswer_ReturnFalse() //test 3xA 
         {
 
             //Arrange

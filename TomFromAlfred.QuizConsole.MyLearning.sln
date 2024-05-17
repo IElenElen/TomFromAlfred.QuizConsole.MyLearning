@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TomFromAlfred.Quiz.ProjectA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TomFromAlfred.Quiz.ProjectDomain.Learning", "TomFromAlfred.Quiz.ProjectDomain.Learning\TomFromAlfred.Quiz.ProjectDomain.Learning.csproj", "{EDDD477A-C704-46A9-AC54-0F696DC71F88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomFromAlfred.Quiz.Tests", "TomFromAlfred.Quiz.Tests\TomFromAlfred.Quiz.Tests.csproj", "{606DB03B-1F65-4413-922A-B512AE7DDA66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TomFromAlfred.QuizConsole.Tests", "TomFromAlfred.Quiz.Tests\TomFromAlfred.QuizConsole.Tests.csproj", "{606DB03B-1F65-4413-922A-B512AE7DDA66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

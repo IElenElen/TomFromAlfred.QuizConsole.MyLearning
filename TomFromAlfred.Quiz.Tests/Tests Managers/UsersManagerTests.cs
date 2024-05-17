@@ -10,7 +10,7 @@ namespace TomFromAlfred.Quiz.Tests
     public class UsersManagerTests
     {
         [Fact]
-        public void GetUserChoice_ValidChoice_ReturnsChoice()
+        public void GetUserChoice_ValidChoice_ReturnsChoice() //test 3xA z fake
         {
             // Arrange
             var fakeInputReader = new FakeUserInputReader(new ConsoleKeyInfo('b', ConsoleKey.B, false, false, false));
@@ -24,7 +24,7 @@ namespace TomFromAlfred.Quiz.Tests
         }
 
         [Fact]
-        public void GetUserChoice_InvalidChoice_ShouldRepeatUntilValidChoice()
+        public void GetUserChoice_InvalidChoice_ShouldRepeatUntilValidChoice() //test 3xA z fake
         {
             // Arrange
             var fakeInputReader1 = new FakeUserInputReader2(new List<ConsoleKeyInfo> 
