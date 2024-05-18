@@ -8,14 +8,15 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class ChoicesManagerApp //to kod z serwisu, podmieniam na menadżera app
+    public class ChoicesManagerApp //to kod z serwisu, podmieniam na menadżera app  // klasa ChoicesManagerApp zarządza tablicami wyborów dla pytań
+    // dane te są pobierane z serwisu ChoiceServiceApp i reprezentują wybory dla poszczególnych pytań
     {
         private ChoiceServiceApp choiceServiceApp;
         public ChoicesManagerApp()
         {
-            choiceServiceApp = new ChoiceServiceApp();
+            choiceServiceApp = new ChoiceServiceApp(); //konstruktor tworzy nowy obiekt
         }
-        public Choice[] Choice0Array => new Choice[] { choiceServiceApp.Choice0A, choiceServiceApp.Choice0B, choiceServiceApp.Choice0C };
+        public Choice[] Choice0Array => new Choice[] { choiceServiceApp.Choice0A, choiceServiceApp.Choice0B, choiceServiceApp.Choice0C }; // właściwość reprezentująca tablicę wyborów dla pytania 0, "get"
         public Choice[] Choice1Array => new Choice[] { choiceServiceApp.Choice1A, choiceServiceApp.Choice1B, choiceServiceApp.Choice1C };
         public Choice[] Choice2Array => new Choice[] { choiceServiceApp.Choice2A, choiceServiceApp.Choice2B, choiceServiceApp.Choice2C };
         public Choice[] Choice3Array => new Choice[] { choiceServiceApp.Choice3A, choiceServiceApp.Choice3B, choiceServiceApp.Choice3C };
@@ -25,12 +26,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
         public Choice[] Choice7Array => new Choice[] { choiceServiceApp.Choice7A, choiceServiceApp.Choice7B, choiceServiceApp.Choice7C };
         public Choice[] Choice8Array => new Choice[] { choiceServiceApp.Choice8A, choiceServiceApp.Choice8B, choiceServiceApp.Choice8C };
 
-        public Choice[] GetChoicesForQuestion(int questionNubmer)
+        public Choice[] GetChoicesForQuestion(int questionNubmer)   // metoda GetChoicesForQuestion zwraca tablicę wyborów dla danego numeru pytania
         {
-            switch (questionNubmer)
+            switch (questionNubmer)         // używa instrukcji switch do wyboru odpowiedniej tablicy wyborów na podstawie numeru pytania
             {
                 case 0:
-                    return Choice0Array;
+                    return Choice0Array;  // dla każdego numeru pytania zwraca odpowiednią tablicę wyborów
                 case 1:
                     return Choice1Array;
                 case 2:
@@ -50,7 +51,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
                 default:
 
-                    return new Choice[0]; // domyślnie zwraca pustą tablicę
+                    return new Choice[0]; // domyślnie zwraca pustą tablicę, jeśli numer pytania jest spoza zakresu 0-8
             }
         }
     }

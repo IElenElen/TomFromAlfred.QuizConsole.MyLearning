@@ -8,9 +8,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
     public class AnswerVerifierServiceApp //kod był w manager, zmieniony teraz na serwis
     {
-        private Dictionary<int, char> correctAnswers = new Dictionary<int, char>();
-        public AnswerVerifierServiceApp()
+        private Dictionary<int, char> correctAnswers = new Dictionary<int, char>(); // prywatne pole słownika przechowujące poprawne odpowiedzi na pytania
+        public AnswerVerifierServiceApp()  // konstruktor klasy AnswerVerifierServiceApp, który inicjalizuje słownik correctAnswers z poprawnymi odpowiedziami
         {
+            // Dodanie poprawnych odpowiedzi do słownika
             correctAnswers.Add(0, 'b');
             correctAnswers.Add(1, 'a');
             correctAnswers.Add(2, 'c');
@@ -24,11 +25,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         public bool GetPointsForAnswer(int questionNumber, char userChoice)
         {
             char correctAnswer;
-            if (correctAnswers.TryGetValue(questionNumber, out correctAnswer))
+            if (correctAnswers.TryGetValue(questionNumber, out correctAnswer)) // próba pobrania poprawnej odpowiedzi ze słownika correctAnswers dla podanego numeru pytania
             {
-                return correctAnswer == userChoice;
+                return correctAnswer == userChoice; // porównanie odpowiedzi użytkownika z poprawną odpowiedzią
             }
-            return false;
+            return false;  // jeśli numer pytania nie istnieje w słowniku lub odpowiedź użytkownika jest niepoprawna, zwróć false
         }
     }
 }

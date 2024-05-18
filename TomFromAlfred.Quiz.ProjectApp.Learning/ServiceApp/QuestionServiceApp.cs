@@ -10,7 +10,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
     public class QuestionServiceApp : BaseApp<Question> 
     {
-        public virtual IEnumerable<Question> AllQuestions { get; }
+        public virtual IEnumerable<Question> AllQuestions { get; } // właściwość reprezentująca wszystkie dostępne pytania
 
         public QuestionServiceApp(IEnumerable<Question> allQuestions)
         {
@@ -33,7 +33,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             };
         }
 
-        public Question GetQuestionByNumber(int questionNumber)
+        public Question GetQuestionByNumber(int questionNumber) //wyszukiwanie pytania na podstawie jego numeru
         {
             for (int i = 0; i < ((List<Question>)AllQuestions).Count; i++)
             {

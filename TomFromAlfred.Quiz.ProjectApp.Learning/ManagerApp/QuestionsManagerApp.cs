@@ -8,12 +8,12 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class QuestionsManagerApp 
+    public class QuestionsManagerApp // klasa QuestionsManagerApp zarządza listą pytań
     {
-        public List<Question> Questions { get; set; } = new List<Question>();
-        public QuestionsManagerApp(QuestionServiceApp questionServiceApp) 
+        public List<Question> Questions { get; set; } = new List<Question>(); // lista pytań jest reprezentowana jako lista obiektów klasy Question
+        public QuestionsManagerApp(QuestionServiceApp questionServiceApp) //konstruktor, przyjmuje jako argument obiekt klasy QuestionServiceApp, obiekt, który zawiera usługę pobierania wszystkich pytań
         {
-            Questions.AddRange(questionServiceApp.AllQuestions);
+            Questions.AddRange(questionServiceApp.AllQuestions); // dodanie wszystkich pytań z serwisu do listy pytań zarządzanej przez aplikację
         }
     }
 }

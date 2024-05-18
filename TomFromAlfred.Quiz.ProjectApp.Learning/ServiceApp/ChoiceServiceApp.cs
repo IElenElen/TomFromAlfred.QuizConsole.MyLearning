@@ -12,7 +12,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     //po interfejsie dziedziczy serwis a nie klasa bazowa
     public class ChoiceServiceApp : BaseApp<Choice> //ten kod to poprawny serwis 
     {
-        public Choice Choice0A => new Choice(0, 'a', "8");
+        public Choice Choice0A => new Choice(0, 'a', "8"); // właściwość Choice0A zwraca nowy obiekt Choice z określonym numerem pytania, literą odpowiedzi oraz z treścią odpowiedzi
         public Choice Choice0B => new Choice(0, 'b', "9");
         public Choice Choice0C => new Choice(0, 'c', "10");
 
