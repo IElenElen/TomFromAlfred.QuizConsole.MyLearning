@@ -10,7 +10,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.Tests
 {
-    public class QuestionsManagerTests
+    public class QuestionsListTests
     {
         [Fact]
         public void Constructor_AddsAllQuestionsFromQuestionService() //test 3xA z mock i fake
@@ -27,7 +27,7 @@ namespace TomFromAlfred.Quiz.Tests
             mockQuestionService.Setup(x => x.AllQuestions).Returns(fakeQuestions);
 
             // Act
-            var managerApp = new QuestionsManagerApp(mockQuestionService.Object);
+            var managerApp = new QuestionsListServiceApp(mockQuestionService.Object);
             var actualQuestions = managerApp.Questions;
 
             // Assert

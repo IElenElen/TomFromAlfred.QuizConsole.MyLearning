@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
-namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
+namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
-    public class ChoicesManagerApp //to kod z serwisu, podmieniam na menadżera app  // klasa ChoicesManagerApp zarządza tablicami wyborów dla pytań
+    public class ChoicesArraysServiceApp //to kod z serwisu, podmieniam na menadżera app  // klasa ChoicesManagerApp zarządza tablicami wyborów dla pytań
     // dane te są pobierane z serwisu ChoiceServiceApp i reprezentują wybory dla poszczególnych pytań
     {
         private ChoiceServiceApp choiceServiceApp;
-        public ChoicesManagerApp()
+        public ChoicesArraysServiceApp()
         {
             choiceServiceApp = new ChoiceServiceApp(); //konstruktor tworzy nowy obiekt
         }

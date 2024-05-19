@@ -7,11 +7,11 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class UsersManagerApp // klasa zarządza interakcjami z użytkownikiem //tę klasę z metodami zostawiłabym już jako managera...
+    public class UsersChoicesManagerApp // klasa zarządza interakcjami z użytkownikiem //tę klasę z metodami zostawiłabym już jako managera...
     {
         private readonly IUserInputReader _inputReader; //na potrzeby testu - pole przechowujące obiekt implementujący interfejs IUserInputReader, używany do odczytywania danych wejściowych od użytkownika
 
-        public UsersManagerApp(IUserInputReader inputReader)
+        public UsersChoicesManagerApp(IUserInputReader inputReader)
         {
             _inputReader = inputReader; // konstruktor klasy UsersManagerApp, który inicjalizuje pole _inputReader za pomocą przekazanego obiektu implementującego IUserInputReader
         }

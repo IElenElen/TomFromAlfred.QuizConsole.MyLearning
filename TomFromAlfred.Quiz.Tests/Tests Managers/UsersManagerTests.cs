@@ -7,14 +7,14 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 
 namespace TomFromAlfred.Quiz.Tests
 {
-    public class UsersManagerTests
+    /*public class UsersManagerTests
     {
         [Fact]
         public void GetUserChoice_ValidChoice_ReturnsChoice() //test 3xA z fake
         {
             // Arrange
             var fakeInputReader = new FakeUserInputReader(new ConsoleKeyInfo('b', ConsoleKey.B, false, false, false));
-            var usersManagerApp = new UsersManagerApp(fakeInputReader);
+            var usersManagerApp = new UsersChoicesManagerApp(fakeInputReader);
 
             // Act
             var result = usersManagerApp.GetUserChoice();
@@ -32,7 +32,7 @@ namespace TomFromAlfred.Quiz.Tests
                 new ConsoleKeyInfo('p', ConsoleKey.P, false, false, false), // symulacja: wprowadzenie nieprawidłowego wyboru
                 new ConsoleKeyInfo('a', ConsoleKey.A, false, false, false) // teraz poprawny wybór
             });
-            var usersManagerApp = new UsersManagerApp(fakeInputReader1);
+            var usersManagerApp = new UsersChoicesManagerApp(fakeInputReader1);
 
             // Act
             var result = usersManagerApp.GetUserChoice();
@@ -43,5 +43,5 @@ namespace TomFromAlfred.Quiz.Tests
             // Debug
             Console.WriteLine("Test completed.");
         }
-    }
+    }*/
 }

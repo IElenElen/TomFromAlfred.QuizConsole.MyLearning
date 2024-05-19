@@ -19,18 +19,18 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
             // Inicjalizuję obiekty dla pytań, wyborów i weryfikacji odpowiedzi itd
             QuestionServiceApp questionServiceApp = new QuestionServiceApp();
-            QuestionsManagerApp questionsManagerApp = new QuestionsManagerApp(questionServiceApp); // instancja QuestionsManagerApp i przekazuję questionServiceApp jako parametr
+            QuestionsListServiceApp questionsManagerApp = new QuestionsListServiceApp(questionServiceApp); // instancja QuestionsManagerApp i przekazuję questionServiceApp jako parametr
 
-            ChoicesManagerApp choicesService = new ChoicesManagerApp();
+            ChoicesArraysServiceApp choicesService = new ChoicesArraysServiceApp();
             AnswerVerifierServiceApp answerVerifierManager = new AnswerVerifierServiceApp();
 
             IUserInputReader userInputReader = new FakeUserInputReader( new ConsoleKeyInfo()); // tworzę instancję implementacji IUserInputReader - na potrzeby testu
-            UsersManagerApp usersService = new UsersManagerApp(userInputReader); // przekazuję implementację IUserInputReader do konstruktora
+            UsersChoicesManagerApp usersService = new UsersChoicesManagerApp(userInputReader); // przekazuję implementację IUserInputReader do konstruktora
 
             // Zmienna przechowująca łączną liczbę punktów uzyskanych przez użytkownika 
             int totalPoints = 0; //zostawiam tutaj???
 
-            // Pobranie wszystkich pytań
+            /*// Pobranie wszystkich pytań
             List<Question> allQuestions = questionServiceApp.AllQuestions.ToList();
 
             // Tworzę pętlę przechodzącą przez każde pytanie w zestawie //do menagera?
@@ -46,12 +46,12 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 foreach (var choice in choices)
                 {
                     Console.WriteLine($"{choice.ChoiceLetter}: {choice.ChoiceContent}");
-                }
+                }*/
 
-                // Pobieranie wyboru od użytkownika //to by tu zostawiła
+                // Pobieranie wyboru od użytkownika //to bym tu zostawiła
                 char userChoice = usersService.GetUserChoice();
 
-                // Następuje weryfikacja odpowiedzi i przyznawanie punktów //to do serwisu?
+                /*// Następuje weryfikacja odpowiedzi i przyznawanie punktów //to do serwisu? też raczej do managera
                 bool result = answerVerifierManager.GetPointsForAnswer(question.QuestionNumber, userChoice);
                 Console.WriteLine();
 
@@ -64,7 +64,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 else
                 {
                     Console.WriteLine("Odpowiedź błędna. Brak punktu.");
-                }
+                }*/
 
                 if (i < allQuestions.Count - 1)
                 {
@@ -75,13 +75,13 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                     // Czekanie na gotowość użytkownika przed przejściem do następnego pytania (jeśli nie jest to ostatnie pytanie)
                     Console.WriteLine("Jeżeli zaś chcesz zakończyć zabawę z quiz naciśnij k, nastepnie Enter."); //zakończenie quizu na żądanie
                     
-                    string? userInputX = Console.ReadLine(); //czyli ten mechanizm do managera?
+                    /*string? userInputX = Console.ReadLine(); //czyli ten mechanizm do managera?
                     if (userInputX == "k" || userInputX == "K")
                     {
                         Console.WriteLine();
                         Console.WriteLine("Quiz został zatrzymany.");
                         break;
-                    }
+                    }*/
                 }
             }
             Console.WriteLine($"Twój wynik końcowy: {totalPoints} pkt.");  // wyświetlanie końcowego wyniku 
