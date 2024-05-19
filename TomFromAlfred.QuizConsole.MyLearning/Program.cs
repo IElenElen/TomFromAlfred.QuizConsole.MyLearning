@@ -9,6 +9,8 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
+            //Dobra, na dziś już koniec, bo serio mi bateria padnie
+
             Console.WriteLine("Majowa wersja - bez opcji czasu: wersja gotowa do pracy z modułem 4: Testy.");
 
             // Poniżej daję info użytkownikowi
