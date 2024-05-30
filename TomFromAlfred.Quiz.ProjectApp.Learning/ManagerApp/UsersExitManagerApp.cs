@@ -8,12 +8,18 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
     public class UsersExitManagerApp
     {
+        public bool CheckForExit()
+        {
         string? userInputX = Console.ReadLine(); //czyli ten mechanizm do managera?
+
                     if (userInputX == "k" || userInputX == "K")
                     {
                         Console.WriteLine();
                         Console.WriteLine("Quiz został zatrzymany.");
-                        break;
+                    return true;
                     }
+
+            return false;
+        }
     }
 }

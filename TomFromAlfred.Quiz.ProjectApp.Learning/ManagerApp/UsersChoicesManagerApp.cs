@@ -9,7 +9,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
     public class UsersChoicesManagerApp // klasa zarządza interakcjami z użytkownikiem //tę klasę z metodami zostawiłabym już jako managera...
     {
-        private readonly IUserInputReader _inputReader; //na potrzeby testu - pole przechowujące obiekt implementujący interfejs IUserInputReader, używany do odczytywania danych wejściowych od użytkownika
+        private readonly IUserInputReader _inputReader; //pole przechowujące obiekt implementujący interfejs IUserInputReader, używany do odczytywania danych wejściowych od użytkownika
 
         public UsersChoicesManagerApp(IUserInputReader inputReader)
         {
@@ -32,11 +32,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 userChoice = char.ToLower(_inputReader.ReadKey().KeyChar); //ponowne odczytanie znaku
             }
             Console.WriteLine(); // nowa linia po wprowadzeniu wyboru
-            return userChoice;  // zwrócenie prawidłowego wyboru użytkownika.
+            return userChoice;  // zwrócenie prawidłowego wyboru użytkownika
         }
     }
     // Interfejs IUserInputReader definiuje metodę do odczytywania znaku kluczowego z konsoli
-    public interface IUserInputReader //dodany interfejs dla testu
+    public interface IUserInputReader 
     {
         ConsoleKeyInfo ReadKey(); // metoda ReadKey zwraca obiekt ConsoleKeyInfo reprezentujący klucz wprowadzony przez użytkownika
     }

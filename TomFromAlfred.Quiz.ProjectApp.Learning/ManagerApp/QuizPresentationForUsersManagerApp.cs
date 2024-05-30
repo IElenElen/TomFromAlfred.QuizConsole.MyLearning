@@ -10,22 +10,36 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
     public class QuizPresentationForUsersManagerApp
     {
-        // Pobranie wszystkich pytań
-        List<Question> allQuestions = questionServiceApp.AllQuestions.ToList();
+        private readonly QuestionServiceApp _questionServiceApp;
+        private readonly ChoicesArraysServiceApp _choicesService;
 
-            // Tworzę pętlę przechodzącą przez każde pytanie w zestawie //do menagera?
-            for (int i = 0; i<allQuestions.Count; i++)
+        public QuizPresentationForUsersManagerApp(QuestionServiceApp questionServiceApp, ChoicesArraysServiceApp choicesService)
+        {
+            _questionServiceApp = questionServiceApp;
+            _choicesService = choicesService;
+        }
+
+        public void PresentQuestions()
+        {
+            List<Question> allQuestions = _questionServiceApp.AllQuestions.ToList();
+
+            for (int i = 0; i < allQuestions.Count; i++)
             {
                 var question = allQuestions[i];
-        var choices = choicesService.GetChoicesForQuestion(i);
+                var choices = _choicesService.GetChoicesForQuestion(i);
 
-        // Wyświetlanie pytania
-        Console.WriteLine($"Pytanie {question.QuestionNumber + 1}: {question.QuestionContent}");
+                // Wyświetlanie pytania
+                Console.WriteLine($"Pytanie {i + 1}: {question.QuestionContent}");
 
-                // Wyświetlanie dostępnych wyborów w pętli //do menagera?
+                // Wyświetlanie dostępnych wyborów w pętli
                 foreach (var choice in choices)
                 {
                     Console.WriteLine($"{choice.ChoiceLetter}: {choice.ChoiceContent}");
                 }
+
+                Console.WriteLine();
+            }
+        }           
+    }
 }
-}
+

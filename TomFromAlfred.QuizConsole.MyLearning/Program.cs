@@ -19,74 +19,48 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             Console.WriteLine("Za poprawną odpowiedż otrzymasz jeden punkt, za błędną brak punktu.");
             Console.WriteLine();
 
-            // Inicjalizuję obiekty dla pytań, wyborów i weryfikacji odpowiedzi itd
+            // Inicjalizacja serwisów
             QuestionServiceApp questionServiceApp = new QuestionServiceApp();
-            QuestionsListServiceApp questionsManagerApp = new QuestionsListServiceApp(questionServiceApp); // instancja QuestionsManagerApp i przekazuję questionServiceApp jako parametr
-
             ChoicesArraysServiceApp choicesService = new ChoicesArraysServiceApp();
-            AnswerVerifierServiceApp answerVerifierManager = new AnswerVerifierServiceApp();
+            AnswerVerifierServiceApp answerVerifierServiceApp = new AnswerVerifierServiceApp();
 
-            IUserInputReader userInputReader = new FakeUserInputReader( new ConsoleKeyInfo()); // tworzę instancję implementacji IUserInputReader - na potrzeby testu
-            UsersChoicesManagerApp usersService = new UsersChoicesManagerApp(userInputReader); // przekazuję implementację IUserInputReader do konstruktora
+            // Inicjalizacja menadżerów
+            QuizPresentationForUsersManagerApp quizPresentationManager = new QuizPresentationForUsersManagerApp(questionServiceApp, choicesService);
+            ResultsAndUsersPointsManagerApp resultsManager = new ResultsAndUsersPointsManagerApp(answerVerifierServiceApp);
+            UsersChoicesManagerApp userChoicesManager = new UsersChoicesManagerApp(new ConsoleInputReader());
+            UsersExitManagerApp usersExitManager = new UsersExitManagerApp();
 
             // Zmienna przechowująca łączną liczbę punktów uzyskanych przez użytkownika 
             int totalPoints = 0; //zostawiam tutaj???
 
-            /*// Pobranie wszystkich pytań
-            List<Question> allQuestions = questionServiceApp.AllQuestions.ToList();
+            // Prezentacja pytań
+            quizPresentationManager.PresentQuestions();
 
-            // Tworzę pętlę przechodzącą przez każde pytanie w zestawie //do menagera?
-            for (int i = 0; i < allQuestions.Count; i++)
+            // Pętla quizu
+            foreach (var question in questionServiceApp.AllQuestions)
             {
-                var question = allQuestions[i];
-                var choices = choicesService.GetChoicesForQuestion(i);
+                // Pobieranie wyboru użytkownika
+                char userChoice = userChoicesManager.GetUserChoice();
 
-                // Wyświetlanie pytania
-                Console.WriteLine($"Pytanie {question.QuestionNumber + 1}: {question.QuestionContent}");
+                // Weryfikacja odpowiedzi i przyznawanie punktów
+                bool result = resultsManager.VerifyAnswer(question.QuestionNumber, userChoice);
+                resultsManager.DisplayResult(result, ref totalPoints);
 
-                // Wyświetlanie dostępnych wyborów w pętli //do menagera?
-                foreach (var choice in choices)
+                // Sprawdzanie, czy użytkownik chce zakończyć quiz
+                if (usersExitManager.CheckForExit())
                 {
-                    Console.WriteLine($"{choice.ChoiceLetter}: {choice.ChoiceContent}");
-                }*/
-
-                // Pobieranie wyboru od użytkownika //to bym tu zostawiła
-                char userChoice = usersService.GetUserChoice();
-
-                /*// Następuje weryfikacja odpowiedzi i przyznawanie punktów //to do serwisu? też raczej do managera
-                bool result = answerVerifierManager.GetPointsForAnswer(question.QuestionNumber, userChoice);
-                Console.WriteLine();
-
-                // Wyświetlanie informacji o poprawności odpowiedzi //tu tutaj czy też do managera?
-                if (result)
-                {
-                    totalPoints++;
-                    Console.WriteLine("Poprawna odpowiedź. Zdobywasz 1 punkt.");
-                }
-                else
-                {
-                    Console.WriteLine("Odpowiedź błędna. Brak punktu.");
-                }*/
-
-                if (i < allQuestions.Count - 1)
-                {
-                    Console.WriteLine($"Aktualna liczba punktów: {totalPoints}");
-                    Console.WriteLine();
-                    Console.WriteLine("Naciśnij Enter, aby przejść do kolejnego pytania.");
-
-                    // Czekanie na gotowość użytkownika przed przejściem do następnego pytania (jeśli nie jest to ostatnie pytanie)
-                    Console.WriteLine("Jeżeli zaś chcesz zakończyć zabawę z quiz naciśnij k, nastepnie Enter."); //zakończenie quizu na żądanie
-                    
-                    /*string? userInputX = Console.ReadLine(); //czyli ten mechanizm do managera?
-                    if (userInputX == "k" || userInputX == "K")
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine("Quiz został zatrzymany.");
-                        break;
-                    }*/
+                    break;
                 }
             }
-            Console.WriteLine($"Twój wynik końcowy: {totalPoints} pkt.");  // wyświetlanie końcowego wyniku 
+
+            Console.WriteLine($"Twój wynik końcowy: {totalPoints} pkt.");
         }
-    }   
+    }
+    public class ConsoleInputReader : IUserInputReader
+    {
+        public ConsoleKeyInfo ReadKey()
+        {
+            return Console.ReadKey();
+        }
+    }
 }
