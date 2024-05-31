@@ -7,7 +7,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
-    public class ChoicesArraysServiceApp //to kod z serwisu, podmieniam na menadżera app  // klasa ChoicesManagerApp zarządza tablicami wyborów dla pytań
+    public class ChoicesArraysServiceApp 
     // dane te są pobierane z serwisu ChoiceServiceApp i reprezentują wybory dla poszczególnych pytań
     {
         private ChoiceServiceApp choiceServiceApp;

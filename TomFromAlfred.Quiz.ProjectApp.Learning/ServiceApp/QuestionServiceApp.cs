@@ -8,7 +8,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
-    public class QuestionServiceApp : BaseApp<Question> 
+    public class QuestionServiceApp : BaseApp<Question> //tu pojedyncze pytania
     {
         public virtual IEnumerable<Question> AllQuestions { get; } // właściwość reprezentująca wszystkie dostępne pytania
 

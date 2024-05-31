@@ -8,7 +8,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class QuizPresentationForUsersManagerApp
+    public class QuizPresentationForUsersManagerApp //klasa prezentująca quiz
     {
         private readonly QuestionServiceApp _questionServiceApp;
         private readonly ChoicesArraysServiceApp _choicesService;
@@ -19,7 +19,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             _choicesService = choicesService;
         }
 
-        public void PresentQuestions()
+        public void PresentAQuiz()
         {
             List<Question> allQuestions = _questionServiceApp.AllQuestions.ToList();
 

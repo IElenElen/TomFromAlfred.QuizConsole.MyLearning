@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class UsersExitManagerApp
+    public class UsersExitManagerApp //skoro wyjście z quizu, to raczej spokojnie ogarnie to manager
     {
         public bool CheckForExit()
         {
-        string? userInputX = Console.ReadLine(); //czyli ten mechanizm do managera?
+        string? userInputX = Console.ReadLine(); 
 
                     if (userInputX == "k" || userInputX == "K")
                     {

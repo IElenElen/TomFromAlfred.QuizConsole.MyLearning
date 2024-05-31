@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
-    public class AnswerVerifierServiceApp //kod był w manager, zmieniony teraz na serwis
+    public class AnswerVerifierServiceApp 
     {
         private Dictionary<int, char> correctAnswers = new Dictionary<int, char>(); // prywatne pole słownika przechowujące poprawne odpowiedzi na pytania
         public AnswerVerifierServiceApp()  // konstruktor klasy AnswerVerifierServiceApp, który inicjalizuje słownik correctAnswers z poprawnymi odpowiedziami

@@ -8,7 +8,10 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class ResultsAndUsersPointsManagerApp
+    public class ResultsAndUsersPointsManagerApp //weryfikacja odpowiedzi i ewentualne przyznanie punktu,
+                                                 //czy na pewno to jest zadanie dla managera???
+
+       //info do użytkownika tj. wyświetlenie jaki ma rezultat
     {
         private readonly AnswerVerifierServiceApp _answerVerifierServiceApp;
         public ResultsAndUsersPointsManagerApp(AnswerVerifierServiceApp answerVerifierServiceApp)
