@@ -21,9 +21,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
         public void PresentAQuiz()
         {
-            List<Question> allQuestions = _questionServiceApp.AllQuestions.ToList();
+            List<Question> allQuestions = _questionServiceApp.AllQuestions.ToList(); //pobranie pytań
 
-            for (int i = 0; i < allQuestions.Count; i++)
+            for (int i = 0; i < allQuestions.Count; i++) //pętla przechodzi przez każde pytanko
             {
                 var question = allQuestions[i];
                 var choices = _choicesService.GetChoicesForQuestion(i);

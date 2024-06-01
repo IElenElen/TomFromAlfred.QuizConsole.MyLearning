@@ -10,7 +10,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
     public class QuestionServiceApp : BaseApp<Question> //tu pojedyncze pytania
     {
-        public virtual IEnumerable<Question> AllQuestions { get; } // właściwość reprezentująca wszystkie dostępne pytania
+        public virtual IEnumerable<Question> AllQuestions { get; private set; } // właściwość reprezentująca wszystkie dostępne pytania
 
         public QuestionServiceApp(IEnumerable<Question> allQuestions)
         {

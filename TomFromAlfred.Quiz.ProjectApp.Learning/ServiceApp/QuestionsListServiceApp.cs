@@ -15,5 +15,17 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         {
             Questions.AddRange(questionServiceApp.AllQuestions); // dodanie wszystkich pytań z serwisu do listy pytań zarządzanej przez aplikację
         }
+
+        public List<Question> GetRandomQuestionsWithUpdatedNumbers(int questionNumber) //nowa metoda losowania pytań
+        {
+            List<Question> randomQuestions = new List<Question>(Questions); // kopia listy pytań
+            randomQuestions = randomQuestions.OrderBy(q => Guid.NewGuid()).ToList();
+
+            for (int i = 0; i < randomQuestions.Count; i++)
+            {
+                randomQuestions[i].QuestionNumber = i + 1;
+            }
+            return randomQuestions.Take(questionNumber).ToList();
+        }
     }
 }
