@@ -8,7 +8,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
     public class QuestionsListServiceApp // klasa serwisowej listy???  zarządza listą pytań
-        //czy właściwie potrzebna mi ta klasa???
+        //czy właściwie potrzebna mi ta klasa??? mogę ją rozbudować właśnie dla losowania pytań
     {
         public List<Question> Questions { get; set; } = new List<Question>(); // lista pytań jest reprezentowana jako lista obiektów klasy Question
         public QuestionsListServiceApp(QuestionServiceApp questionServiceApp) //konstruktor, przyjmuje jako argument obiekt klasy QuestionServiceApp, obiekt, który zawiera usługę pobierania wszystkich pytań

@@ -45,7 +45,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             return null;
         }
 
-        public void RemoveQuestionByNumber(int questionNumber) //metoda problematyczna do kodowania....
+        public void RemoveQuestionByNumber(int questionNumber) //metoda problematyczna do testowania....
         {
             var questionsCopy = AllQuestions.ToList(); // kopia listy pytań
 

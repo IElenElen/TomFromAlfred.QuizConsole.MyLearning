@@ -46,11 +46,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public Choice Choice8A => new Choice(8, 'a', "też nie");
         public Choice Choice8B => new Choice(8, 'b', "dobra");
-        public Choice Choice8C => new Choice(8, 'c', "nie");
+        public Choice Choice8C => new Choice(8, 'c', "nie"); 
 
-        public Choice Choice9A { get; set; } = new Choice(9, 'a', "Nowy wybór"); // do odczytu i zapisu na potrzeby testu
+        public Choice Choice9A { get; set; } = new Choice(9, 'a', "Nowy wybór"); // do odczytu i zapisu na potrzeby testu,
+        //dlaczego powyższe od 0 do 8 trudne w testowaniu... ???
 
-        public void RemoveChoice(Choice choiceToRemove) //w planach
+        public void RemoveChoice(Choice choiceToRemove) //w planach 
         {
             Remove(choiceToRemove);
         }

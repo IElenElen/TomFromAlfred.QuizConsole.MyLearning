@@ -39,5 +39,7 @@ namespace TomFromAlfred.Quiz.Tests
                 Assert.Contains(expectedQuestion, actualQuestions);
             }
         }
+
+        //test dla GetRandom potrzebny
     }
 }
