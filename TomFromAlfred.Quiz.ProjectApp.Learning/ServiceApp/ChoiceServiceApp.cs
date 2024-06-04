@@ -49,8 +49,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         public Choice Choice8B { get; }
         public Choice Choice8C { get; }
 
-        public Choice Choice9A { get; set; } // Tylko ta właściwość może być modyfikowana na potrzeby testów
-
         public ChoiceServiceApp()
         {
             // Inicjalizacja właściwości tylko do odczytu
@@ -89,8 +87,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             Choice8A = new Choice(8, 'a', "też nie");
             Choice8B = new Choice(8, 'b', "dobra");
             Choice8C = new Choice(8, 'c', "nie");
-
-            Choice9A = new Choice(9, 'a', "Nowy wybór"); //do testu
         }
 
         public void RemoveChoice(Choice choiceToRemove)
