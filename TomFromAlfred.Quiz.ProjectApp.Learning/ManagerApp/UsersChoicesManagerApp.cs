@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
@@ -34,11 +35,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             Console.WriteLine(); // nowa linia po wprowadzeniu wyboru
             return userChoice;  // zwrócenie prawidłowego wyboru użytkownika
         }
-    }
-    // Interfejs IUserInputReader definiuje metodę do odczytywania znaku kluczowego z konsoli
-    public interface IUserInputReader 
-    {
-        ConsoleKeyInfo ReadKey(); // metoda ReadKey zwraca obiekt ConsoleKeyInfo reprezentujący klucz wprowadzony przez użytkownika
     }
 }
     

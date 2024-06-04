@@ -5,6 +5,7 @@ using TomFromAlfred.Quiz.Tests;
 
 namespace TomFromAlfred.QuizConsole.MyLearning
 {
+    //Najmniejsze szczegoły również ważne :-), szczególnie przy szukaniu błędów
     public class Program //zmiana widoczności kolejnych klas
     {
         static void Main(string[] args)
@@ -28,9 +29,6 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             UsersChoicesManagerApp userChoicesManager = new UsersChoicesManagerApp(new ConsoleInputReader());
             UsersExitManagerApp usersExitManager = new UsersExitManagerApp();
 
-            // Zmienna przechowująca łączną liczbę punktów uzyskanych przez użytkownika 
-            int totalPoints = 0; //zostawiam tutaj???
-
             // Prezentacja pytań
             quizPresentationManager.PresentAQuiz(); //poprawa nazwy metody
 
@@ -42,7 +40,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
                 // Weryfikacja odpowiedzi i przyznawanie punktów
                 bool result = resultsManager.VerifyAnswer(question.QuestionNumber, userChoice);
-                resultsManager.DisplayResult(result, ref totalPoints);
+                resultsManager.DisplayResult(result);
 
                 // Sprawdzanie, czy użytkownik chce zakończyć quiz
                 if (usersExitManager.CheckForExit())
@@ -50,15 +48,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                     break;
                 }
             }
-
-            Console.WriteLine($"Twój wynik końcowy: {totalPoints} pkt.");
-        }
-    }
-    public class ConsoleInputReader : IUserInputReader
-    {
-        public ConsoleKeyInfo ReadKey()
-        {
-            return Console.ReadKey();
+            resultsManager.DisplayFinalScore();
         }
     }
 }

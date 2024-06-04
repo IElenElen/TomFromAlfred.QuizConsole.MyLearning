@@ -14,22 +14,23 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
        //info do użytkownika tj. wyświetlenie jaki ma rezultat
     {
         private readonly AnswerVerifierServiceApp _answerVerifierServiceApp;
+        private int _totalPoints;
         public ResultsAndUsersPointsManagerApp(AnswerVerifierServiceApp answerVerifierServiceApp)
         {
             _answerVerifierServiceApp = answerVerifierServiceApp;
+            _totalPoints = 0;
         }
 
         public bool VerifyAnswer(int questionNumber, char userChoice)
         {
-            bool result = _answerVerifierServiceApp.GetPointsForAnswer(questionNumber, userChoice);
-            return result;
+            return _answerVerifierServiceApp.GetPointsForAnswer(questionNumber, userChoice);
         }
 
-        public void DisplayResult(bool result, ref int totalPoints)
+        public void DisplayResult(bool result)
         {
             if (result)
             {
-                totalPoints++;
+                _totalPoints++;
                 Console.WriteLine("Poprawna odpowiedź. Zdobywasz 1 punkt.");
             }
             else
@@ -38,6 +39,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             }
 
             Console.WriteLine();
+        }
+
+        public void DisplayFinalScore()
+        {
+            Console.WriteLine($"Twój wynik końcowy: {_totalPoints} pkt.");
         }
     }
 }
