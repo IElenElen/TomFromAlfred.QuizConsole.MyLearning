@@ -11,7 +11,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
     public class ResultsAndUsersPointsManagerApp //weryfikacja odpowiedzi i ewentualne przyznanie punktu,
                                                  //czy na pewno to jest zadanie dla managera???
 
-       //info do użytkownika tj. wyświetlenie jaki ma rezultat
+       //info do użytkownika tj. wyświetlenie jaki ma rezultat - ok
     {
         private readonly AnswerVerifierServiceApp _answerVerifierServiceApp;
         private int _totalPoints;
@@ -21,7 +21,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             _totalPoints = 0;
         }
 
-        public bool VerifyAnswer(int questionNumber, char userChoice)
+        public bool VerifyAnswer(int questionNumber, char userChoice) //to menadżer czy serwis jednak?
         {
             return _answerVerifierServiceApp.GetPointsForAnswer(questionNumber, userChoice);
         }

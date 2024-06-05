@@ -7,7 +7,7 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class ConsoleInputReader : IUserInputReader
+    public class ConsoleInputReaderManagerApp : IUserInputReader
     {
         public ConsoleKeyInfo ReadKey()
         {

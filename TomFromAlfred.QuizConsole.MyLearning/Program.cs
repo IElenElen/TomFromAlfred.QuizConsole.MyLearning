@@ -26,7 +26,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             // Inicjalizacja menadżerów
             QuizPresentationForUsersManagerApp quizPresentationManager = new QuizPresentationForUsersManagerApp(questionServiceApp, choicesService);
             ResultsAndUsersPointsManagerApp resultsManager = new ResultsAndUsersPointsManagerApp(answerVerifierServiceApp);
-            UsersChoicesManagerApp userChoicesManager = new UsersChoicesManagerApp(new ConsoleInputReader());
+            UsersChoicesManagerApp userChoicesManager = new UsersChoicesManagerApp(new ConsoleInputReaderManagerApp());
             UsersExitManagerApp usersExitManager = new UsersExitManagerApp();
 
             // Prezentacja pytań

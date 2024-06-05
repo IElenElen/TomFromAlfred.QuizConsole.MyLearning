@@ -13,17 +13,32 @@ namespace TomFromAlfred.Quiz.Tests.Tests_Services
     public class ChoiceServiceTests
     {
         [Fact]
-        public void AddChoice_ShouldAddNewChoice() //test 3xA //test i testowana klasa do analizy!!!
+        public void AddChoice_ShouldAddNewChoice()
         {
             // Arrange
             var choiceService = new ChoiceServiceApp();
             var newChoice = new Choice(9, 'a', "Nowy wybór");
 
             // Act
-            //choiceService.Choice9A = newChoice; // Ustaw nowy wybór
+            choiceService.AddChoice(newChoice);
 
             // Assert
-            //Assert.Equal(newChoice, choiceService.Choice9A);
+            Assert.Contains(newChoice, choiceService.ChoicesArrays.SelectMany(choicesArray => choicesArray));
+        }
+
+        [Fact]
+        public void RemoveChoice_ShouldRemoveExistingChoice()
+        {
+            // Arrange
+            var choiceService = new ChoiceServiceApp();
+            var existingChoice = choiceService.ChoicesArrays.First().First();
+
+            // Act
+            choiceService.RemoveChoice(existingChoice);
+
+            // Assert
+            Assert.DoesNotContain(existingChoice, choiceService.ChoicesArrays.SelectMany(choicesArray => choicesArray));
         }
     }
 }
+

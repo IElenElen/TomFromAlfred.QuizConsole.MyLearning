@@ -10,32 +10,28 @@ namespace TomFromAlfred.Quiz.Tests
     public class AnswerVerifierTests
     {
         [Fact]
-        public void GetPointsForAnswer_CorrectAnswer_ReturnTrue() //test 3xA
+        public void GetPointsForAnswer_CorrectAnswer_ReturnsTrue() // czy metoda zwróci true dla poprawnej odpowiedzi?
         {
-            //Arrange
+            // Arrange
             var answerVerifierServiceApp = new AnswerVerifierServiceApp();
 
-            //Act
+            // Act
             bool result = answerVerifierServiceApp.GetPointsForAnswer(1, 'a');
 
-            //Assert
+            // Assert
             Assert.True(result);
         }
 
         [Fact]
-        public void GetPointsForAnswer_IncorrectAnswer_ReturnFalse() //test 3xA 
+        public void GetPointsForAnswer_IncorrectAnswer_ReturnsFalse() // czy metoda zwróci false dla niepoprawnej odpowiedzi?
         {
-
-            //Arrange
+            // Arrange
             var answerVerifierServiceApp = new AnswerVerifierServiceApp();
-            int questionNumber = 1; // numer pytania
-            char userChoice = 'B'; // niepoprawna odpowiedź
-            char correctAnswer = 'A'; // poprawna odpowiedź zdefiniowana w słowniku //czy jest sens wprowadzać correct skoro mam metodę powyżej?
 
-            //Act
-            bool result = answerVerifierServiceApp.GetPointsForAnswer(questionNumber, userChoice);
+            // Act
+            bool result = answerVerifierServiceApp.GetPointsForAnswer(1, 'B');
 
-            //Assert
+            // Assert
             Assert.False(result);
         }
     }

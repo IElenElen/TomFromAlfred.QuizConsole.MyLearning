@@ -11,27 +11,27 @@ namespace TomFromAlfred.Quiz.Tests
     public class ChoicesArraysTests
     {
         [Fact]
-        public void Constructor_InitializesChoiceServiceApp() //test 3xA
+        public void Constructor_InitializesChoiceServiceApp()
         {
-            //Arrange
+            // Arrange
             ChoicesArraysServiceApp choicesManager;
 
-            //Act
+            // Act
             choicesManager = new ChoicesArraysServiceApp();
 
-            //Assert
-            Assert.NotNull(choicesManager);
-            Assert.NotNull(choicesManager.Choice0Array);
+            // Assert
+            Assert.NotNull(choicesManager.GetChoicesForQuestion(0));
+            Assert.NotEmpty(choicesManager.GetChoicesForQuestion(0));
         }
-        
+
         [Fact]
-        public void Choice0Array_DoesNotContainNulls() //test 3xA
+        public void Choice0Array_DoesNotContainNulls()
         {
             // Arrange
             ChoicesArraysServiceApp choicesManager = new ChoicesArraysServiceApp();
 
             // Act
-            Choice[] choice0Array = choicesManager.Choice0Array;
+            Choice[] choice0Array = choicesManager.GetChoicesForQuestion(0);
 
             // Assert
             Assert.All(choice0Array, choice => Assert.NotNull(choice));
@@ -41,7 +41,7 @@ namespace TomFromAlfred.Quiz.Tests
         [InlineData(0)]
         [InlineData(1)]
         [InlineData(2)]
-        public void GetChoicesForQuestion_ReturnsCorrectChoices(int questionNumber) //test 3xA
+        public void GetChoicesForQuestion_ReturnsCorrectChoices(int questionNumber)
         {
             // Arrange
             ChoicesArraysServiceApp choicesManager = new ChoicesArraysServiceApp();
@@ -51,19 +51,21 @@ namespace TomFromAlfred.Quiz.Tests
 
             // Assert
             Assert.NotNull(choices);
-            Assert.NotEmpty(choices); // czy tablica nie jest pusta?
+            Assert.NotEmpty(choices);
         }
 
         [Fact]
-        public void GetChoicesForQuestion_ReturnsEmptyArrayForInvalidQuestionNumber() //test 3xA
+        public void GetChoicesForQuestion_ReturnsEmptyArrayForInvalidQuestionNumber()
         {
-            //Arrange
+            // Arrange
             ChoicesArraysServiceApp choicesManager = new ChoicesArraysServiceApp();
-            //Act
+
+            // Act
             Choice[] choices = choicesManager.GetChoicesForQuestion(-3);
-            //Assert
+
+            // Assert
             Assert.NotNull(choices);
-            Assert.Empty(choices); //czy tablica jest pusta?
+            Assert.Empty(choices);
         }
     }
 }

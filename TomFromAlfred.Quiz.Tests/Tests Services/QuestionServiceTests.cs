@@ -39,17 +39,16 @@ namespace TomFromAlfred.Quiz.Tests.Tests_Services
             Assert.Null(result);
         }
 
-        /*[Fact]
-        public void RemoveQuestionByNumber_RemovesQuestion_WhenNumberExists() //test problematyczny
+        [Fact]
+        public void RemoveQuestionByNumber_RemovesQuestion_WhenNumberExists()
         {
             // Arrange
-            var mockConsole = new Mock<IConsole>();
             var allQuestions = new List<Question>
-        {
-            new Question(0, "Example question 1"),
-            new Question(1, "Example question 2"),
-            new Question(2, "Example question 3")
-        };
+            {
+                new Question(0, "Example question 1"),
+                new Question(1, "Example question 2"),
+                new Question(2, "Example question 3")
+            };
             var questionServiceApp = new QuestionServiceApp(allQuestions);
             int questionNumberToRemove = 1;
 
@@ -57,8 +56,10 @@ namespace TomFromAlfred.Quiz.Tests.Tests_Services
             questionServiceApp.RemoveQuestionByNumber(questionNumberToRemove);
 
             // Assert
-        Assert.Null(questionServiceApp.GetQuestionByNumber(questionNumberToRemove)); // Sprawdzamy, czy pytanie zostało usunięte
-    }*/
+            Assert.Null(questionServiceApp.GetQuestionByNumber(questionNumberToRemove)); // czy pytanie zostało usunięte?
+            Assert.Equal(2, questionServiceApp.AllQuestions.Count()); // czy liczba pytań została zmniejszona?
+            Assert.DoesNotContain(questionServiceApp.AllQuestions, q => q.QuestionNumber == questionNumberToRemove); // czy pytanie zostało usunięte z listy?
+        }
 
         [Fact]
         public void RemoveQuestionByNumber_WritesMessage_WhenNumberDoesNotExist() //test 3xA z mock
