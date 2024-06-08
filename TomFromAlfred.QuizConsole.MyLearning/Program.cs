@@ -22,6 +22,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             QuestionServiceApp questionServiceApp = new QuestionServiceApp();
             ChoicesArraysServiceApp choicesService = new ChoicesArraysServiceApp();
             AnswerVerifierServiceApp answerVerifierServiceApp = new AnswerVerifierServiceApp();
+            QuestionsListServiceApp questionsListService = new QuestionsListServiceApp(questionServiceApp);
 
             // Inicjalizacja menadżerów
             QuizPresentationForUsersManagerApp quizPresentationManager = new QuizPresentationForUsersManagerApp(questionServiceApp, choicesService);
@@ -33,7 +34,8 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             quizPresentationManager.PresentAQuiz(); //poprawa nazwy metody
 
             // Pętla quizu
-            foreach (var question in questionServiceApp.AllQuestions)
+            List<Question> randomQuestions = questionsListService.GetRandomQuestionsWithUpdatedNumbers();
+            foreach (var question in randomQuestions)
             {
                 // Pobieranie wyboru użytkownika
                 char userChoice = userChoicesManager.GetUserChoice();

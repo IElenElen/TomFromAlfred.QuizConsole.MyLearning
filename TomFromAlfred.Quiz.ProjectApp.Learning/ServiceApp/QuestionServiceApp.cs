@@ -61,6 +61,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             }
             Console.WriteLine("Brak pytania o podanym numerze");
         }
+        public int GetNumberOfQuestions()
+        {
+            return AllQuestions.Count();
+        }
     }
 }
 
