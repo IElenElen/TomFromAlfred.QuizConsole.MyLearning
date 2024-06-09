@@ -10,7 +10,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
     //menadżery rozmawiają z klientem, serwisy odpowiadają za pamięć i dane
     //po interfejsie dziedziczy serwis a nie klasa bazowa
-    public class ChoiceServiceApp : BaseApp<Choice> //ten kod to poprawny serwis 
+    public class ChoiceServiceApp : BaseApp<Choice> 
     {
         public Choice[][] ChoicesArrays { get; private set; }
 

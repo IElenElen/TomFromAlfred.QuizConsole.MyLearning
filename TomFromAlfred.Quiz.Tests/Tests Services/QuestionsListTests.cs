@@ -55,29 +55,7 @@ namespace TomFromAlfred.Quiz.Tests
         }
 
         [Fact]
-        public void GetRandomQuestionsWithUpdatedNumbers_ReturnsCorrectNumbersOfQuestions()
-        {
-            //Arrange
-            var fakeQuestions = new List<Question>
-            {
-                new Question(1, "Question 1"),
-                new Question(2, "Question 2"),
-                new Question(3, "Question 3")
-            };
-            var mockQuestionService = new Mock<QuestionServiceApp>();
-            mockQuestionService.Setup(x => x.AllQuestions).Returns(fakeQuestions);
-
-            var managerApp = new QuestionsListServiceApp(mockQuestionService.Object);
-
-            // Act
-            var randomQuestions = managerApp.GetRandomQuestionsWithUpdatedNumbers(2);
-
-            // Assert
-            Assert.Equal(2, randomQuestions.Count);
-        }
-
-        [Fact]
-        public void GetRandomQuestionsWithUpdatedNumbers_QuestionsAreRandomAndRenumbered()
+        public void GetRandomQuestions_QuestionsAreRandomAndRenumbered()
         {
             // Arrange
             var fakeQuestions = new List<Question>
@@ -93,7 +71,7 @@ namespace TomFromAlfred.Quiz.Tests
             var managerApp = new QuestionsListServiceApp(mockQuestionService.Object);
 
             // Act
-            var randomQuestions = managerApp.GetRandomQuestionsWithUpdatedNumbers(3);
+            var randomQuestions = managerApp.GetRandomQuestions();
 
             // Assert
             Assert.Equal(3, randomQuestions.Count);
@@ -101,8 +79,9 @@ namespace TomFromAlfred.Quiz.Tests
             Assert.Equal(3, uniqueNumbers.Count);
             Assert.All(randomQuestions, q => Assert.InRange(q.QuestionNumber, 1, 3));
         }
+
         [Fact]
-        public void GetRandomQuestionsWithUpdatedNumbers_ReturnsEmptyListForZeroQuestions()
+        public void GetRandomQuestions_ReturnsAllQuestionsIfNumberExceedsAvailable()
         {
             // Arrange
             var fakeQuestions = new List<Question>
@@ -118,30 +97,7 @@ namespace TomFromAlfred.Quiz.Tests
             var managerApp = new QuestionsListServiceApp(mockQuestionService.Object);
 
             // Act
-            var randomQuestions = managerApp.GetRandomQuestionsWithUpdatedNumbers(0);
-
-            // Assert
-            Assert.Empty(randomQuestions);
-        }
-
-        [Fact]
-        public void GetRandomQuestionsWithUpdatedNumbers_ReturnsAllQuestionsIfNumberExceedsAvailable()
-        {
-            // Arrange
-            var fakeQuestions = new List<Question>
-        {
-            new Question(1, "Question 1"),
-            new Question(2, "Question 2"),
-            new Question(3, "Question 3")
-        };
-
-            var mockQuestionService = new Mock<QuestionServiceApp>();
-            mockQuestionService.Setup(x => x.AllQuestions).Returns(fakeQuestions);
-
-            var managerApp = new QuestionsListServiceApp(mockQuestionService.Object);
-
-            // Act
-            var randomQuestions = managerApp.GetRandomQuestionsWithUpdatedNumbers(5);
+            var randomQuestions = managerApp.GetRandomQuestions();
 
             // Assert
             Assert.Equal(3, randomQuestions.Count);

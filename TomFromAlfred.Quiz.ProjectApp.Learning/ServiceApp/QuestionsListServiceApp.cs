@@ -10,23 +10,23 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     public class QuestionsListServiceApp // klasa serwisowej listy zarządza listą pytań
         //czy właściwie potrzebna mi ta klasa??? mogę ją rozbudować właśnie dla losowania pytań
     {
-        private readonly List<Question> _randomQuestions;
-        public List<Question> Questions { get; set; } = new List<Question>(); // lista pytań jest reprezentowana jako lista obiektów klasy Question
-        public QuestionsListServiceApp(QuestionServiceApp questionServiceApp) //konstruktor, przyjmuje jako argument obiekt klasy QuestionServiceApp, obiekt, który zawiera usługę pobierania wszystkich pytań
+        private readonly QuestionServiceApp _questionServiceApp;
+        public List<Question> Questions { get; private set; }
+        public QuestionsListServiceApp(QuestionServiceApp questionServiceApp)
         {
-            Questions.AddRange(questionServiceApp.AllQuestions); // dodanie wszystkich pytań z serwisu do listy pytań zarządzanej przez aplikację
+            _questionServiceApp = questionServiceApp;
+            Questions = _questionServiceApp.AllQuestions.ToList();
         }
 
-        public List<Question> GetRandomQuestionsWithUpdatedNumbers(int questionNumber) //nowa metoda losowania pytań
+        public List<Question> GetRandomQuestions() //metoda losowania pytań
         {
-            List<Question> randomQuestions = new List<Question>(_questionServiceApp.AllQuestions);
-            randomQuestions = randomQuestions.OrderBy(q => Guid.NewGuid()).ToList();
+            List<Question> randomQuestions = Questions.OrderBy(q => Guid.NewGuid()).ToList();
 
             for (int i = 0; i < randomQuestions.Count; i++)
             {
                 randomQuestions[i].QuestionNumber = i + 1;
             }
-            return randomQuestions.Take(questionNumber).ToList();
+            return randomQuestions;
         }
     }
 }

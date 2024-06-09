@@ -25,7 +25,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             QuestionsListServiceApp questionsListService = new QuestionsListServiceApp(questionServiceApp);
 
             // Inicjalizacja menadżerów
-            QuizPresentationForUsersManagerApp quizPresentationManager = new QuizPresentationForUsersManagerApp(questionServiceApp, choicesService);
+            QuizPresentationForUsersManagerApp quizPresentationManager = new QuizPresentationForUsersManagerApp(questionsListService, choicesService);
             ResultsAndUsersPointsManagerApp resultsManager = new ResultsAndUsersPointsManagerApp(answerVerifierServiceApp);
             UsersChoicesManagerApp userChoicesManager = new UsersChoicesManagerApp(new ConsoleInputReaderManagerApp());
             UsersExitManagerApp usersExitManager = new UsersExitManagerApp();
@@ -34,8 +34,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             quizPresentationManager.PresentAQuiz(); //poprawa nazwy metody
 
             // Pętla quizu
-            List<Question> randomQuestions = questionsListService.GetRandomQuestionsWithUpdatedNumbers();
-            foreach (var question in randomQuestions)
+            foreach (var question in questionsListService.GetRandomQuestions())
             {
                 // Pobieranie wyboru użytkownika
                 char userChoice = userChoicesManager.GetUserChoice();

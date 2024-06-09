@@ -10,26 +10,26 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
     public class QuizPresentationForUsersManagerApp //klasa prezentująca quiz
     {
-        private readonly QuestionServiceApp _questionServiceApp;
+        private readonly QuestionsListServiceApp _questionsListService;
         private readonly ChoicesArraysServiceApp _choicesService;
 
-        public QuizPresentationForUsersManagerApp(QuestionServiceApp questionServiceApp, ChoicesArraysServiceApp choicesService)
+        public QuizPresentationForUsersManagerApp(QuestionsListServiceApp questionsListService, ChoicesArraysServiceApp choicesService)
         {
-            _questionServiceApp = questionServiceApp;
+            _questionsListService = questionsListService;
             _choicesService = choicesService;
         }
 
         public void PresentAQuiz()
         {
-            List<Question> allQuestions = _questionServiceApp.AllQuestions.ToList(); //pobranie pytań
+            List<Question> randomQuestions = _questionsListService.GetRandomQuestions();
 
-            for (int i = 0; i < allQuestions.Count; i++) //pętla przechodzi przez każde pytanko
+            for (int i = 0; i < randomQuestions.Count; i++) 
             {
-                var question = allQuestions[i];
-                var choices = _choicesService.GetChoicesForQuestion(i);
+                var question = randomQuestions[i];
+                var choices = _choicesService.GetChoicesForQuestion(question.QuestionNumber - 1);
 
                 // Wyświetlanie pytania
-                Console.WriteLine($"Pytanie {i + 1}: {question.QuestionContent}");
+                Console.WriteLine($"Pytanie {question.QuestionNumber}: {question.QuestionContent}");
 
                 // Wyświetlanie dostępnych wyborów w pętli
                 foreach (var choice in choices)
