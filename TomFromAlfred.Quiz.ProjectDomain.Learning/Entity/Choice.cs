@@ -9,14 +9,14 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
     public class Choice
     {
-        public int ChoiceId { get; set; }
-        public char ChoiceLetter { get; set; }
+        public int ChoiceId { get; set; } //nr wyboru
+        public EntitySupport.OptionLetter OptionLetter { get; set; } //litery wyboru, zawsze trzy opcje A, B lub C
         public string? ChoiceContent { get; set; }
 
-        public Choice(int choiceId, char choiceLetter, string? choiceContent)
+        public Choice(int choiceId, EntitySupport.OptionLetter optionLetter, string? choiceContent)
         {
             ChoiceId = choiceId;
-            ChoiceLetter = choiceLetter;
+            OptionLetter = optionLetter;
             ChoiceContent = choiceContent;
         }
         // Przesłonięta metoda Equals, sprawdzająca, czy dwa obiekty Choice są sobie równe
@@ -29,14 +29,14 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
             }
 
             Choice other = (Choice)obj;     // rzutowanie obiektu na typ Choice
-            return ChoiceId == other.ChoiceId
-                && ChoiceLetter == other.ChoiceLetter     // porównanie pól obiektów Choice
+            return ChoiceId == other.ChoiceId  
+                && OptionLetter == other.OptionLetter // porównanie pól obiektów Choice
                 && ChoiceContent == other.ChoiceContent;
         }
         public override int GetHashCode() // przesłonięta metoda GetHashCode, obliczająca skrót obiektu Choice
                                           // zwraca wartość skrótu obliczoną na podstawie pól ChoiceId, ChoiceLetter i ChoiceContent
         {
-            return HashCode.Combine(ChoiceId, ChoiceLetter, ChoiceContent);
+            return HashCode.Combine(ChoiceId, OptionLetter, ChoiceContent);
         }
     }
 }
