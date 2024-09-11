@@ -8,21 +8,21 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class ResultsAndUsersPointsManagerApp //weryfikacja odpowiedzi i ewentualne przyznanie punktu,
-                                                 //czy na pewno to jest zadanie dla managera???
+    public class ResultsAndUsersPointsManagerApp(AnswerVerifierServiceApp answerVerifierServiceApp)
 
-       //info do użytkownika tj. wyświetlenie jaki ma rezultat - ok
+    //info do użytkownika tj. wyświetlenie jaki ma rezultat - ok
     {
-        private readonly AnswerVerifierServiceApp _answerVerifierServiceApp;
-        private int _totalPoints;
-        public ResultsAndUsersPointsManagerApp(AnswerVerifierServiceApp answerVerifierServiceApp)
-        {
-            _answerVerifierServiceApp = answerVerifierServiceApp;
-            _totalPoints = 0;
-        }
+        private readonly AnswerVerifierServiceApp _answerVerifierServiceApp = answerVerifierServiceApp;
+        private int _totalPoints = 0;
 
-        public bool VerifyAnswer(string questionContent, char userChoice) //to menadżer czy serwis jednak?
+        public bool VerifyAnswer(string? questionContent, char userChoice)
         {
+            if (questionContent == null)
+            {
+                Console.WriteLine("Treść pytania jest pusta.");
+                return false;
+            }
+
             return _answerVerifierServiceApp.GetPointsForAnswer(questionContent, userChoice);
         }
 

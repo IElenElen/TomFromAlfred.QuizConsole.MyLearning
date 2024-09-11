@@ -24,7 +24,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public List<ContentCorrectSet> GetAllCorrectSets()
         {
-            return ContentCorrectSets ?? new();
+            return ContentCorrectSets ?? [];
         }
 
         public bool GetPointsForAnswer(string questionContent, char userChoice)

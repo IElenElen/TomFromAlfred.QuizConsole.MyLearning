@@ -14,57 +14,57 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
         public ChoicesDataService()
         {
-            _choices = new List<Choice>();
+            _choices = [];
             InitializeDefaultData();
         }
 
         private void InitializeDefaultData()
         {
-            _choices.AddRange(new List<Choice>
-            {
-                new Choice(0, EntitySupport.OptionLetter.A, "8"),
-                new Choice(0, EntitySupport.OptionLetter.B, "9"),
-                new Choice(0, EntitySupport.OptionLetter.C, "10"),
+            _choices.AddRange(
+            [
+                new (0, EntitySupport.OptionLetter.A, "8"),
+                new (0, EntitySupport.OptionLetter.B, "9"),
+                new (0, EntitySupport.OptionLetter.C, "10"),
 
-                new Choice(1, EntitySupport.OptionLetter.A, "Tomek w grobowcach faraonów."),
-                new Choice(1, EntitySupport.OptionLetter.B, "Tomek u źródeł Amazonki."),
-                new Choice(1, EntitySupport.OptionLetter.C, "Tajemnicza wyprawa Tomka."),
+                new (1, EntitySupport.OptionLetter.A, "Tomek w grobowcach faraonów."),
+                new (1, EntitySupport.OptionLetter.B, "Tomek u źródeł Amazonki."),
+                new (1, EntitySupport.OptionLetter.C, "Tajemnicza wyprawa Tomka."),
 
-                new Choice(2, EntitySupport.OptionLetter.A, "W Gdańsku."),
-                new Choice(2, EntitySupport.OptionLetter.B, "W Krakowie."),
-                new Choice(2, EntitySupport.OptionLetter.C, "W Warszawie."),
+                new (2, EntitySupport.OptionLetter.A, "W Gdańsku."),
+                new (2, EntitySupport.OptionLetter.B, "W Krakowie."),
+                new (2, EntitySupport.OptionLetter.C, "W Warszawie."),
 
-                new Choice(3, EntitySupport.OptionLetter.A, "Na koledze z klasy."),
-                new Choice(3, EntitySupport.OptionLetter.B, "Na wrogu ze szkoły."),
-                new Choice(3, EntitySupport.OptionLetter.C, "Na pseudo-przyjacielu ze stadniny koni."),
+                new (3, EntitySupport.OptionLetter.A, "Na koledze z klasy."),
+                new (3, EntitySupport.OptionLetter.B, "Na wrogu ze szkoły."),
+                new (3, EntitySupport.OptionLetter.C, "Na pseudo-przyjacielu ze stadniny koni."),
 
-                new Choice(4, EntitySupport.OptionLetter.A, "historia"),
-                new Choice(4, EntitySupport.OptionLetter.B, "biologia"),
-                new Choice(4, EntitySupport.OptionLetter.C, "geografia"),
+                new (4, EntitySupport.OptionLetter.A, "historia"),
+                new (4, EntitySupport.OptionLetter.B, "biologia"),
+                new (4, EntitySupport.OptionLetter.C, "geografia"),
 
-                new Choice(5, EntitySupport.OptionLetter.A, "Janina"),
-                new Choice(5, EntitySupport.OptionLetter.B, "Antonina"),
-                new Choice(5, EntitySupport.OptionLetter.C, "Irena"),
+                new (5, EntitySupport.OptionLetter.A, "Janina"),
+                new (5, EntitySupport.OptionLetter.B, "Antonina"),
+                new (5, EntitySupport.OptionLetter.C, "Irena"),
 
-                new Choice(6, EntitySupport.OptionLetter.A, "poprawna"),
-                new Choice(6, EntitySupport.OptionLetter.B, "zła"),
-                new Choice(6, EntitySupport.OptionLetter.C, "zła 2"),
+                new (6, EntitySupport.OptionLetter.A, "poprawna"),
+                new (6, EntitySupport.OptionLetter.B, "zła"),
+                new (6, EntitySupport.OptionLetter.C, "zła 2"),
 
-                new Choice(7, EntitySupport.OptionLetter.A, "też nie"),
-                new Choice(7, EntitySupport.OptionLetter.B, "nie"),
-                new Choice(7, EntitySupport.OptionLetter.C, "dobra"),
+                new (7, EntitySupport.OptionLetter.A, "też nie"),
+                new (7, EntitySupport.OptionLetter.B, "nie"),
+                new (7, EntitySupport.OptionLetter.C, "dobra"),
 
-                new Choice(8, EntitySupport.OptionLetter.A, "też nie"),
-                new Choice(8, EntitySupport.OptionLetter.B, "dobra"),
-                new Choice(8, EntitySupport.OptionLetter.C, "nie")
-            });
+                new (8, EntitySupport.OptionLetter.A, "też nie"),
+                new (8, EntitySupport.OptionLetter.B, "dobra"),
+                new (8, EntitySupport.OptionLetter.C, "nie")
+            ]);
         }
 
         public void SaveToJson(string filePath)
         {
             try
             {
-                var options = new JsonSerializerOptions { WriteIndented = true };
+                JsonSerializerOptions options = new() { WriteIndented = true };
                 var json = JsonSerializer.Serialize(_choices, options);
                 File.WriteAllText(filePath, json);
             }

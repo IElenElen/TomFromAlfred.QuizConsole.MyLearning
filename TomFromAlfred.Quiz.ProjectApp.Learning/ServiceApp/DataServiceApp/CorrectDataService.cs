@@ -14,14 +14,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
         public CorrectDataService()
         {
-            ContentCorrectSets = new List<ContentCorrectSet>();
+            ContentCorrectSets = [];
             InitializeData(); 
         }
 
         public void InitializeData()
         {
-            ContentCorrectSets.Add(new ContentCorrectSet(" ", EntitySupport.OptionLetter.B, " "));
-            ContentCorrectSets.Add(new ContentCorrectSet(" ", EntitySupport.OptionLetter.A, " "));
+            ContentCorrectSets.Add(new ContentCorrectSet(" blblalba", EntitySupport.OptionLetter.B, "cvf "));
+            ContentCorrectSets.Add(new ContentCorrectSet("hhjj ", EntitySupport.OptionLetter.A, "jjjj "));
             ContentCorrectSets.Add(new ContentCorrectSet(" ", EntitySupport.OptionLetter.C, " "));
             ContentCorrectSets.Add(new ContentCorrectSet(" ", EntitySupport.OptionLetter.A, " "));
             ContentCorrectSets.Add(new ContentCorrectSet(" ", EntitySupport.OptionLetter.C, " "));
@@ -36,7 +36,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
             if (File.Exists(filePath))
             {
                 var json = File.ReadAllText(filePath);
-                ContentCorrectSets = JsonSerializer.Deserialize<List<ContentCorrectSet>>(json) ?? new List<ContentCorrectSet>();
+                ContentCorrectSets = JsonSerializer.Deserialize<List<ContentCorrectSet>>(json) ?? [];
             }
             else
             {

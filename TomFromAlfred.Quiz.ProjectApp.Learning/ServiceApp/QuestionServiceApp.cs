@@ -26,7 +26,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         public void AddQuestion(string questionContent)
         {
             int newQuestionNumber = AllQuestions.Count;
-            if (AllQuestions.Any(q => q.QuestionContent == newQuestionNumber))
+            if (AllQuestions.Any(q => q.QuestionNumber == newQuestionNumber))
             {
                 throw new InvalidOperationException("Pytanie o tym numerze już istnieje.");
             }
@@ -57,7 +57,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         {
             for (int i = 0; i < AllQuestions.Count; i++)
             {
-                AllQuestions[i].QuestionContent = i;
+                AllQuestions[i].QuestionNumber = i;
             }
         }
     }

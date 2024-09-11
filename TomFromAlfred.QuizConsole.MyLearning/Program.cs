@@ -20,17 +20,17 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             Console.WriteLine();
 
             // Inicjalizacja serwisów
-            QuestionServiceApp questionServiceApp = new QuestionServiceApp();
-            ChoiceServiceApp choicesService = new ChoiceServiceApp();
-            AnswerVerifierServiceApp answerVerifierServiceApp = new AnswerVerifierServiceApp();
-            CorrectDataService correctDataService = new CorrectDataService();
-            QuestionsRaffleServiceApp questionsListService = new QuestionsRaffleServiceApp(questionServiceApp);
+            QuestionServiceApp questionServiceApp = new();
+            ChoiceServiceApp choicesService = new();
+            AnswerVerifierServiceApp answerVerifierServiceApp = new();
+            CorrectDataService correctDataService = new();
+            QuestionsRaffleServiceApp questionsListService = new(questionServiceApp);
 
             // Inicjalizacja menadżerów
-            QuizPresentationForUsersManagerApp quizPresentationManager = new QuizPresentationForUsersManagerApp(questionsListService, choicesService);
-            ResultsAndUsersPointsManagerApp resultsManager = new ResultsAndUsersPointsManagerApp(answerVerifierServiceApp);
-            UsersChoicesManagerApp userChoicesManager = new UsersChoicesManagerApp(new ConsoleInputReaderManagerApp());
-            UsersExitManagerApp usersExitManager = new UsersExitManagerApp();
+            QuizPresentationForUsersManagerApp quizPresentationManager = new(questionsListService, choicesService);
+            ResultsAndUsersPointsManagerApp resultsManager = new(answerVerifierServiceApp);
+            UsersChoicesManagerApp userChoicesManager = new(new ConsoleInputReaderManagerApp());
+            UsersExitManagerApp usersExitManager = new();
 
             // Prezentacja pytań
             quizPresentationManager.PresentAQuiz(); //poprawa nazwy metody
@@ -42,7 +42,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 char userChoice = userChoicesManager.GetUserChoice();
 
                 // Weryfikacja odpowiedzi i przyznawanie punktów
-                bool result = resultsManager.VerifyAnswer(questionContent, userChoice);
+                bool result = resultsManager.VerifyAnswer(question.QuestionContent, userChoice);
                 resultsManager.DisplayResult(result);
 
                 // Sprawdzanie, czy użytkownik chce zakończyć quiz

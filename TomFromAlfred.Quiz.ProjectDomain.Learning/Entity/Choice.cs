@@ -9,18 +9,11 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
     /* Muszę pamiętać, że jeśli zmieni się kolejność treści pytań
        to treści wyboru muszę przypisać do określonego pytania */
-    public class Choice
+    public class Choice(int choiceId, EntitySupport.OptionLetter optionLetter, string? choiceContent)
     {
-        public int ChoiceId { get; set; } //nr wyboru
-        public EntitySupport.OptionLetter OptionLetter { get; set; } //litery wyboru, zawsze trzy opcje A, B lub C
-        public string? ChoiceContent { get; set; }
-
-        public Choice(int choiceId, EntitySupport.OptionLetter optionLetter, string? choiceContent)
-        {
-            ChoiceId = choiceId;
-            OptionLetter = optionLetter;
-            ChoiceContent = choiceContent;
-        }
+        public int ChoiceId { get; set; } = choiceId;
+        public EntitySupport.OptionLetter OptionLetter { get; set; } = optionLetter;
+        public string? ChoiceContent { get; set; } = choiceContent;
 
         // Przesłonięta metoda Equals, sprawdzająca, czy dwa obiekty Choice są sobie równe
         // Zwraca true, jeśli obiekty są takie same; w przeciwnym razie zwraca false

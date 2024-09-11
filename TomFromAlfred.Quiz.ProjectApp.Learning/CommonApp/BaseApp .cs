@@ -14,7 +14,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 
         public BaseApp()
         {
-            Entities = new List<T>();
+            Entities = [];
         }
 
         public List<T> GetAll()
