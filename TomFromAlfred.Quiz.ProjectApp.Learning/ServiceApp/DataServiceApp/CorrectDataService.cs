@@ -10,11 +10,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 {
     public class CorrectDataService
     {
-        private List<ContentCorrectSet> ContentCorrectSets { get; set; }
+        public List<ContentCorrectSet> ContentCorrectSets { get; set; }
 
         public CorrectDataService()
         {
-            ContentCorrectSets = [];
+            ContentCorrectSets = new List<ContentCorrectSet>(); 
             InitializeData(); 
         }
 
@@ -35,8 +35,26 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
         {
             if (File.Exists(filePath))
             {
-                var json = File.ReadAllText(filePath);
-                ContentCorrectSets = JsonSerializer.Deserialize<List<ContentCorrectSet>>(json) ?? [];
+                try
+                {
+                    var json = File.ReadAllText(filePath);
+                    ContentCorrectSets = JsonSerializer.Deserialize<List<ContentCorrectSet>>(json) ?? new List<ContentCorrectSet>();
+                }
+                catch (JsonException jsonEx)
+                {
+                    Console.WriteLine($"Błąd deserializacji JSON: {jsonEx.Message}");
+                    InitializeData();
+                }
+                catch (IOException ioEx)
+                {
+                    Console.WriteLine($"Błąd odczytu pliku: {ioEx.Message}");
+                    InitializeData();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Wystąpił nieoczekiwany błąd: {ex.Message}");
+                    InitializeData();
+                }
             }
             else
             {
@@ -46,9 +64,16 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
         public void SaveDataToJson(string filePath)
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            var json = JsonSerializer.Serialize(ContentCorrectSets, options);
-            File.WriteAllText(filePath, json);
+            try
+            {
+                var options = new JsonSerializerOptions { WriteIndented = true };
+                var json = JsonSerializer.Serialize(ContentCorrectSets, options);
+                File.WriteAllText(filePath, json);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd zapisywania do pliku: {ex.Message}");
+            }
         }
     }
 }

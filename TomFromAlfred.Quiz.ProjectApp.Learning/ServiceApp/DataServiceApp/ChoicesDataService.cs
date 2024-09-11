@@ -14,14 +14,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
         public ChoicesDataService()
         {
-            _choices = [];
+            new List<Choice>();
             InitializeDefaultData();
         }
 
         private void InitializeDefaultData()
         {
             _choices.AddRange(
-            [
+            new List<Choice>
+            {
                 new (0, EntitySupport.OptionLetter.A, "8"),
                 new (0, EntitySupport.OptionLetter.B, "9"),
                 new (0, EntitySupport.OptionLetter.C, "10"),
@@ -57,7 +58,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                 new (8, EntitySupport.OptionLetter.A, "też nie"),
                 new (8, EntitySupport.OptionLetter.B, "dobra"),
                 new (8, EntitySupport.OptionLetter.C, "nie")
-            ]);
+            });
         }
 
         public void SaveToJson(string filePath)

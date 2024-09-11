@@ -14,7 +14,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 
         public BaseApp()
         {
-            Entities = [];
+            Entities = new List<T>();
         }
 
         public List<T> GetAll()
@@ -31,11 +31,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
         {
             if (entity != null)
             {
-                return;
+                Console.WriteLine($"Aktualizacja encji: {entity}");
             }
+
             else
             {
-                Console.WriteLine($"Brak {entity}");
+                Console.WriteLine("Brak encji do aktualizacji.");
             }
         }
 

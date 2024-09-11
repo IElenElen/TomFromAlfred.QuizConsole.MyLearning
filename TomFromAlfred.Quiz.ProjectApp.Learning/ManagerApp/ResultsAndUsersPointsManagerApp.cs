@@ -8,12 +8,17 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class ResultsAndUsersPointsManagerApp(AnswerVerifierServiceApp answerVerifierServiceApp)
+    public class ResultsAndUsersPointsManagerApp
 
     //info do użytkownika tj. wyświetlenie jaki ma rezultat - ok
     {
-        private readonly AnswerVerifierServiceApp _answerVerifierServiceApp = answerVerifierServiceApp;
+        private readonly AnswerVerifierServiceApp _answerVerifierServiceApp;
         private int _totalPoints = 0;
+
+        public ResultsAndUsersPointsManagerApp(AnswerVerifierServiceApp answerVerifierServiceApp)
+        {
+            _answerVerifierServiceApp = answerVerifierServiceApp ?? throw new ArgumentNullException(nameof(answerVerifierServiceApp));
+        }
 
         public bool VerifyAnswer(string? questionContent, char userChoice)
         {

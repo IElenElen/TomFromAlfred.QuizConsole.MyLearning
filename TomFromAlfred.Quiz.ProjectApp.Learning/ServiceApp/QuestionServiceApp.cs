@@ -15,7 +15,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public QuestionServiceApp()
         {
-            AllQuestions = [];
+            AllQuestions = new List<Question>();
         }
 
         public QuestionServiceApp(IEnumerable<Question> initialQuestions)

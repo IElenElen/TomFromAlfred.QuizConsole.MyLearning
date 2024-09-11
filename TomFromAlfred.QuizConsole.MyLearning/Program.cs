@@ -11,7 +11,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Majowa wersja - bez opcji czasu: wersja gotowa do pracy z modułem 4: Testy.");
+            Console.WriteLine("Wersja bez końca...");
 
             // Poniżej daję info użytkownikowi
             Console.WriteLine("Pytania poniższego quizu są jednokrotnego wyboru. Po zapoznaniu się z treścią pytania naciśnij a, b lub c,");
@@ -22,8 +22,8 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             // Inicjalizacja serwisów
             QuestionServiceApp questionServiceApp = new();
             ChoiceServiceApp choicesService = new();
-            AnswerVerifierServiceApp answerVerifierServiceApp = new();
             CorrectDataService correctDataService = new();
+            AnswerVerifierServiceApp answerVerifierServiceApp = new(correctDataService.ContentCorrectSets); 
             QuestionsRaffleServiceApp questionsListService = new(questionServiceApp);
 
             // Inicjalizacja menadżerów
@@ -33,11 +33,12 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             UsersExitManagerApp usersExitManager = new();
 
             // Prezentacja pytań
-            quizPresentationManager.PresentAQuiz(); //poprawa nazwy metody
+            quizPresentationManager.PresentAQuiz(); 
 
             // Pętla quizu
             foreach (var question in questionsListService.GetRandomQuestions())
             {
+                Console.WriteLine("Prezentuję pytanie: " + question.QuestionContent);
                 // Pobieranie wyboru użytkownika
                 char userChoice = userChoicesManager.GetUserChoice();
 

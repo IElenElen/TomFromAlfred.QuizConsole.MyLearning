@@ -14,7 +14,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
         public UsersChoicesManagerApp(IUserInputReader inputReader)
         {
-            _inputReader = inputReader; // konstruktor klasy UsersManagerApp, który inicjalizuje pole _inputReader za pomocą przekazanego obiektu implementującego IUserInputReader
+            _inputReader = inputReader;
         }
 
         public char GetUserChoice() //zostawiam ten styl kodu, metoda GetUserChoice pobiera wybór użytkownika i waliduje go

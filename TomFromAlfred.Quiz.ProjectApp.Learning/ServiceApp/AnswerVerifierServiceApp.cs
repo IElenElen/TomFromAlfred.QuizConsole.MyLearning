@@ -11,20 +11,25 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     {
         public List<ContentCorrectSet>? ContentCorrectSets { get; set; }
 
-        public AnswerVerifierServiceApp()
+        public AnswerVerifierServiceApp(List<ContentCorrectSet> contentCorrectSets)
         {
-            ContentCorrectSets = [];
+            ContentCorrectSets = contentCorrectSets ?? new List<ContentCorrectSet>();
         }
 
         public void AddCorrectData(string questionContent, EntitySupport.OptionLetter optionLetter, string contentCorrectAnswer)
         {
+            if (ContentCorrectSets == null)
+            {
+                ContentCorrectSets = new List<ContentCorrectSet>();
+            }
+
             var newCorrectSet = new ContentCorrectSet(questionContent, optionLetter, contentCorrectAnswer);
-            ContentCorrectSets?.Add(newCorrectSet);
+            ContentCorrectSets.Add(newCorrectSet);
         }
 
         public List<ContentCorrectSet> GetAllCorrectSets()
         {
-            return ContentCorrectSets ?? [];
+            return ContentCorrectSets ?? new List<ContentCorrectSet>();
         }
 
         public bool GetPointsForAnswer(string questionContent, char userChoice)

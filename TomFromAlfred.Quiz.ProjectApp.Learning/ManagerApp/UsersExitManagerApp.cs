@@ -10,13 +10,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
     {
         public bool CheckForExit()
         {
-        string? userInputX = Console.ReadLine(); 
+            Console.WriteLine("Czy chcesz zakończyć quiz? (wpisz 'k' aby zakończyć, 'n' aby kontynuować)");
 
-                    if (userInputX == "k" || userInputX == "K")
+            char userInputX = char.ToLower(Console.ReadKey().KeyChar);
+            Console.WriteLine();
+
+                    if (userInputX == 'k' || userInputX == 'K')
                     {
-                        Console.WriteLine();
                         Console.WriteLine("Quiz został zatrzymany.");
-                    return true;
+                        return true;
                     }
 
             return false;

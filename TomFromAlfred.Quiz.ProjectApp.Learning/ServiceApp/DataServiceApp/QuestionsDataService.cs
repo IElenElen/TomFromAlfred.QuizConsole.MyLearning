@@ -52,18 +52,44 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
         public void LoadFromJson(string filePath)
         {
-            string json = File.ReadAllText(filePath);
+            if (!File.Exists(filePath))
+            {
+                Console.WriteLine("Plik JSON nie istnieje.");
+                return;
+            }
 
-            var questions = JsonConvert.DeserializeObject<List<Question>>(json);
+            try
+            {
+                string json = File.ReadAllText(filePath);
+                var questions = JsonConvert.DeserializeObject<List<Question>>(json);
 
-            _questionServiceApp.AllQuestions.Clear();
-            _questionServiceApp.AllQuestions.AddRange(questions);
+                if (questions == null)
+                {
+                    Console.WriteLine("Błąd deserializacji JSON: plik JSON jest pusty lub zawiera błędy.");
+                    return;
+                }
 
-            foreach(var question in questions)
-    {
-                Console.WriteLine($"Numer pytania: {question.QuestionNumber}");
-                Console.WriteLine($"Treść pytania: {question.QuestionContent}");
-                Console.WriteLine();
+                _questionServiceApp.AllQuestions.Clear();
+                _questionServiceApp.AllQuestions.AddRange(questions);
+
+                foreach (var question in questions)
+                {
+                    Console.WriteLine($"Numer pytania: {question.QuestionNumber}");
+                    Console.WriteLine($"Treść pytania: {question.QuestionContent}");
+                    Console.WriteLine();
+                }
+            }
+            catch (JsonException jsonEx)
+            {
+                Console.WriteLine($"Błąd deserializacji JSON: {jsonEx.Message}");
+            }
+            catch (IOException ioEx)
+            {
+                Console.WriteLine($"Błąd odczytu pliku: {ioEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Wystąpił nieoczekiwany błąd: {ex.Message}");
             }
         }
     }

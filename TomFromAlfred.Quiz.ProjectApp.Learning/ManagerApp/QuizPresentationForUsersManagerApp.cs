@@ -8,21 +8,34 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class QuizPresentationForUsersManagerApp(QuestionsRaffleServiceApp questionsListService, ChoiceServiceApp choicesService) //klasa prezentująca quiz
+    public class QuizPresentationForUsersManagerApp //klasa prezentująca quiz
     {
-        private readonly QuestionsRaffleServiceApp _questionsListService = questionsListService;
-        private readonly ChoiceServiceApp _choicesService = choicesService;
+        private readonly QuestionsRaffleServiceApp _questionsListService;
+        private readonly ChoiceServiceApp _choicesService;
+        private readonly int questionNumber;
+
+        public QuizPresentationForUsersManagerApp(QuestionsRaffleServiceApp questionsListService, ChoiceServiceApp choicesService)
+        {
+            _questionsListService = questionsListService ?? throw new ArgumentNullException(nameof(questionsListService));
+            _choicesService = choicesService ?? throw new ArgumentNullException(nameof(choicesService));
+        }
 
         public void PresentAQuiz() 
         {
             List<Question> randomQuestions = _questionsListService.GetRandomQuestions();
-            HashSet<int> shownQuestions = [];
+            HashSet<int> shownQuestions = new HashSet<int>();
 
-            int displayNumber = 1;
+            int displayNumber = questionNumber + 1;
 
-            while (true)
+            while (shownQuestions.Count < randomQuestions.Count)
             {
-                int nextQuestionIndex = shownQuestions.Count;
+                Random random = new Random();
+                int nextQuestionIndex;
+                do
+                {
+                    nextQuestionIndex = random.Next(randomQuestions.Count);
+                } while (shownQuestions.Contains(nextQuestionIndex));
+
                 shownQuestions.Add(nextQuestionIndex);
 
                 var question = randomQuestions[nextQuestionIndex];

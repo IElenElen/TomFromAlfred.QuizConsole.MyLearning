@@ -17,7 +17,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public ChoiceServiceApp()
         {
-            _choices = [];
+            new List<Choice>();
         }
 
         public void AddChoice(Choice choice)
