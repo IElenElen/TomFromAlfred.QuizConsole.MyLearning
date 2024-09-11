@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
+    //Klasa poprawnych zestawów
     public class ContentCorrectSet
     {
         public string QuestionContent { get; }

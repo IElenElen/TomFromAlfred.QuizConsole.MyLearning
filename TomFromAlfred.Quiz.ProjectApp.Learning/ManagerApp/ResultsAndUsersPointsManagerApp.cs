@@ -21,9 +21,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             _totalPoints = 0;
         }
 
-        public bool VerifyAnswer(int questionNumber, char userChoice) //to menadżer czy serwis jednak?
+        public bool VerifyAnswer(string questionContent, char userChoice) //to menadżer czy serwis jednak?
         {
-            return _answerVerifierServiceApp.GetPointsForAnswer(questionNumber, userChoice);
+            return _answerVerifierServiceApp.GetPointsForAnswer(questionContent, userChoice);
         }
 
         public void DisplayResult(bool result)

@@ -27,7 +27,7 @@ namespace TomFromAlfred.Quiz.Tests
             mockQuestionService.Setup(x => x.AllQuestions).Returns(fakeQuestions);
 
             // Act
-            var managerApp = new QuestionsListServiceApp(mockQuestionService.Object);
+            var managerApp = new QuestionsRaffleServiceApp(mockQuestionService.Object);
             var actualQuestions = managerApp.Questions;
 
             // Assert
@@ -48,7 +48,7 @@ namespace TomFromAlfred.Quiz.Tests
             mockQuestionService.Setup(x => x.AllQuestions).Returns(new List<Question>());
 
             // Act
-            var managerApp = new QuestionsListServiceApp(mockQuestionService.Object);
+            var managerApp = new QuestionsRaffleServiceApp(mockQuestionService.Object);
 
             // Assert
             Assert.Empty(managerApp.Questions);
@@ -68,16 +68,16 @@ namespace TomFromAlfred.Quiz.Tests
             var mockQuestionService = new Mock<QuestionServiceApp>();
             mockQuestionService.Setup(x => x.AllQuestions).Returns(fakeQuestions);
 
-            var managerApp = new QuestionsListServiceApp(mockQuestionService.Object);
+            var managerApp = new QuestionsRaffleServiceApp(mockQuestionService.Object);
 
             // Act
             var randomQuestions = managerApp.GetRandomQuestions();
 
             // Assert
             Assert.Equal(3, randomQuestions.Count);
-            var uniqueNumbers = new HashSet<int>(randomQuestions.Select(q => q.QuestionNumber));
+            var uniqueNumbers = new HashSet<int>(randomQuestions.Select(q => q.QuestionContent));
             Assert.Equal(3, uniqueNumbers.Count);
-            Assert.All(randomQuestions, q => Assert.InRange(q.QuestionNumber, 1, 3));
+            Assert.All(randomQuestions, q => Assert.InRange(q.QuestionContent, 1, 3));
         }
 
         [Fact]
@@ -94,7 +94,7 @@ namespace TomFromAlfred.Quiz.Tests
             var mockQuestionService = new Mock<QuestionServiceApp>();
             mockQuestionService.Setup(x => x.AllQuestions).Returns(fakeQuestions);
 
-            var managerApp = new QuestionsListServiceApp(mockQuestionService.Object);
+            var managerApp = new QuestionsRaffleServiceApp(mockQuestionService.Object);
 
             // Act
             var randomQuestions = managerApp.GetRandomQuestions();

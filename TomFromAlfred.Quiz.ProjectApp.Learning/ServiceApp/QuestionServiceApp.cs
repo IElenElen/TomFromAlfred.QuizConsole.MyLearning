@@ -8,58 +8,57 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
-    public class QuestionServiceApp : BaseApp<Question> //tu pojedyncze pytania
+    //Klasa serwisowa pytań odpowiada za dodawanie, zmiany i usuwanie pytań
+    public class QuestionServiceApp : BaseApp<Question>
     {
-        public virtual IEnumerable<Question> AllQuestions { get; private set; } // właściwość reprezentująca wszystkie dostępne pytania
+        public virtual List<Question> AllQuestions { get; private set; }
 
-        public QuestionServiceApp(IEnumerable<Question> allQuestions)
-        {
-            AllQuestions = allQuestions;
-        }
         public QuestionServiceApp()
         {
-            // Inicjalizacja listy pytań
-            AllQuestions = new List<Question>
-            {
-                new Question(0, "Z ilu części składa się powyższa powieść Alfreda Szklarskiego? "), //nowy format pytań przygotowany pod test
-                new Question(1, "Jaki tytuł nosi ostatnia część o przygodach Tomka?"),
-                new Question(2, "Tomek przed pierwszą przygodą mieszka w: "),
-                new Question(3, "Na kim mści się Tomek pod koniec roku szkolnego?"),
-                new Question(4, "Ulubiony przedmiot Tomka to: "),
-                new Question(5, "Jak ma na imię ciocia Tomka?"),
-                new Question(6, "Pytanie specjalnie do usuwania nr 1. Niech będzie odp A."),
-                new Question(7, "Pytanie do usuwania nr 2. Odp c."),
-                new Question(8, "Pytanie też do testu nr 3. Z odp b"),
-            };
+            AllQuestions = [];
         }
 
-        public Question GetQuestionByNumber(int questionNumber) //wyszukiwanie pytania na podstawie jego numeru
+        public QuestionServiceApp(IEnumerable<Question> initialQuestions)
         {
-            for (int i = 0; i < ((List<Question>)AllQuestions).Count; i++)
-            {
-                if (((List<Question>)AllQuestions)[i].QuestionNumber == questionNumber)
-                {
-                    return ((List<Question>)AllQuestions)[i];
-                }
-            }
-            return null;
+            AllQuestions = initialQuestions.ToList(); // inicjalizacja z istniejącymi pytaniami
         }
 
-        public void RemoveQuestionByNumber(int questionNumber) 
+        public void AddQuestion(string questionContent)
         {
-            var questionsList = AllQuestions.ToList(); 
-
-            for (int i = questionsList.Count() - 1; i >= 0; i--)
+            int newQuestionNumber = AllQuestions.Count;
+            if (AllQuestions.Any(q => q.QuestionContent == newQuestionNumber))
             {
-                if (questionsList[i].QuestionNumber == questionNumber)
-                {
-                    questionsList.RemoveAt(i);
-                    AllQuestions = questionsList; // aktualizacja właściwości AllQuestions
-                    Console.WriteLine("Pytanie zostało usunięte");
-                    return;
-                }
+                throw new InvalidOperationException("Pytanie o tym numerze już istnieje.");
             }
-            Console.WriteLine("Brak pytania o podanym numerze");
+            AllQuestions.Add(new Question(newQuestionNumber, questionContent));
+        }
+
+        public Question? GetQuestionByNumber(int questionNumber)
+        {
+            return AllQuestions.FirstOrDefault(q => q.QuestionNumber == questionNumber);
+        }
+
+        public void RemoveQuestionByNumber(int questionNumber)
+        {
+            var question = GetQuestionByNumber(questionNumber);
+            if (question != null)
+            {
+                AllQuestions.Remove(question);
+                UpdateQuestionNumbers();
+                Console.WriteLine("Pytanie zostało usunięte");
+            }
+            else
+            {
+                Console.WriteLine("Brak pytania o podanym numerze");
+            }
+        }
+
+        private void UpdateQuestionNumbers() //aktualizacja numerów pytań
+        {
+            for (int i = 0; i < AllQuestions.Count; i++)
+            {
+                AllQuestions[i].QuestionContent = i;
+            }
         }
     }
 }

@@ -10,11 +10,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
     public class QuizPresentationForUsersManagerApp //klasa prezentująca quiz
     {
-        private readonly QuestionsListServiceApp _questionsListService;
-        private readonly ChoicesArraysServiceApp _choicesService;
+        private readonly QuestionsRaffleServiceApp _questionsListService;
+        private readonly ChoiceServiceApp _choicesService;
         private readonly Random _random;
 
-        public QuizPresentationForUsersManagerApp(QuestionsListServiceApp questionsListService, ChoicesArraysServiceApp choicesService)
+        public QuizPresentationForUsersManagerApp(QuestionsRaffleServiceApp questionsListService, ChoiceServiceApp choicesService)
         {
             _questionsListService = questionsListService;
             _choicesService = choicesService;
@@ -53,7 +53,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 // Wyświetlanie dostępnych wyborów
                 foreach (var choice in choices)
                 {
-                    Console.WriteLine($"{choice.ChoiceLetter}: {choice.ChoiceContent}");
+                    Console.WriteLine($"{choice.OptionLetter}: {choice.ChoiceContent}");
                 }
 
                 Console.WriteLine();

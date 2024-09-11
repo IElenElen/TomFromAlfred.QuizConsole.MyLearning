@@ -1,5 +1,6 @@
 ﻿using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 using TomFromAlfred.Quiz.Tests;
 
@@ -20,9 +21,10 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
             // Inicjalizacja serwisów
             QuestionServiceApp questionServiceApp = new QuestionServiceApp();
-            ChoicesArraysServiceApp choicesService = new ChoicesArraysServiceApp();
+            ChoiceServiceApp choicesService = new ChoiceServiceApp();
             AnswerVerifierServiceApp answerVerifierServiceApp = new AnswerVerifierServiceApp();
-            QuestionsListServiceApp questionsListService = new QuestionsListServiceApp(questionServiceApp);
+            CorrectDataService correctDataService = new CorrectDataService();
+            QuestionsRaffleServiceApp questionsListService = new QuestionsRaffleServiceApp(questionServiceApp);
 
             // Inicjalizacja menadżerów
             QuizPresentationForUsersManagerApp quizPresentationManager = new QuizPresentationForUsersManagerApp(questionsListService, choicesService);
@@ -40,7 +42,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 char userChoice = userChoicesManager.GetUserChoice();
 
                 // Weryfikacja odpowiedzi i przyznawanie punktów
-                bool result = resultsManager.VerifyAnswer(question.QuestionNumber, userChoice);
+                bool result = resultsManager.VerifyAnswer(questionContent, userChoice);
                 resultsManager.DisplayResult(result);
 
                 // Sprawdzanie, czy użytkownik chce zakończyć quiz

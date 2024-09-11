@@ -23,7 +23,7 @@ namespace TomFromAlfred.Quiz.Tests.Tests_Services
             //Assert
             Assert.NotNull(result);
             Assert.Equal("Tomek przed pierwszą przygodą mieszka w: ", result.QuestionContent);
-            Assert.Equal(2, result.QuestionNumber);
+            Assert.Equal(2, result.QuestionContent);
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace TomFromAlfred.Quiz.Tests.Tests_Services
             // Assert
             Assert.Null(questionServiceApp.GetQuestionByNumber(questionNumberToRemove)); // czy pytanie zostało usunięte?
             Assert.Equal(2, questionServiceApp.AllQuestions.Count()); // czy liczba pytań została zmniejszona?
-            Assert.DoesNotContain(questionServiceApp.AllQuestions, q => q.QuestionNumber == questionNumberToRemove); // czy pytanie zostało usunięte z listy?
+            Assert.DoesNotContain(questionServiceApp.AllQuestions, q => q.QuestionContent == questionNumberToRemove); // czy pytanie zostało usunięte z listy?
         }
 
         [Fact]
