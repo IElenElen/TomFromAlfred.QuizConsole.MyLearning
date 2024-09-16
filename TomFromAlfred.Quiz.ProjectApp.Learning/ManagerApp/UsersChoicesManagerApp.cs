@@ -21,7 +21,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
         {
             Console.WriteLine();
             Console.Write("Twój wybór (wpisz a, b lub c): ");  // wyświetlenie komunikatu z prośbą o dokonanie wyboru
-            char userChoice = char.ToLower(_inputReader.ReadKey().KeyChar); // odczytanie znaku wprowadzonego przez użytkownika i konwersja do małej litery
+            ConsoleKeyInfo keyInfo = _inputReader.ReadKey(); // Odczytuje klawisz użytkownika
+            Console.WriteLine($"\nNaciśnięty klawisz: {keyInfo.KeyChar}");
+            char userChoice = char.ToLower(keyInfo.KeyChar); //konwersja do małej litery
 
             // Dodatkowa walidacja wyboru użytkownika
             while (userChoice != 'a' && userChoice != 'b' && userChoice != 'c')
@@ -30,7 +32,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.");
                 Console.WriteLine();
                 Console.Write("Twój wybór (wpisz a, b lub c): ");
-                userChoice = char.ToLower(_inputReader.ReadKey().KeyChar); //ponowne odczytanie znaku
+                keyInfo = _inputReader.ReadKey();
+                userChoice = char.ToLower(keyInfo.KeyChar); //ponowne odczytanie znaku
             }
             Console.WriteLine(); // nowa linia po wprowadzeniu wyboru
             return userChoice;  // zwrócenie prawidłowego wyboru użytkownika

@@ -11,7 +11,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
     {
         public ConsoleKeyInfo ReadKey()
         {
-            return Console.ReadKey();
+            return Console.ReadKey(intercept: true);
         }
     }
 }

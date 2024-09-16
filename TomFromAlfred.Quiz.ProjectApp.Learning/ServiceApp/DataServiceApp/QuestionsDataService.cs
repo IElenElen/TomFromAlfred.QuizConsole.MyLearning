@@ -13,15 +13,16 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
     {
         private readonly QuestionServiceApp _questionServiceApp;
 
-        public QuestionsDataService(IEnumerable<Question> allQuestions = null)
+        public QuestionsDataService(IEnumerable<Question>? allQuestions = null)
         {
-            _questionServiceApp = new QuestionServiceApp(allQuestions);
+            // Ustawienie pustej listy, jeśli allQuestions jest null
+            _questionServiceApp = new QuestionServiceApp(allQuestions ?? Enumerable.Empty<Question>());
             InitializeQuestions();
         }
 
         private void InitializeQuestions()
         {
-            if (_questionServiceApp.AllQuestions.Count == 0)
+            if (!_questionServiceApp.AllQuestions.Any())
             {
                 _questionServiceApp.AllQuestions.AddRange(new List<Question>
                 {       
@@ -37,6 +38,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                 });
             }
         }
+
+        public IEnumerable<Question> GetAllQuestions()
+        {
+            return _questionServiceApp.GetAllQuestions();
+        }
+
         public void SaveToJson(string filePath)
         {
             var questionsToSave = new List<Question>

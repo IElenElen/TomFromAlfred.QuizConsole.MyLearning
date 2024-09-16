@@ -11,7 +11,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Wersja bez końca...");
+            Console.WriteLine("Masakra");
 
             // Poniżej daję info użytkownikowi
             Console.WriteLine("Pytania poniższego quizu są jednokrotnego wyboru. Po zapoznaniu się z treścią pytania naciśnij a, b lub c,");
@@ -19,40 +19,32 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             Console.WriteLine("Za poprawną odpowiedż otrzymasz jeden punkt, za błędną brak punktu.");
             Console.WriteLine();
 
-            // Inicjalizacja serwisów
-            QuestionServiceApp questionServiceApp = new();
-            ChoiceServiceApp choicesService = new();
-            CorrectDataService correctDataService = new();
-            AnswerVerifierServiceApp answerVerifierServiceApp = new(correctDataService.ContentCorrectSets); 
-            QuestionsRaffleServiceApp questionsListService = new(questionServiceApp);
+            // Inicjalizacja serwisów i menedżerów
+            var questionService = new QuestionServiceApp(); 
+            var questionsDataService = new QuestionsDataService(); 
+            var questionsRaffleService = new QuestionsRaffleServiceApp(questionService); 
 
-            // Inicjalizacja menadżerów
-            QuizPresentationForUsersManagerApp quizPresentationManager = new(questionsListService, choicesService);
-            ResultsAndUsersPointsManagerApp resultsManager = new(answerVerifierServiceApp);
-            UsersChoicesManagerApp userChoicesManager = new(new ConsoleInputReaderManagerApp());
-            UsersExitManagerApp usersExitManager = new();
+            var choiceService = new ChoiceServiceApp();
+            var inputReader = new ConsoleInputReaderManagerApp();
+            var usersChoicesManager = new UsersChoicesManagerApp(inputReader);
 
-            // Prezentacja pytań
-            quizPresentationManager.PresentAQuiz(); 
+            var contentCorrectSets = new List<ContentCorrectSet>(); 
+            var answerVerifierServiceApp = new AnswerVerifierServiceApp(contentCorrectSets);
+            var resultsManager = new ResultsAndUsersPointsManagerApp(answerVerifierServiceApp);
 
-            // Pętla quizu
-            foreach (var question in questionsListService.GetRandomQuestions())
-            {
-                Console.WriteLine("Prezentuję pytanie: " + question.QuestionContent);
-                // Pobieranie wyboru użytkownika
-                char userChoice = userChoicesManager.GetUserChoice();
+            var exitManager = new UsersExitManagerApp();
 
-                // Weryfikacja odpowiedzi i przyznawanie punktów
-                bool result = resultsManager.VerifyAnswer(question.QuestionContent, userChoice);
-                resultsManager.DisplayResult(result);
+            var quizManager = new QuizPresentationForUsersManagerApp
+            (
+                questionsRaffleService, 
+                choiceService,
+                usersChoicesManager,
+                resultsManager,
+                exitManager
+            );
 
-                // Sprawdzanie, czy użytkownik chce zakończyć quiz
-                if (usersExitManager.CheckForExit())
-                {
-                    break;
-                }
-            }
-            resultsManager.DisplayFinalScore();
+            // Rozpoczęcie quizu
+            quizManager.PresentAQuiz();
         }
     }
 }

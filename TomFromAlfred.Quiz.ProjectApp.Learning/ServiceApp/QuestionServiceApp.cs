@@ -13,16 +13,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     {
         public virtual List<Question> AllQuestions { get; private set; }
 
+        public QuestionServiceApp(IEnumerable<Question>? initialQuestions = null)
+        {
+            AllQuestions = (initialQuestions ?? Enumerable.Empty<Question>()).ToList();
+        }
+
         public QuestionServiceApp()
         {
             AllQuestions = new List<Question>();
         }
-
-        public QuestionServiceApp(IEnumerable<Question> initialQuestions)
-        {
-            AllQuestions = initialQuestions.ToList(); // inicjalizacja z istniejącymi pytaniami
-        }
-
         public void AddQuestion(string questionContent)
         {
             int newQuestionNumber = AllQuestions.Count;
@@ -59,6 +58,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             {
                 AllQuestions[i].QuestionNumber = i;
             }
+        }
+
+        public List<Question> GetAllQuestions()
+        {
+            return AllQuestions.ToList();
+            Console.WriteLine($"Liczba pytań w QuestionServiceApp: {GetAllQuestions().Count}");
         }
     }
 }
