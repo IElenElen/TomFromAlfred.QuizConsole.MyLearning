@@ -16,7 +16,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             ContentCorrectSets = contentCorrectSets ?? new List<ContentCorrectSet>();
         }
 
-        public void AddCorrectData(string questionContent, EntitySupport.OptionLetter optionLetter, string contentCorrectAnswer)
+        public void AddCorrectData(string? questionContent, EntitySupport.OptionLetter optionLetter, string? contentCorrectAnswer)
         {
             if (ContentCorrectSets == null)
             {

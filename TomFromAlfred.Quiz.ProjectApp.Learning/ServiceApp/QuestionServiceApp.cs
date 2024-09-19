@@ -9,6 +9,8 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
     //Klasa serwisowa pytań odpowiada za dodawanie, zmiany i usuwanie pytań
+
+    //potrzebuję update, jak mam też pytanie dodane... usunięte lub losowane...
     public class QuestionServiceApp : BaseApp<Question>
     {
         public virtual List<Question> AllQuestions { get; private set; }
@@ -18,52 +20,77 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             AllQuestions = (initialQuestions ?? Enumerable.Empty<Question>()).ToList();
         }
 
-        public QuestionServiceApp()
+        public void AddQuestion(string? questionContent)
         {
-            AllQuestions = new List<Question>();
-        }
-        public void AddQuestion(string questionContent)
-        {
+
+            if (AllQuestions.Any(q => q.QuestionContent == questionContent))
+            {
+                throw new InvalidOperationException("Pytanie o tej treści już istnieje.");
+            }
+
             int newQuestionNumber = AllQuestions.Count;
-            if (AllQuestions.Any(q => q.QuestionNumber == newQuestionNumber))
-            {
-                throw new InvalidOperationException("Pytanie o tym numerze już istnieje.");
-            }
             AllQuestions.Add(new Question(newQuestionNumber, questionContent));
+            UpdateQuestionNumbers();
         }
 
-        public Question? GetQuestionByNumber(int questionNumber)
+        public Question? GetQuestionByNumber(int userQuestionNumber)
         {
-            return AllQuestions.FirstOrDefault(q => q.QuestionNumber == questionNumber);
-        }
-
-        public void RemoveQuestionByNumber(int questionNumber)
-        {
-            var question = GetQuestionByNumber(questionNumber);
-            if (question != null)
+            int questionNumber = userQuestionNumber - 1;
+            if (questionNumber < 0)
             {
-                AllQuestions.Remove(question);
-                UpdateQuestionNumbers();
-                Console.WriteLine("Pytanie zostało usunięte");
+                throw new ArgumentOutOfRangeException(nameof(questionNumber), "Numer pytania nie może być ujemny.");
             }
-            else
+
+            return AllQuestions.FirstOrDefault(q => q.QuestionNumber == questionNumber)
+            ?? throw new InvalidOperationException("Brak pytania o podanym numerze.");
+        }
+
+        public bool RemoveQuestionByNumber(int userQuestionNumber)
+        {
+            try
             {
-                Console.WriteLine("Brak pytania o podanym numerze");
+                int questionNumber = userQuestionNumber - 1;
+
+                var question = GetQuestionByNumber(userQuestionNumber);
+
+                if (question != null)
+                {
+                    AllQuestions.Remove(question);
+                    UpdateQuestionNumbers();
+                    Console.WriteLine($"Pytanie o numerze {questionNumber} zostało usunięte.");
+                    return true;
+                }
+
+                Console.WriteLine($"Brak pytania o numerze {questionNumber}.");
+                return false;
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"Błąd podczas usuwania pytania: {ex.Message}");
+                return false;
             }
         }
 
-        private void UpdateQuestionNumbers() //aktualizacja numerów pytań
+        public void UpdateQuestionNumbers() //aktualizacja numerów pytań
         {
+            if (AllQuestions.Count == 0)
+            {
+                Console.WriteLine("Brak pytań do aktualizacji numerów.");
+                return;
+            }
+
             for (int i = 0; i < AllQuestions.Count; i++)
             {
                 AllQuestions[i].QuestionNumber = i;
             }
+
+            Console.WriteLine("Numery pytań zostały zaktualizowane.");
         }
 
         public List<Question> GetAllQuestions()
         {
+            Console.WriteLine($"Liczba pytań w QuestionServiceApp: {AllQuestions.Count}");
             return AllQuestions.ToList();
-            Console.WriteLine($"Liczba pytań w QuestionServiceApp: {GetAllQuestions().Count}");
         }
     }
 }

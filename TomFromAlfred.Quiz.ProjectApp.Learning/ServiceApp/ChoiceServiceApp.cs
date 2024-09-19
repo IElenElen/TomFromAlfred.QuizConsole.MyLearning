@@ -11,14 +11,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     //Menadżery rozmawiają z klientem, serwisy odpowiadają za pamięć i dane.
     //Po interfejsie dziedziczy serwis a nie klasa bazowa!!!
 
+    // Do zrobienia metoda, która pozwala znaleźć wybory powiązane z pytaniem!!!
+
     public class ChoiceServiceApp : BaseApp<Choice> 
     {
-        private readonly List<Choice> _choices;
-
-        public ChoiceServiceApp()
-        {
-            new List<Choice>();
-        }
+        private readonly List<Choice> _choices = new List<Choice>();
 
         public void AddChoice(Choice choice)
         {
@@ -27,10 +24,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 throw new ArgumentException("Wybór o tym Id już istnieje.");
             }
             _choices.Add(choice);
+            UpdateChoiceId(choice.ChoiceId);
+            Console.WriteLine($"Wybór o numerze {choice.ChoiceId} został dodany.");
+
         }
 
-        public Choice GetChoiceById(int choiceId)
+        public Choice GetChoiceById(int userChoiceId)
         {
+            int choiceId = userChoiceId - 1;
+
             return _choices.FirstOrDefault(c => c.ChoiceId == choiceId)
                    ?? throw new KeyNotFoundException($"Wybór o podanym Id {choiceId} nie został znaleziony.");
         }
@@ -41,18 +43,39 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             return _choices.Where(c => c.ChoiceContent == questionContent).ToList();
         }
 
-        public void RemoveChoiceById(int choiceId)
+        public void RemoveChoiceById(int userChoiceId)
         {
+            int choiceId = userChoiceId - 1;
+
             var choice = GetChoiceById(choiceId);
             if (choice != null)
             {
                 _choices.Remove(choice);
             }
+
+            UpdateChoiceId(choiceId);
+            Console.WriteLine($"Wybór o numerze {choiceId} został usunięty.");
+        }
+
+        public void UpdateChoiceId( int choiceId)
+        {
+            if (_choices.Count == 0)
+            {
+                Console.WriteLine("Brak wyborów do aktualizacji numerów.");
+                return;
+            }
+
+            for (int i = 0; i < _choices.Count; i++)
+            {
+                _choices[i].ChoiceId = i;
+            }
+
+            Console.WriteLine("Numery wyborów zostały zaktualizowane.");
         }
 
         public List<Choice> GetAllChoices()
         {
-            return _choices;
+            return new List<Choice>(_choices);
         }
     }
 }

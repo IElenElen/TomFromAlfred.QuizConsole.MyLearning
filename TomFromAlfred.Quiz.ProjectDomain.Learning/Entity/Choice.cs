@@ -9,31 +9,22 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
     /* Muszę pamiętać, że jeśli zmieni się kolejność treści pytań
        to treści wyboru muszę przypisać do określonego pytania */
-    public class Choice(int choiceId, EntitySupport.OptionLetter optionLetter, string? choiceContent)
+    public class Choice
     {
-        public int ChoiceId { get; set; } = choiceId;
-        public EntitySupport.OptionLetter OptionLetter { get; set; } = optionLetter;
-        public string? ChoiceContent { get; set; } = choiceContent;
+        public int ChoiceId { get; set; }
+        public EntitySupport.OptionLetter OptionLetter { get; set; }
+        public string? ChoiceContent { get; set; }
 
-        // Przesłonięta metoda Equals, sprawdzająca, czy dwa obiekty Choice są sobie równe
-        // Zwraca true, jeśli obiekty są takie same; w przeciwnym razie zwraca false
-        public override bool Equals([NotNullWhen(true)] object? obj) //na potrzeby testu te dwie metody
+        public Choice(int choiceId, EntitySupport.OptionLetter optionLetter, string? choiceContent = null)
         {
-            if (obj == null || GetType() != obj.GetType()) // sprawdzenie, czy obiekt jest null lub nie jest tego samego typu co obiekt Choice
+            if (choiceId <= 0)
             {
-                return false;
+                throw new ArgumentException("ChoiceId musi być większe niż 0.", nameof(choiceId));
             }
 
-            Choice other = (Choice)obj;     // rzutowanie obiektu na typ Choice
-            return ChoiceId == other.ChoiceId  
-                && OptionLetter == other.OptionLetter // porównanie pól obiektów Choice
-                && ChoiceContent == other.ChoiceContent;
-        }
-
-        public override int GetHashCode() // przesłonięta metoda GetHashCode, obliczająca skrót obiektu Choice
-                                          // zwraca wartość skrótu obliczoną na podstawie pól ChoiceId, ChoiceLetter i ChoiceContent
-        {
-            return HashCode.Combine(ChoiceId, OptionLetter, ChoiceContent);
+            ChoiceId = choiceId;
+            OptionLetter = optionLetter;
+            ChoiceContent = choiceContent;
         }
     }
 }

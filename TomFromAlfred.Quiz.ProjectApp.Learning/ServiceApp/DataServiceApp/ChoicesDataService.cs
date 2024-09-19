@@ -10,11 +10,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 {
     public class ChoicesDataService
     {
-        private readonly List<Choice> _choices;
-
+        private readonly List<Choice> _choices = new List<Choice>();
         public ChoicesDataService()
         {
-            new List<Choice>();
             InitializeDefaultData();
         }
 
@@ -69,6 +67,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                 var json = JsonSerializer.Serialize(_choices, options);
                 File.WriteAllText(filePath, json);
             }
+
             catch (Exception ex)
             {
                 Console.WriteLine($"Błąd: {ex.Message}");

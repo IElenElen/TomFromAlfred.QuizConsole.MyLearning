@@ -20,9 +20,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             Console.WriteLine();
 
             // Inicjalizacja serwisów i menedżerów
-            var questionService = new QuestionServiceApp(); 
-            var questionsDataService = new QuestionsDataService(); 
-            var questionsRaffleService = new QuestionsRaffleServiceApp(questionService); 
+            var questionServiceApp = new QuestionServiceApp(); 
+            var questionsDataService = new QuestionsDataService(questionServiceApp); //przekazanie instancji
+            var questionsRaffleService = new QuestionsRaffleServiceApp(questionServiceApp); //używanie tej samej instancji
 
             var choiceService = new ChoiceServiceApp();
             var inputReader = new ConsoleInputReaderManagerApp();

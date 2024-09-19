@@ -20,15 +20,31 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         /* Losować chcę pytania pod kątem treści, ale ważna jest aktualizacja numerów pytań,
         bo jak usunę dane pytanie to wtedy numeracja musi być odpowiednia do zmian. */
-        public List<Question> GetRandomQuestions()
+        public List<Question> GetRandomQuestions() //pobranie zlosowanej listy pytań
         {
-            var allquestions = _questionServiceApp.GetAllQuestions().ToList();
-            if (allquestions.Count == 0)
+            try
             {
-                Console.WriteLine("Brak pytań w QuestionsRaffleServiceApp."); // Debug
+                var allQuestions = _questionServiceApp.GetAllQuestions().ToList();
+                Console.WriteLine($"Liczba pytań dostępnych do losowania: {allQuestions.Count}"); // Debug
+
+                if (allQuestions.Count == 0)
+                {
+                    Console.WriteLine("Brak pytań w QuestionsRaffleServiceApp."); // Debug
+                    return new List<Question>(); // zwraca pustą listę, jeśli brak pytań
+                }
+
+                _questionServiceApp.UpdateQuestionNumbers();
+
+                var allRandomQuestions = allQuestions.OrderBy(q => _random.Next()).ToList();
+                return allRandomQuestions;
             }
-            var allrandomQuestions = allquestions.OrderBy(q => _random.Next()).ToList();
-            return allrandomQuestions;
+
+            catch (Exception ex)
+            {
+                // Logowanie wyjątku i zwracanie pustej listy w przypadku błędu
+                Console.WriteLine($"Błąd podczas pobierania pytań: {ex.Message}");
+                return new List<Question>();
+            }
         }
     }
 }

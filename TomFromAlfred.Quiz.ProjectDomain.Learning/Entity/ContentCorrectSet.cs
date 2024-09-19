@@ -7,10 +7,17 @@ using System.Threading.Tasks;
 namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
     //Klasa poprawnych zestawów
-    public class ContentCorrectSet(string questionContent, EntitySupport.OptionLetter letterCorrectAnswer, string contentCorrectAnswer)
+    public class ContentCorrectSet
     {
-        public string QuestionContent { get; } = questionContent;
-        public EntitySupport.OptionLetter LetterCorrectAnswer { get; set; } = letterCorrectAnswer;
-        public string? ContentCorrectAnswer { get; set; } = contentCorrectAnswer;
+        public string? QuestionContent { get; }
+        public EntitySupport.OptionLetter LetterCorrectAnswer { get; }
+        public string? ContentCorrectAnswer { get; }
+
+        public ContentCorrectSet(EntitySupport.OptionLetter letterCorrectAnswer, string? questionContent = null, string? contentCorrectAnswer = null)
+        {
+            QuestionContent = questionContent; 
+            LetterCorrectAnswer = letterCorrectAnswer; 
+            ContentCorrectAnswer = contentCorrectAnswer; 
+        }
     }
 }

@@ -13,16 +13,16 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
     {
         private readonly QuestionServiceApp _questionServiceApp;
 
-        public QuestionsDataService(IEnumerable<Question>? allQuestions = null)
+        public QuestionsDataService(QuestionServiceApp questionServiceApp)
         {
-            // Ustawienie pustej listy, jeśli allQuestions jest null
-            _questionServiceApp = new QuestionServiceApp(allQuestions ?? Enumerable.Empty<Question>());
+            _questionServiceApp = questionServiceApp ?? throw new ArgumentNullException(nameof(questionServiceApp)); 
             InitializeQuestions();
         }
 
         private void InitializeQuestions()
         {
-            if (!_questionServiceApp.AllQuestions.Any())
+
+            if (_questionServiceApp.AllQuestions == null || !_questionServiceApp.AllQuestions.Any())
             {
                 _questionServiceApp.AllQuestions.AddRange(new List<Question>
                 {       
@@ -46,6 +46,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
         public void SaveToJson(string filePath)
         {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                throw new ArgumentException("Ścieżka pliku nie może być pusta.", nameof(filePath));
+            }
+
             var questionsToSave = new List<Question>
             {
                 new Question(7, "Pytanie do usuwania nr 2. Odp c."),
@@ -54,11 +59,23 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
             string json = JsonConvert.SerializeObject(questionsToSave, Formatting.Indented);
 
-            File.WriteAllText(filePath, json);
+            try
+            {
+                File.WriteAllText(filePath, json);
+            }
+            catch (IOException ioEx)
+            {
+                Console.WriteLine($"Błąd zapisu pliku: {ioEx.Message}");
+            }
         }
 
         public void LoadFromJson(string filePath)
         {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                throw new ArgumentException("Ścieżka pliku nie może być pusta.", nameof(filePath));
+            }
+
             if (!File.Exists(filePath))
             {
                 Console.WriteLine("Plik JSON nie istnieje.");
