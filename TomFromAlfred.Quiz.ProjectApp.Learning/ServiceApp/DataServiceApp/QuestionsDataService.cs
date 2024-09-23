@@ -17,22 +17,30 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
     {
         private readonly QuestionServiceApp _questionServiceApp;
 
-        public QuestionsDataService(QuestionServiceApp questionServiceApp)
+        public QuestionsDataService(QuestionServiceApp questionServiceApp, Question question)
         {
-            _questionServiceApp = questionServiceApp ?? throw new ArgumentNullException(nameof(questionServiceApp)); 
+            _questionServiceApp = questionServiceApp ?? throw new ArgumentNullException(nameof(questionServiceApp));
+
+            // Sprawdzenie, czy dane pytanie już istnieje w systemie
+            if (_questionServiceApp.AllQuestions.Any(q => q.QuestionContent == question.QuestionContent))
+            {
+                throw new InvalidOperationException("Takie pytanie już istnieje.");
+            }
+
             InitializeQuestions();
         }
 
         private void InitializeQuestions()
         {
+            _questionServiceApp.AllQuestions ??= new List<Question>();
 
-            if (_questionServiceApp.AllQuestions == null || !_questionServiceApp.AllQuestions.Any())
+            if (!_questionServiceApp.AllQuestions.Any())
             {
                 _questionServiceApp.AllQuestions.AddRange(new List<Question>
-                {       
+                {
                     new(6, "Pytanie specjalnie do usuwania nr 1. Niech będzie odp A."),
-                    new(7, "Pytanie do usuwania nr 2. Odp c."),
-                    new(8, "Pytanie też do testu nr 3. Z odp b")
+                    new(7, "Pytanie do usuwania nr 2. Odp C."),
+                    new(8, "Pytanie też do testu nr 3. Z odp B.")
                 });
             }
         }
@@ -49,17 +57,29 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                 throw new ArgumentException("Ścieżka pliku nie może być pusta.", nameof(filePath));
             }
 
-            var questionsToSave = new List<Question>
-            {
-                new Question(7, "Pytanie do usuwania nr 2. Odp c."),
-                new Question(8, "Pytanie też do testu nr 3. Z odp b")
-            };
+            var activeQuestions = _questionServiceApp.AllQuestions
+                                  .Where(q => q.IsActive)
+                                  .ToList();
 
-            string json = JsonConvert.SerializeObject(questionsToSave, Formatting.Indented);
+            if (!activeQuestions.Any())
+            {
+                Console.WriteLine("Brak aktywnych pytań do zapisania.");
+                return;
+            }
+
+            string json = JsonConvert.SerializeObject(activeQuestions, Formatting.Indented);
 
             try
             {
+                string directory = Path.GetDirectoryName(filePath);
+
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
                 File.WriteAllText(filePath, json);
+                Console.WriteLine("Pytania zostały zapisane do pliku.");
             }
             catch (IOException ioEx)
             {
@@ -92,13 +112,28 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                 }
 
                 _questionServiceApp.AllQuestions.Clear();
-                _questionServiceApp.AllQuestions.AddRange(questions);
 
                 foreach (var question in questions)
                 {
-                    Console.WriteLine($"Numer pytania: {question.QuestionNumber}");
-                    Console.WriteLine($"Treść pytania: {question.QuestionContent}");
-                    Console.WriteLine();
+                    if (question == null || string.IsNullOrEmpty(question.QuestionContent))
+                    {
+                        Console.WriteLine("Pytanie jest nieprawidłowe, pomijam.");
+                        continue; 
+                    }
+
+                    if (_questionServiceApp.AllQuestions.Any(q => q.QuestionContent == question.QuestionContent))
+                    {
+                        Console.WriteLine("Pytanie już istnieje, pomijam.");
+                        continue; 
+                    }
+
+                    question.IsActive = true;
+                    _questionServiceApp.AllQuestions.Add(question);
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine($"Numer pytania: {question.QuestionNumber}");
+                    sb.AppendLine($"Treść pytania: {question.QuestionContent}");
+                    Console.WriteLine(sb.ToString());
                 }
             }
             catch (JsonException jsonEx)

@@ -8,6 +8,8 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
     public class Question
     {
+        public bool IsActive; //nie wszystkie pytania muszą być aktywne w danym momencie
+
         /* Zmiana podejścia. Treść pytań przypisana do numerów pytań, 
            a losowanie to będzie stworzenie nowej listy, użytkownik zobaczy numerację pytań od 1 do X, 
            a faktycznie rzecz biorąc za każdym nowym podejściem do quizu, pyania będą losowane. */
@@ -20,12 +22,13 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
            1. Z przypisanym do niego określonym wyborem 
            2. Z poprawną odpowiedzią */
 
-        public string? QuestionContent { get; set; }
+        public string? QuestionContent { get; }
 
         public Question(int? questionNumber = null, string? questionContent = null)
         {
             QuestionNumber = questionNumber;
             QuestionContent = questionContent;
+            IsActive = true;
         }
     }
 }

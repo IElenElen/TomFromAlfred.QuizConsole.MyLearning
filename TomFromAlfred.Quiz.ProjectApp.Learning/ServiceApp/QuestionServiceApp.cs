@@ -20,29 +20,28 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             AllQuestions = (initialQuestions ?? Enumerable.Empty<Question>()).ToList();
         }
 
-        public void AddQuestion(string? questionContent)
+        public void AddQuestion(Question question)
         {
-
-            if (AllQuestions.Any(q => q.QuestionContent == questionContent))
+            if (AllQuestions.Any(q => q.QuestionContent == question.QuestionContent))
             {
-                throw new InvalidOperationException("Pytanie o tej treści już istnieje.");
+                throw new InvalidOperationException("Takie pytanie już istnieje.");
             }
 
             int newQuestionNumber = AllQuestions.Count;
-            AllQuestions.Add(new Question(newQuestionNumber, questionContent));
+            question.QuestionNumber = newQuestionNumber;
+            AllQuestions.Add(question); 
             UpdateQuestionNumbers();
         }
 
         public Question? GetQuestionByNumber(int userQuestionNumber)
         {
             int questionNumber = userQuestionNumber - 1;
-            if (questionNumber < 0)
+            if (questionNumber < 0 || questionNumber >= AllQuestions.Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(questionNumber), "Numer pytania nie może być ujemny.");
+                return null;
             }
 
-            return AllQuestions.FirstOrDefault(q => q.QuestionNumber == questionNumber)
-            ?? throw new InvalidOperationException("Brak pytania o podanym numerze.");
+            return AllQuestions[questionNumber];
         }
 
         public bool RemoveQuestionByNumber(int userQuestionNumber)
