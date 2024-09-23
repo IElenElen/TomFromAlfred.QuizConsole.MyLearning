@@ -9,6 +9,10 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 {
     //Klasa dla inicjalizacji danych (pytań) oraz pobierania i zapisywania do plików
+    /* W Json dane 6-8 są nieaktywne - na to miejsce mogę tutaj ręcznie wprowadzić i poćwiczyć, 
+       analogiczna sprawa z choices i correct odp.
+     */
+    
     public class QuestionsDataService
     {
         private readonly QuestionServiceApp _questionServiceApp;
@@ -26,7 +30,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
             {
                 _questionServiceApp.AllQuestions.AddRange(new List<Question>
                 {       
-                  
                     new(6, "Pytanie specjalnie do usuwania nr 1. Niech będzie odp A."),
                     new(7, "Pytanie do usuwania nr 2. Odp c."),
                     new(8, "Pytanie też do testu nr 3. Z odp b")
