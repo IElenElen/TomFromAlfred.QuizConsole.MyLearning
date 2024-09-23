@@ -7,23 +7,22 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
-    /* Muszę pamiętać, że jeśli zmieni się kolejność treści pytań
-       to treści wyboru muszę przypisać do określonego pytania */
+    /* Muszę pamiętać, że jeśli zmieni się kolejność pytań
+       to określony wybór muszę przypisać do określonego pytania */
     public class Choice
     {
-        public int ChoiceId { get; set; }
+        public int? ChoiceId { get; set; }
         public EntitySupport.OptionLetter OptionLetter { get; set; }
         public string? ChoiceContent { get; set; }
 
-        public Choice(int choiceId, EntitySupport.OptionLetter optionLetter, string? choiceContent = null)
+        public Choice(EntitySupport.OptionLetter optionLetter, int? choiceId = null, string? choiceContent = null)
         {
-            if (choiceId <= 0)
+            if (!Enum.IsDefined(typeof(EntitySupport.OptionLetter), optionLetter))
             {
-                throw new ArgumentException("ChoiceId musi być większe niż 0.", nameof(choiceId));
+                throw new ArgumentException("Niepoprawna wartość dla Option Letter.", nameof(optionLetter));
             }
-
-            ChoiceId = choiceId;
             OptionLetter = optionLetter;
+            ChoiceId = choiceId;
             ChoiceContent = choiceContent;
         }
     }
