@@ -20,9 +20,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
         public void InitializeData()
         {
-            ContentCorrectSets.Add(new ContentCorrectSet("Z ilu części składa się powieść Alfreda Szklarskiego?", EntitySupport.OptionLetter.B, "9"));
-            ContentCorrectSets.Add(new ContentCorrectSet("Jaki tytuł nosi ostatnia część o przygodach Tomka?", EntitySupport.OptionLetter.A, "Tomek w grobowcach faraonów."));
-            ContentCorrectSets.Add(new ContentCorrectSet("Tomek przed pierwszą przygodą mieszka w: ", EntitySupport.OptionLetter.C, "W Warszawie."));
             ContentCorrectSets.Add(new ContentCorrectSet(" ", EntitySupport.OptionLetter.A, " "));
         }
 

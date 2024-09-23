@@ -21,30 +21,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
             _choices.AddRange(
             new List<Choice>
             {
-                new (0, EntitySupport.OptionLetter.A, "8"),
-                new (0, EntitySupport.OptionLetter.B, "9"),
-                new (0, EntitySupport.OptionLetter.C, "10"),
-
-                new (1, EntitySupport.OptionLetter.A, "Tomek w grobowcach faraonów."),
-                new (1, EntitySupport.OptionLetter.B, "Tomek u źródeł Amazonki."),
-                new (1, EntitySupport.OptionLetter.C, "Tajemnicza wyprawa Tomka."),
-
-                new (2, EntitySupport.OptionLetter.A, "W Gdańsku."),
-                new (2, EntitySupport.OptionLetter.B, "W Krakowie."),
-                new (2, EntitySupport.OptionLetter.C, "W Warszawie."),
-
-                new (3, EntitySupport.OptionLetter.A, "Na koledze z klasy."),
-                new (3, EntitySupport.OptionLetter.B, "Na wrogu ze szkoły."),
-                new (3, EntitySupport.OptionLetter.C, "Na pseudo-przyjacielu ze stadniny koni."),
-
-                new (4, EntitySupport.OptionLetter.A, "historia"),
-                new (4, EntitySupport.OptionLetter.B, "biologia"),
-                new (4, EntitySupport.OptionLetter.C, "geografia"),
-
-                new (5, EntitySupport.OptionLetter.A, "Janina"),
-                new (5, EntitySupport.OptionLetter.B, "Antonina"),
-                new (5, EntitySupport.OptionLetter.C, "Irena"),
-
                 new (6, EntitySupport.OptionLetter.A, "poprawna"),
                 new (6, EntitySupport.OptionLetter.B, "zła"),
                 new (6, EntitySupport.OptionLetter.C, "zła 2"),

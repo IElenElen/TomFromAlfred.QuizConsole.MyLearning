@@ -26,12 +26,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
             {
                 _questionServiceApp.AllQuestions.AddRange(new List<Question>
                 {       
-                    new(0, "Z ilu części składa się powieść Alfreda Szklarskiego?"),
-                    new(1, "Jaki tytuł nosi ostatnia część o przygodach Tomka?"),
-                    new(2, "Tomek przed pierwszą przygodą mieszka w: "),
-                    new(3, "Na kim mści się Tomek pod koniec roku szkolnego?"),
-                    new(4, "Ulubiony przedmiot Tomka to: "),
-                    new(5, "Jak ma na imię ciocia Tomka?"),
+                  
                     new(6, "Pytanie specjalnie do usuwania nr 1. Niech będzie odp A."),
                     new(7, "Pytanie do usuwania nr 2. Odp c."),
                     new(8, "Pytanie też do testu nr 3. Z odp b")
