@@ -20,15 +20,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             _answerVerifierServiceApp = answerVerifierServiceApp ?? throw new ArgumentNullException(nameof(answerVerifierServiceApp));
         }
 
-        public bool VerifyAnswer(string? questionContent, char userChoice)
+        public bool VerifyAnswer(int questionId, char userChoice)
         {
-            if (questionContent == null)
-            {
-                Console.WriteLine("Treść pytania jest pusta.");
-                return false;
-            }
 
-            return _answerVerifierServiceApp.GetPointsForAnswer(questionContent, userChoice);
+            return _answerVerifierServiceApp.GetPointsForAnswer(questionId, userChoice);
         }
 
         public void DisplayResult(bool result)

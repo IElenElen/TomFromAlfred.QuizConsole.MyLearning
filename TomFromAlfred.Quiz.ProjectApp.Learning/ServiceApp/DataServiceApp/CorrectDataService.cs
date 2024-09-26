@@ -14,13 +14,13 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
         public CorrectDataService()
         {
-            ContentCorrectSets = new List<ContentCorrectSet>(); 
-            InitializeData(); 
+            ContentCorrectSets = new List<ContentCorrectSet>();
+            InitializeData();
         }
 
         public void InitializeData()
         {
-            ContentCorrectSets.Add(new ContentCorrectSet(" ", EntitySupport.OptionLetter.A, " "));
+            ContentCorrectSets.Add(new ContentCorrectSet(EntitySupport.OptionLetter.A, 9, " ")); //na razie zmyślone
         }
 
         public void LoadDataFromJson(string filePath)
@@ -56,15 +56,34 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
         public void SaveDataToJson(string filePath)
         {
+            if (ContentCorrectSets == null || !ContentCorrectSets.Any())
+            {
+                Console.WriteLine("Brak danych do zapisania.");
+                return;
+            }
+
             try
             {
                 var options = new JsonSerializerOptions { WriteIndented = true };
                 var json = JsonSerializer.Serialize(ContentCorrectSets, options);
                 File.WriteAllText(filePath, json);
+                Console.WriteLine("Dane zostały pomyślnie zapisane do pliku.");
+            }
+            catch (UnauthorizedAccessException authEx)
+            {
+                Console.WriteLine($"Brak uprawnień do zapisu w pliku: {authEx.Message}");
+            }
+            catch (IOException ioEx)
+            {
+                Console.WriteLine($"Błąd odczytu/zapisu pliku: {ioEx.Message}");
+            }
+            catch (JsonException jsonEx)
+            {
+                Console.WriteLine($"Błąd podczas serializacji do JSON: {jsonEx.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Błąd zapisywania do pliku: {ex.Message}");
+                Console.WriteLine($"Wystąpił nieoczekiwany błąd: {ex.Message}");
             }
         }
     }

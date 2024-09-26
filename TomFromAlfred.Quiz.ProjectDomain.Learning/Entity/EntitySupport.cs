@@ -15,5 +15,7 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
             B,
             C
         }
+
+        public Dictionary<int, int> QuestionIdToChoiceId { get; set; } = new(); //mapowanie questionId z choiceId
     }
 }

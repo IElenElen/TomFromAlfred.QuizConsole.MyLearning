@@ -16,14 +16,16 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             ContentCorrectSets = contentCorrectSets ?? new List<ContentCorrectSet>();
         }
 
-        public void AddCorrectData(string? questionContent, EntitySupport.OptionLetter optionLetter, string? contentCorrectAnswer)
+        public void AddCorrectData(int questionId, EntitySupport.OptionLetter optionLetter, string? contentCorrectAnswer)
         {
             if (ContentCorrectSets == null)
             {
                 ContentCorrectSets = new List<ContentCorrectSet>();
             }
 
-            var newCorrectSet = new ContentCorrectSet(questionContent, optionLetter, contentCorrectAnswer);
+            var newCorrectSet = new ContentCorrectSet(optionLetter, questionId, contentCorrectAnswer); 
+                                //tu chyba kolejność nie będzie miała znaczenia, bo użytkownikowi tyko mówię, że jest ok,
+                                //bez rozpisywania się
             ContentCorrectSets.Add(newCorrectSet);
         }
 
@@ -32,14 +34,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             return ContentCorrectSets ?? new List<ContentCorrectSet>();
         }
 
-        public bool GetPointsForAnswer(string questionContent, char userChoice)
+        public bool GetPointsForAnswer(int questionId, char userChoice)
         {
             if (ContentCorrectSets == null || ContentCorrectSets.Count == 0)
             {
                 return false;
             }
 
-            var correctSet = ContentCorrectSets.FirstOrDefault(x => x.QuestionContent == questionContent);
+            var correctSet = ContentCorrectSets.FirstOrDefault(x => x.QuestionId == questionId);
 
             if (correctSet != null)
             {

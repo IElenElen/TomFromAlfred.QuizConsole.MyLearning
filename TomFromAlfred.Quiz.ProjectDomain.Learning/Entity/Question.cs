@@ -16,7 +16,9 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 
         //Właściwości możliwe dopiero do wprowadzenia, zatem są nullable
 
-        public int? QuestionNumber { get; set; } 
+        public int QuestionId { get; set; } //id question jest mi potrzebne, bo muszę przypisać wybór do pytania podczas losowania
+                                            //id jest na stałe przypisane do pytania
+        public int? QuestionNumber { get; set; } //nr, jest dynamiczny
 
         /* Pytanie musi wiązać się z: 
            1. Z przypisanym do niego określonym wyborem 
@@ -24,8 +26,9 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 
         public string? QuestionContent { get; }
 
-        public Question(int? questionNumber = null, string? questionContent = null)
+        public Question(int questionId, int? questionNumber = null, string? questionContent = null)
         {
+            QuestionId = questionId;
             QuestionNumber = questionNumber;
             QuestionContent = questionContent;
             IsActive = true;

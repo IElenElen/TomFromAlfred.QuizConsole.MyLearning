@@ -11,6 +11,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
     public class QuizPresentationForUsersManagerApp //klasa prezentująca quiz
     {
+        private readonly MappingServiceApp _mappingServiceApp;
         private readonly QuestionsRaffleServiceApp _questionsListService;
         private readonly ChoiceServiceApp _choicesService;
         private readonly UsersChoicesManagerApp _usersChoicesManager;
@@ -19,12 +20,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
         private readonly int _questionNumber;
 
         public QuizPresentationForUsersManagerApp(
+            MappingServiceApp mappingServiceApp,
             QuestionsRaffleServiceApp questionsListService,
             ChoiceServiceApp choicesService,
             UsersChoicesManagerApp usersChoicesManager,
             ResultsAndUsersPointsManagerApp resultsManager,
             UsersExitManagerApp exitManager)
         {
+            //tu też coś z mappingu?
             _questionsListService = questionsListService ?? throw new ArgumentNullException(nameof(questionsListService));
             _choicesService = choicesService ?? throw new ArgumentNullException(nameof(choicesService));
             _usersChoicesManager = usersChoicesManager ?? throw new ArgumentNullException(nameof(usersChoicesManager));
@@ -32,10 +35,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             _exitManager = exitManager ?? throw new ArgumentNullException(nameof(exitManager));
         }
 
-        public void PresentAQuiz() 
+        public void PresentAQuiz()
         {
             Console.WriteLine("Rozpoczynamy quiz..."); // Debug
-            List<Question> randomQuestions = _questionsListService.GetRandomQuestions();
+            List<Question> randomQuestions = _questionsListService.GetRandomQuestionsWithUserNumbering();
 
             if (randomQuestions.Count == 0)
             {
@@ -46,7 +49,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
             HashSet<int> shownQuestions = new HashSet<int>();
             int displayNumber = 1;
-            Random random = new Random(); 
+            Random random = new Random();
 
             while (shownQuestions.Count < randomQuestions.Count)
             {
@@ -59,19 +62,24 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 shownQuestions.Add(nextQuestionIndex);
 
                 var question = randomQuestions[nextQuestionIndex];
-                var choices = _choicesService.GetChoicesForQuestion(question.QuestionNumber.ToString());
-                Console.WriteLine($"Pytanie {displayNumber}: {question.QuestionContent}");
 
-                foreach (var choice in choices)
+                int choiceId = _mappingServiceApp.GetChoiceForQuestion(question.QuestionId);
+                var choice = _choicesService.GetChoiceById(choiceId);
+                if (choice != null)
                 {
+                    Console.WriteLine($"Pytanie {displayNumber}: {question.QuestionContent}");
                     Console.WriteLine($"{choice.OptionLetter}: {choice.ChoiceContent}");
+                }
+                else
+                {
+                    Console.WriteLine($"Brak wyboru dla pytania o Id {question.QuestionNumber}.");
                 }
 
                 // Obsługa wyboru użytkownika
                 char userChoice = _usersChoicesManager.GetUserChoice();
 
                 // Weryfikacja odpowiedzi
-                bool isCorrect = _resultsManager.VerifyAnswer(question.QuestionContent, userChoice);
+                bool isCorrect = _resultsManager.VerifyAnswer(question.QuestionId, userChoice);
                 _resultsManager.DisplayResult(isCorrect);
 
                 // Sprawdź, czy użytkownik chce zakończyć quiz

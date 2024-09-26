@@ -13,8 +13,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     //potrzebuję update, jak mam też pytanie dodane... usunięte lub losowane...
     public class QuestionServiceApp : BaseApp<Question>
     {
-        public virtual List<Question> AllQuestions { get; private set; }
-
+        public List<Question> AllQuestions { get; set; } = new List<Question>();
         public QuestionServiceApp(IEnumerable<Question>? initialQuestions = null)
         {
             AllQuestions = (initialQuestions ?? Enumerable.Empty<Question>()).ToList();

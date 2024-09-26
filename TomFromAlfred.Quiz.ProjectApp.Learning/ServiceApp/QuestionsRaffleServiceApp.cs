@@ -20,7 +20,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         /* Losować chcę pytania pod kątem treści, ale ważna jest aktualizacja numerów pytań,
         bo jak usunę dane pytanie to wtedy numeracja musi być odpowiednia do zmian. */
-        public List<Question> GetRandomQuestions() //pobranie zlosowanej listy pytań
+        public List<Question> GetRandomQuestionsWithUserNumbering() //pobranie zlosowanej listy pytań
         {
             try
             {
@@ -35,8 +35,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
                 _questionServiceApp.UpdateQuestionNumbers();
 
-                var allRandomQuestions = allQuestions.OrderBy(q => _random.Next()).ToList();
-                return allRandomQuestions;
+                List<Question> shuffledQuestions = allQuestions.OrderBy(q => _random.Next()).ToList();
+
+                for (int i = 0; i < shuffledQuestions.Count; i++)
+                {
+                    shuffledQuestions[i].QuestionNumber = i + 1; // numeracja od 1 dla użytkownika
+                }
+
+                return shuffledQuestions;
             }
 
             catch (Exception ex)

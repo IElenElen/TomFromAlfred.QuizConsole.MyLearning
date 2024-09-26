@@ -16,6 +16,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
     public class QuestionsDataService
     {
         private readonly QuestionServiceApp _questionServiceApp;
+        private QuestionServiceApp questionServiceApp;
 
         public QuestionsDataService(QuestionServiceApp questionServiceApp, Question question)
         {
@@ -30,6 +31,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
             InitializeQuestions();
         }
 
+        public QuestionsDataService(QuestionServiceApp questionServiceApp)
+        {
+            this.questionServiceApp = questionServiceApp;
+        }
+
         private void InitializeQuestions()
         {
             _questionServiceApp.AllQuestions ??= new List<Question>();
@@ -38,9 +44,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
             {
                 _questionServiceApp.AllQuestions.AddRange(new List<Question>
                 {
-                    new(6, "Pytanie specjalnie do usuwania nr 1. Niech będzie odp A."),
-                    new(7, "Pytanie do usuwania nr 2. Odp C."),
-                    new(8, "Pytanie też do testu nr 3. Z odp B.")
+                    new(6, 6, "Pytanie specjalnie do usuwania nr 1. Niech będzie odp A."), //nr, id, treść pytania
+                    new(7, 7, "Pytanie do usuwania nr 2. Odp C."),
+                    new(8, 8, "Pytanie też do testu nr 3. Z odp B.")
                 });
             }
         }
@@ -50,7 +56,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
             return _questionServiceApp.GetAllQuestions();
         }
 
-        public void SaveToJson(string filePath)
+        public void SaveToJson(string filePath) //do pliku dopisać id dla question
         {
             if (string.IsNullOrEmpty(filePath))
             {

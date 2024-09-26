@@ -24,9 +24,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 throw new ArgumentException("Wybór o tym Id już istnieje.");
             }
             _choices.Add(choice);
-            UpdateChoiceId(choice.ChoiceId);
+            UpdateChoiceId(choice.ChoiceId); 
             Console.WriteLine($"Wybór o numerze {choice.ChoiceId} został dodany.");
-
         }
 
         public Choice GetChoiceById(int userChoiceId)
@@ -35,12 +34,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
             return _choices.FirstOrDefault(c => c.ChoiceId == choiceId)
                    ?? throw new KeyNotFoundException($"Wybór o podanym Id {choiceId} nie został znaleziony.");
-        }
-
-        public List<Choice> GetChoicesForQuestion(string questionContent)
-        {
-            // Załóżmy, że mamy metodę, która pozwala znaleźć wybory powiązane z pytaniem!!!
-            return _choices.Where(c => c.ChoiceContent == questionContent).ToList();
         }
 
         public void RemoveChoiceById(int userChoiceId)
@@ -67,7 +60,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
             for (int i = 0; i < _choices.Count; i++)
             {
-                _choices[i].ChoiceId = i;
+                if (_choices[i].ChoiceId == choiceId)
+                {
+                    _choices[i].ChoiceId = i;  
+                }
             }
 
             Console.WriteLine("Numery wyborów zostały zaktualizowane.");

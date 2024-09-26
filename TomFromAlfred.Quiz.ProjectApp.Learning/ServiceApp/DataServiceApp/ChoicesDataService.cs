@@ -21,17 +21,18 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
             _choices.AddRange(
             new List<Choice>
             {
-                new (6, EntitySupport.OptionLetter.A, "poprawna"),
-                new (6, EntitySupport.OptionLetter.B, "zła"),
-                new (6, EntitySupport.OptionLetter.C, "zła 2"),
+                new (EntitySupport.OptionLetter.A, 6, "poprawna"), //pamietać o tym, że w innej kolejności wyświetlić
+                                                                   //dla użytkownika!!!
+                new (EntitySupport.OptionLetter.B, 6, "zła"),
+                new (EntitySupport.OptionLetter.C, 6, "zła 2"),
 
-                new (7, EntitySupport.OptionLetter.A, "też nie"),
-                new (7, EntitySupport.OptionLetter.B, "nie"),
-                new (7, EntitySupport.OptionLetter.C, "dobra"),
+                new (EntitySupport.OptionLetter.A, 7, "też nie"),
+                new (EntitySupport.OptionLetter.B, 7, "nie"),
+                new (EntitySupport.OptionLetter.C, 7, "dobra"),
 
-                new (8, EntitySupport.OptionLetter.A, "też nie"),
-                new (8, EntitySupport.OptionLetter.B, "dobra"),
-                new (8, EntitySupport.OptionLetter.C, "nie")
+                new (EntitySupport.OptionLetter.A, 8, "też nie"),
+                new (EntitySupport.OptionLetter.B, 8, "dobra"),
+                new (EntitySupport.OptionLetter.C, 8, "nie")
             });
         }
 
@@ -39,11 +40,29 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
         {
             try
             {
+                var directory = Path.GetDirectoryName(filePath);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Console.WriteLine($"Katalog '{directory}' nie istnieje.");
+                    return; // przerwij dalsze operacje, jeśli katalog nie istnieje
+                }
+
                 JsonSerializerOptions options = new() { WriteIndented = true };
                 var json = JsonSerializer.Serialize(_choices, options);
                 File.WriteAllText(filePath, json);
             }
-
+            catch (UnauthorizedAccessException uae)
+            {
+                Console.WriteLine($"Brak dostępu do pliku: {uae.Message}");
+            }
+            catch (DirectoryNotFoundException dnf)
+            {
+                Console.WriteLine($"Nie znaleziono katalogu: {dnf.Message}");
+            }
+            catch (IOException ioEx)
+            {
+                Console.WriteLine($"Błąd we/wy podczas zapisu: {ioEx.Message}");
+            }
             catch (Exception ex)
             {
                 Console.WriteLine($"Błąd: {ex.Message}");
@@ -51,7 +70,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
         }
 
         public void LoadFromJson(string filePath)
-            {
+        {
             if (File.Exists(filePath))
             {
                 try
@@ -59,12 +78,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                     var json = File.ReadAllText(filePath);
                     _choices.Clear();
                     var loadedChoices = JsonSerializer.Deserialize<List<Choice>>(json);
-                    if (loadedChoices != null)
+                    if (loadedChoices != null && loadedChoices.Count > 0)
                     {
                         _choices.AddRange(loadedChoices);
                     }
                 }
-
+                catch (JsonException jsonEx)
+                {
+                    Console.WriteLine($"Błąd podczas deserializacji: {jsonEx.Message}");
+                }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Błąd: {ex.Message}");

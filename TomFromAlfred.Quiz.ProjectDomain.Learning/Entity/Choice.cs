@@ -11,11 +11,12 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
        to określony wybór muszę przypisać do określonego pytania */
     public class Choice
     {
-        public int? ChoiceId { get; set; }
         public EntitySupport.OptionLetter OptionLetter { get; set; }
+        public int ChoiceId { get; set; }
+
         public string? ChoiceContent { get; set; }
 
-        public Choice(EntitySupport.OptionLetter optionLetter, int? choiceId = null, string? choiceContent = null)
+        public Choice(EntitySupport.OptionLetter optionLetter, int choiceId, string? choiceContent = null)
         {
             if (!Enum.IsDefined(typeof(EntitySupport.OptionLetter), optionLetter))
             {

@@ -10,11 +10,11 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
     //Klasa poprawnych zestawów (do (numeru) pytania przypisana litera i treść poprawnej odpowiedzi (opcji w woborze))
     public class ContentCorrectSet
     {
-        public int? QuestionNumber { get; }
+        public int QuestionId { get; }
         public EntitySupport.OptionLetter LetterCorrectAnswer { get; }
         public string? ContentCorrectAnswer { get; }
 
-        public ContentCorrectSet(EntitySupport.OptionLetter letterCorrectAnswer, int? questionNumber = null, string? contentCorrectAnswer = null)
+        public ContentCorrectSet(EntitySupport.OptionLetter letterCorrectAnswer, int questionId, string? contentCorrectAnswer = null)
         {
             if (!Enum.IsDefined(typeof(EntitySupport.OptionLetter), letterCorrectAnswer))
             {
@@ -22,7 +22,7 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
             }
 
             LetterCorrectAnswer = letterCorrectAnswer;
-            QuestionNumber = questionNumber; 
+            QuestionId = questionId; 
             ContentCorrectAnswer = contentCorrectAnswer; 
         }
     }

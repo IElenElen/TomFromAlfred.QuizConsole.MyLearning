@@ -11,6 +11,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
+            //kolejność do poprawy w entity.... 
             Console.WriteLine("Masakra");
 
             // Poniżej daję info użytkownikowi
@@ -20,11 +21,13 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             Console.WriteLine();
 
             // Inicjalizacja serwisów i menedżerów
+            
             var questionServiceApp = new QuestionServiceApp(); 
             var questionsDataService = new QuestionsDataService(questionServiceApp); //przekazanie instancji
             var questionsRaffleService = new QuestionsRaffleServiceApp(questionServiceApp); //używanie tej samej instancji
 
             var choiceService = new ChoiceServiceApp();
+            var mappingServiceApp = new MappingServiceApp();
             var inputReader = new ConsoleInputReaderManagerApp();
             var usersChoicesManager = new UsersChoicesManagerApp(inputReader);
 
@@ -36,6 +39,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
             var quizManager = new QuizPresentationForUsersManagerApp
             (
+                mappingServiceApp,
                 questionsRaffleService, 
                 choiceService,
                 usersChoicesManager,
