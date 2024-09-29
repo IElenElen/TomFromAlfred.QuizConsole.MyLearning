@@ -8,8 +8,8 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
     public class Question
     {
-        /* Zmiana podejścia. Treść pytań przypisana do numerów pytań, 
-           a losowanie to będzie stworzenie nowej listy, użytkownik zobaczy numerację pytań od 1 do X, 
+        /* Pytania mają swoje id, do wyświetlania zaś numery. 
+           Losowanie to będzie stworzenie nowej listy, użytkownik zobaczy numerację pytań od 1 do X, 
            a faktycznie rzecz biorąc za każdym nowym podejściem do quizu, pytania będą losowane. */
 
         //Właściwości możliwe dopiero do wprowadzenia, zatem są nullable czyli numer i treść

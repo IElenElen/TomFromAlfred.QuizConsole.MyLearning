@@ -41,7 +41,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
            która generuje losowe pytania i ustawia ich numerację od 1 do n,
            tak aby były zrozumiałe dla użytkownika. */
 
-        public void PresentAQuiz()
+        public void PresentAQuiz() //dopracować
         {
             Console.WriteLine("Rozpoczynamy quiz..."); // Debug
             List<Question> randomQuestions = _questionsListService.GetRandomQuestionsWithUserNumbering();
