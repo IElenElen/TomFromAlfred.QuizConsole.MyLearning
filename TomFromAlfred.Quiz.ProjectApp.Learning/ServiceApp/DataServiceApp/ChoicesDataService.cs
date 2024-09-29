@@ -21,18 +21,17 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
             _choices.AddRange(
             new List<Choice>
             {
-                new (EntitySupport.OptionLetter.A, 6, "poprawna"), //pamietać o tym, że w innej kolejności wyświetlić
-                                                                   //dla użytkownika!!!
-                new (EntitySupport.OptionLetter.B, 6, "zła"),
-                new (EntitySupport.OptionLetter.C, 6, "zła 2"),
+                new (6, 6, EntitySupport.OptionLetter.A, "poprawna"), //id wyboru, nr wyboru, litera opcji, treść wyboru
+                new (6, 6, EntitySupport.OptionLetter.B, "zła"),
+                new (6, 6, EntitySupport.OptionLetter.C, "zła 2"),
 
-                new (EntitySupport.OptionLetter.A, 7, "też nie"),
-                new (EntitySupport.OptionLetter.B, 7, "nie"),
-                new (EntitySupport.OptionLetter.C, 7, "dobra"),
+                new (7, 7, EntitySupport.OptionLetter.A, "też nie"),
+                new (7, 7, EntitySupport.OptionLetter.B, "nie"),
+                new (7, 7, EntitySupport.OptionLetter.C, "dobra"),
 
-                new (EntitySupport.OptionLetter.A, 8, "też nie"),
-                new (EntitySupport.OptionLetter.B, 8, "dobra"),
-                new (EntitySupport.OptionLetter.C, 8, "nie")
+                new (8, 8, EntitySupport.OptionLetter.A, "też nie"),
+                new (8, 8, EntitySupport.OptionLetter.B, "dobra"),
+                new (8, 8, EntitySupport.OptionLetter.C, "nie")
             });
         }
 

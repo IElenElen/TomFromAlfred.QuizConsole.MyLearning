@@ -23,9 +23,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 ContentCorrectSets = new List<ContentCorrectSet>();
             }
 
-            var newCorrectSet = new ContentCorrectSet(optionLetter, questionId, contentCorrectAnswer); 
-                                //tu chyba kolejność nie będzie miała znaczenia, bo użytkownikowi tyko mówię, że jest ok,
-                                //bez rozpisywania się
+            var newCorrectSet = new ContentCorrectSet(questionId, optionLetter, contentCorrectAnswer); 
+                
             ContentCorrectSets.Add(newCorrectSet);
         }
 

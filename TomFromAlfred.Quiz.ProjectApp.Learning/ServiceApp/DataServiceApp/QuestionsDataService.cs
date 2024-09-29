@@ -44,7 +44,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
             {
                 _questionServiceApp.AllQuestions.AddRange(new List<Question>
                 {
-                    new(6, 6, "Pytanie specjalnie do usuwania nr 1. Niech będzie odp A."), //nr, id, treść pytania
+                    new(6, 6, "Pytanie specjalnie do usuwania nr 1. Niech będzie odp A."), //id, nr, treść pytania
                     new(7, 7, "Pytanie do usuwania nr 2. Odp C."),
                     new(8, 8, "Pytanie też do testu nr 3. Z odp B.")
                 });

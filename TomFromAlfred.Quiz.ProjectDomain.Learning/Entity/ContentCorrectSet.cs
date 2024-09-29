@@ -14,15 +14,15 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
         public EntitySupport.OptionLetter LetterCorrectAnswer { get; }
         public string? ContentCorrectAnswer { get; }
 
-        public ContentCorrectSet(EntitySupport.OptionLetter letterCorrectAnswer, int questionId, string? contentCorrectAnswer = null)
+        public ContentCorrectSet(int questionId, EntitySupport.OptionLetter letterCorrectAnswer, string? contentCorrectAnswer = null)
         {
             if (!Enum.IsDefined(typeof(EntitySupport.OptionLetter), letterCorrectAnswer))
             {
                 throw new ArgumentException("Niepoprawna wartość dla Letter Correct Answer.", nameof(letterCorrectAnswer));
             }
 
+            QuestionId = questionId;
             LetterCorrectAnswer = letterCorrectAnswer;
-            QuestionId = questionId; 
             ContentCorrectAnswer = contentCorrectAnswer; 
         }
     }

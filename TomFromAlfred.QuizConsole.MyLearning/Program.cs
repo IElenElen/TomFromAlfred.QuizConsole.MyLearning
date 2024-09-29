@@ -11,7 +11,6 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
-            //kolejność do poprawy w entity.... 
             Console.WriteLine("Masakra");
 
             // Poniżej daję info użytkownikowi
@@ -47,7 +46,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 exitManager
             );
 
-            // Rozpoczęcie quizu
+            // wyświetlenie quizu
             quizManager.PresentAQuiz();
         }
     }

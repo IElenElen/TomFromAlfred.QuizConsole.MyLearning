@@ -20,7 +20,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
         public void InitializeData()
         {
-            ContentCorrectSets.Add(new ContentCorrectSet(EntitySupport.OptionLetter.A, 9, " ")); //na razie zmyślone
+            ContentCorrectSets.Add(new ContentCorrectSet(9, EntitySupport.OptionLetter.A, " ")); //na razie zmyślone
         }
 
         public void LoadDataFromJson(string filePath)

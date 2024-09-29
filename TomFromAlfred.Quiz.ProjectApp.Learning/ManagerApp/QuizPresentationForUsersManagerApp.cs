@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
@@ -18,6 +19,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
         private readonly ResultsAndUsersPointsManagerApp _resultsManager;
         private readonly UsersExitManagerApp _exitManager;
         private readonly int _questionNumber;
+        private readonly object _entitySupport;
 
         public QuizPresentationForUsersManagerApp(
             MappingServiceApp mappingServiceApp,
@@ -35,6 +37,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             _exitManager = exitManager ?? throw new ArgumentNullException(nameof(exitManager));
         }
 
+        /* Gdy system wyświetla pytania, używa np. metody DisplayQuestions,
+           która generuje losowe pytania i ustawia ich numerację od 1 do n,
+           tak aby były zrozumiałe dla użytkownika. */
+
         public void PresentAQuiz()
         {
             Console.WriteLine("Rozpoczynamy quiz..."); // Debug
@@ -46,52 +52,16 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 return;
             }
 
-
             HashSet<int> shownQuestions = new HashSet<int>();
             int displayNumber = 1;
             Random random = new Random();
 
-            while (shownQuestions.Count < randomQuestions.Count)
-            {
-                int nextQuestionIndex;
-                do
-                {
-                    nextQuestionIndex = random.Next(randomQuestions.Count);
-                } while (shownQuestions.Contains(nextQuestionIndex));
-
-                shownQuestions.Add(nextQuestionIndex);
-
-                var question = randomQuestions[nextQuestionIndex];
-
-                int choiceId = _mappingServiceApp.GetChoiceForQuestion(question.QuestionId);
-                var choice = _choicesService.GetChoiceById(choiceId);
-                if (choice != null)
-                {
-                    Console.WriteLine($"Pytanie {displayNumber}: {question.QuestionContent}");
-                    Console.WriteLine($"{choice.OptionLetter}: {choice.ChoiceContent}");
-                }
-                else
-                {
-                    Console.WriteLine($"Brak wyboru dla pytania o Id {question.QuestionNumber}.");
-                }
-
+            
                 // Obsługa wyboru użytkownika
                 char userChoice = _usersChoicesManager.GetUserChoice();
 
-                // Weryfikacja odpowiedzi
-                bool isCorrect = _resultsManager.VerifyAnswer(question.QuestionId, userChoice);
-                _resultsManager.DisplayResult(isCorrect);
-
-                // Sprawdź, czy użytkownik chce zakończyć quiz
-                if (_exitManager.CheckForExit())
-                {
-                    Console.WriteLine("Zakończenie quizu na żądanie użytkownika."); // Debug
-                    break;
-                }
-
-                displayNumber++;
                 Console.WriteLine();
-            }
+            
             // Wyświetl wynik końcowy
             _resultsManager.DisplayFinalScore();
         }
