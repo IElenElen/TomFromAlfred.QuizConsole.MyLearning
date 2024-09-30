@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.Abstract
 {
-    public interface IOperations<T> //interfejs generyczny
+    public interface IOperations<T> //interfejs generyczny, zawiera elementarne metody
     {
         List<T> GetAll();
         void Add(T entity);

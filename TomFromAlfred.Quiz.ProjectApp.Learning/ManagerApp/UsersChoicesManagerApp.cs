@@ -10,7 +10,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
     public class UsersChoicesManagerApp // klasa zarządza interakcjami z użytkownikiem //tę klasę z metodami zostawiłabym już jako managera...
     {
-        private readonly IUserInputReader _inputReader; //pole przechowujące obiekt implementujący interfejs IUserInputReader, używany do odczytywania danych wejściowych od użytkownika
+        private readonly IUserInputReader _inputReader; //pole przechowujące obiekt implementujący interfejs IUserInputReader,
+                                                        //używany do odczytywania danych wejściowych od użytkownika
 
         public UsersChoicesManagerApp(IUserInputReader inputReader)
         {
@@ -21,12 +22,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
         {
             Console.WriteLine();
             Console.Write("Twój wybór (wpisz a, b lub c): ");  // wyświetlenie komunikatu z prośbą o dokonanie wyboru
-            ConsoleKeyInfo keyInfo = _inputReader.ReadKey(); // Odczytuje klawisz użytkownika
+            ConsoleKeyInfo keyInfo = _inputReader.ReadKey(); 
             Console.WriteLine($"\nNaciśnięty klawisz: {keyInfo.KeyChar}");
             char userChoice = char.ToLower(keyInfo.KeyChar); //konwersja do małej litery
 
-            // Dodatkowa walidacja wyboru użytkownika
-            while (!char.IsLetter(userChoice) || (userChoice != 'a' && userChoice != 'b' && userChoice != 'c'))
+            while (!char.IsLetter(userChoice) || (userChoice != 'a' && userChoice != 'b' && userChoice != 'c')) //walidacja wyboru użytkownika
             {
                 Console.WriteLine();
                 Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.");

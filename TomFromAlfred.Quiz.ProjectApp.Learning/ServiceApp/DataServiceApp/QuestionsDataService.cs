@@ -22,8 +22,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
         {
             _questionServiceApp = questionServiceApp ?? throw new ArgumentNullException(nameof(questionServiceApp));
 
-            // Sprawdzenie, czy dane pytanie już istnieje w systemie
-            if (_questionServiceApp.AllQuestions.Any(q => q.QuestionContent == question.QuestionContent))
+            if (_questionServiceApp.AllQuestions.Any(q => q.QuestionContent == question.QuestionContent)) //czy pytanie już istnieje?
             {
                 throw new InvalidOperationException("Takie pytanie już istnieje.");
             }

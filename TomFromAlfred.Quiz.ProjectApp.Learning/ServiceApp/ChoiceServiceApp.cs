@@ -11,8 +11,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     //Menadżery rozmawiają z klientem, serwisy odpowiadają za pamięć i dane.
     //Po interfejsie dziedziczy serwis a nie klasa bazowa!!!
 
-    // Do zrobienia metoda, która pozwala znaleźć wybory powiązane z pytaniem!!!
-
     public class ChoiceServiceApp : BaseApp<Choice> 
     {
         private readonly List<Choice> _choices = new List<Choice>();

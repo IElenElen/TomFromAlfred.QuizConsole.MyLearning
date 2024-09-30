@@ -14,6 +14,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             Console.WriteLine("Cofam się w rozwoju...");
 
             // Poniżej daję info użytkownikowi
+
             Console.WriteLine("Pytania poniższego quizu są jednokrotnego wyboru. Po zapoznaniu się z treścią pytania naciśnij a, b lub c,");
             Console.WriteLine("wybierając odpowiedź według Ciebie poprawną.");
             Console.WriteLine("Za poprawną odpowiedż otrzymasz jeden punkt, za błędną brak punktu.");

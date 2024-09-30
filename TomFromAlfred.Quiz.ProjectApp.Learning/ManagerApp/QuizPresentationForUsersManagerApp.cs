@@ -12,7 +12,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
     public class QuizPresentationForUsersManagerApp //klasa prezentująca quiz
     {
-        private readonly MappingServiceApp _mappingServiceApp;
+        private readonly MappingServiceApp _mappingServiceApp; //zakres, możliwość działania, typ obiketu, pole
         private readonly QuestionsRaffleServiceApp _questionsListService;
         private readonly ChoiceServiceApp _choicesService;
         private readonly UsersChoicesManagerApp _usersChoicesManager;
@@ -22,14 +22,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
         private readonly object _entitySupport;
 
         public QuizPresentationForUsersManagerApp(
-            MappingServiceApp mappingServiceApp,
+            MappingServiceApp mappingServiceApp, //typ, parametr
             QuestionsRaffleServiceApp questionsListService,
             ChoiceServiceApp choicesService,
             UsersChoicesManagerApp usersChoicesManager,
             ResultsAndUsersPointsManagerApp resultsManager,
             UsersExitManagerApp exitManager)
         {
-            //tu też coś z mappingu?
+            _mappingServiceApp = mappingServiceApp ?? throw new ArgumentNullException(nameof(mappingServiceApp)); //pole, wartość do pola przypisana
+                                                   //?? sprawdzam czy jest null, Argument... = typ wyjątku
             _questionsListService = questionsListService ?? throw new ArgumentNullException(nameof(questionsListService));
             _choicesService = choicesService ?? throw new ArgumentNullException(nameof(choicesService));
             _usersChoicesManager = usersChoicesManager ?? throw new ArgumentNullException(nameof(usersChoicesManager));
@@ -41,7 +42,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
            która generuje losowe pytania i ustawia ich numerację od 1 do n,
            tak aby były zrozumiałe dla użytkownika. */
 
-        public void PresentAQuiz()
+        public void PresentAQuiz() 
         {
             Console.WriteLine("Rozpoczynamy quiz...");
             List<Question> randomQuestions = _questionsListService.GetRandomQuestionsWithUserNumbering();
@@ -54,33 +55,26 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
             foreach (var question in randomQuestions)
             {
-                // Wyświetlanie treści pytania
                 Console.WriteLine($"Pytanie {question.QuestionNumber}: {question.QuestionContent}");
 
-                // Pobieranie wyborów związanych z tym pytaniem
                 var choices = _choicesService.GetAllChoices().Where(c => c.ChoiceId == question.QuestionId).ToList();
 
                 foreach (var choice in choices)
                 {
-                    // Wyświetlanie opcji wyboru (np. A: ..., B: ...)
                     Console.WriteLine($"{choice.OptionLetter}: {choice.ChoiceContent}");
                 }
 
-                // Pobieranie wyboru użytkownika
                 char userChoice = _usersChoicesManager.GetUserChoice();
 
-                // Weryfikacja odpowiedzi
                 bool result = _resultsManager.VerifyAnswer(question.QuestionId, userChoice);
                 _resultsManager.DisplayResult(result);
 
-                // Sprawdzanie, czy użytkownik chce zakończyć quiz
                 if (_exitManager.CheckForExit())
                 {
                     break;
                 }
             }
 
-            // Wyświetlenie wyniku końcowego
             _resultsManager.DisplayFinalScore();
         }
     }

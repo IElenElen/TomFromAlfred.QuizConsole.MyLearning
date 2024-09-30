@@ -10,7 +10,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
     //Klasa serwisowa pytań odpowiada za dodawanie, zmiany i usuwanie pytań
 
-    //potrzebuję update, jak mam też pytanie dodane... usunięte lub losowane...
     public class QuestionServiceApp : BaseApp<Question>
     {
         public List<Question> AllQuestions { get; set; } = new List<Question>();
