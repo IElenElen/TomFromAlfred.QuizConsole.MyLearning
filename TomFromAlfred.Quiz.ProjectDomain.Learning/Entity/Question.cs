@@ -23,9 +23,9 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
            1. Z przypisanym do niego określonym wyborem 
            2. Z poprawną odpowiedzią */
 
-        public string? QuestionContent { get; }
+        public string? QuestionContent { get; set; }
 
-        public bool IsActive; //nie wszystkie pytania muszą być aktywne w danym momencie
+        public bool IsActive { get; set; } //nie wszystkie pytania muszą być aktywne w danym momencie
 
         public Question(int questionId, int? questionNumber = null, string? questionContent = null)
         {

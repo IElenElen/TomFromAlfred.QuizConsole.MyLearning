@@ -22,6 +22,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
         public bool VerifyAnswer(int questionId, char userChoice)
         {
+            if (!_answerVerifierServiceApp.ContentCorrectSets.Any(c => c.QuestionId == questionId))
+            {
+                Console.WriteLine("Nieprawidłowe Id pytania.");
+                return false;
+            }
 
             return _answerVerifierServiceApp.GetPointsForAnswer(questionId, userChoice);
         }

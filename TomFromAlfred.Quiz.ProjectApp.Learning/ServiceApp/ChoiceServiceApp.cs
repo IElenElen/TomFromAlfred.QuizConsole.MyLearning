@@ -50,10 +50,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             if (choice != null)
             {
                 _choices.Remove(choice);
+                Console.WriteLine($"Wybór o numerze {userChoiceNumber} został usunięty.");
+            }
+
+            else
+            {
+                Console.WriteLine($"Nie znaleziono wyboru o numerze {userChoiceNumber}.");
             }
 
             UpdateChoiceNumber(choiceNumber);
-            Console.WriteLine($"Wybór o numerze {choiceNumber} został usunięty.");
         }
 
         public void UpdateChoiceNumber(int choiceNumber)

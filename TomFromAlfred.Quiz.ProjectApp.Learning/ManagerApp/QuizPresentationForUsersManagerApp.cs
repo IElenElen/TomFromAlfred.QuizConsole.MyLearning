@@ -41,28 +41,46 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
            która generuje losowe pytania i ustawia ich numerację od 1 do n,
            tak aby były zrozumiałe dla użytkownika. */
 
-        public void PresentAQuiz() //dopracować
+        public void PresentAQuiz()
         {
-            Console.WriteLine("Rozpoczynamy quiz..."); // Debug
+            Console.WriteLine("Rozpoczynamy quiz...");
             List<Question> randomQuestions = _questionsListService.GetRandomQuestionsWithUserNumbering();
 
             if (randomQuestions.Count == 0)
             {
-                Console.WriteLine("Brak pytań w quizie."); // Debug
+                Console.WriteLine("Brak pytań w quizie.");
                 return;
             }
 
-            HashSet<int> shownQuestions = new HashSet<int>();
-            int displayNumber = 1;
-            Random random = new Random();
+            foreach (var question in randomQuestions)
+            {
+                // Wyświetlanie treści pytania
+                Console.WriteLine($"Pytanie {question.QuestionNumber}: {question.QuestionContent}");
 
-            
-                // Obsługa wyboru użytkownika
+                // Pobieranie wyborów związanych z tym pytaniem
+                var choices = _choicesService.GetAllChoices().Where(c => c.ChoiceId == question.QuestionId).ToList();
+
+                foreach (var choice in choices)
+                {
+                    // Wyświetlanie opcji wyboru (np. A: ..., B: ...)
+                    Console.WriteLine($"{choice.OptionLetter}: {choice.ChoiceContent}");
+                }
+
+                // Pobieranie wyboru użytkownika
                 char userChoice = _usersChoicesManager.GetUserChoice();
 
-                Console.WriteLine();
-            
-            // Wyświetl wynik końcowy
+                // Weryfikacja odpowiedzi
+                bool result = _resultsManager.VerifyAnswer(question.QuestionId, userChoice);
+                _resultsManager.DisplayResult(result);
+
+                // Sprawdzanie, czy użytkownik chce zakończyć quiz
+                if (_exitManager.CheckForExit())
+                {
+                    break;
+                }
+            }
+
+            // Wyświetlenie wyniku końcowego
             _resultsManager.DisplayFinalScore();
         }
     }

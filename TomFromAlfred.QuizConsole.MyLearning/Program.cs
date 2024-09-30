@@ -11,7 +11,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Masakra");
+            Console.WriteLine("Cofam się w rozwoju...");
 
             // Poniżej daję info użytkownikowi
             Console.WriteLine("Pytania poniższego quizu są jednokrotnego wyboru. Po zapoznaniu się z treścią pytania naciśnij a, b lub c,");

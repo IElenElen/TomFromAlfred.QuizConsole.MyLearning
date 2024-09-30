@@ -26,7 +26,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             char userChoice = char.ToLower(keyInfo.KeyChar); //konwersja do małej litery
 
             // Dodatkowa walidacja wyboru użytkownika
-            while (userChoice != 'a' && userChoice != 'b' && userChoice != 'c')
+            while (!char.IsLetter(userChoice) || (userChoice != 'a' && userChoice != 'b' && userChoice != 'c'))
             {
                 Console.WriteLine();
                 Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.");

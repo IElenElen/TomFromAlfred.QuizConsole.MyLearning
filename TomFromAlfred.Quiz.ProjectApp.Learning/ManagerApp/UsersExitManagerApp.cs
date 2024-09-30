@@ -20,8 +20,13 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                         Console.WriteLine("Quiz został zatrzymany.");
                         return true;
                     }
+                    else if (userInputX == 'n')
+                    {
+                    return false;
+                    }
 
-            return false;
+            Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.");
+            return CheckForExit(); // rekursywne wywołanie, jeśli użytkownik wpisał coś innego
         }
     }
 }

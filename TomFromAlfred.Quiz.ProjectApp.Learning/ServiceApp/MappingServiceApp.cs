@@ -11,13 +11,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     {
         private EntitySupport _entitySupport { get; }
 
-        public MappingServiceApp(EntitySupport entitySupport)
+        public MappingServiceApp(EntitySupport entitySupport = null)
         {
-            _entitySupport = entitySupport;
-        }
-
-        public MappingServiceApp()
-        {
+            _entitySupport = entitySupport ?? new EntitySupport();
         }
 
         public void AddChoiceToQuestion(int questionId, int choiceId)
@@ -25,6 +21,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             if (_entitySupport.QuestionIdToChoiceId.ContainsKey(questionId))
             {
                 throw new ArgumentException($"Pytanie o Id {questionId} już ma przypisany wybór o Id {_entitySupport.QuestionIdToChoiceId[questionId]}.");
+            }
+
+            if (!_entitySupport.QuestionIdToChoiceId.ContainsValue(choiceId))
+            {
+                throw new ArgumentException($"Nie znaleziono wyboru o Id {choiceId}.");
             }
 
             _entitySupport.QuestionIdToChoiceId[questionId] = choiceId;

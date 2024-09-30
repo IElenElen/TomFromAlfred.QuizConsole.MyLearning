@@ -30,7 +30,17 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                 try
                 {
                     var json = File.ReadAllText(filePath);
-                    ContentCorrectSets = JsonSerializer.Deserialize<List<ContentCorrectSet>>(json) ?? new List<ContentCorrectSet>();
+
+                    var loadedData = JsonSerializer.Deserialize<List<ContentCorrectSet>>(json);
+
+                    if (loadedData == null || loadedData.Any(c => c.QuestionId <= 0 || !Enum.IsDefined(typeof(EntitySupport.OptionLetter), c.LetterCorrectAnswer)))
+                    {
+                        Console.WriteLine("Dane odpowiedzi są niekompletne lub niepoprawne.");
+                        InitializeData();
+                        return;
+                    }
+
+                    ContentCorrectSets = loadedData;
                 }
                 catch (JsonException jsonEx)
                 {
@@ -64,6 +74,13 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
             try
             {
+                var directory = Path.GetDirectoryName(filePath);
+
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory); //system tworzy katalog
+                }
+
                 var options = new JsonSerializerOptions { WriteIndented = true };
                 var json = JsonSerializer.Serialize(ContentCorrectSets, options);
                 File.WriteAllText(filePath, json);

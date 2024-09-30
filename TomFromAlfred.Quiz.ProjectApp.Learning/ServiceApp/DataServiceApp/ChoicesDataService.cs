@@ -42,8 +42,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                 var directory = Path.GetDirectoryName(filePath);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
-                    Console.WriteLine($"Katalog '{directory}' nie istnieje.");
-                    return; // przerwij dalsze operacje, jeśli katalog nie istnieje
+                    Directory.CreateDirectory(directory); // tworzenie brakującego katalogu
+                    Console.WriteLine($"Katalog '{directory}' został utworzony.");
                 }
 
                 JsonSerializerOptions options = new() { WriteIndented = true };
@@ -77,6 +77,13 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                     var json = File.ReadAllText(filePath);
                     _choices.Clear();
                     var loadedChoices = JsonSerializer.Deserialize<List<Choice>>(json);
+
+                    if (loadedChoices == null || loadedChoices.Any(c => string.IsNullOrEmpty(c.ChoiceContent))) //walidacja
+                    {
+                        Console.WriteLine("Błąd w danych wyboru. Nie wszystkie pola są poprawne.");
+                        return;
+                    }
+
                     if (loadedChoices != null && loadedChoices.Count > 0)
                     {
                         _choices.AddRange(loadedChoices);

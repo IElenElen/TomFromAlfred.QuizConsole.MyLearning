@@ -29,6 +29,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 
         public void Update(T entity)
         {
+            var existingEntity = Entities.FirstOrDefault(e => e.Equals(entity));
             if (entity != null)
             {
                 Console.WriteLine($"Aktualizacja encji: {entity}");

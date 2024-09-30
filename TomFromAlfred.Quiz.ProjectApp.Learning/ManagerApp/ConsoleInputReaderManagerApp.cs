@@ -11,7 +11,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
     {
         public ConsoleKeyInfo ReadKey()
         {
-            return Console.ReadKey(intercept: true);
+            ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
+            Console.Write(keyInfo.KeyChar); // wyświetlenie znaku na konsoli po naciśnięciu klawisza
+            return keyInfo;
         }
     }
 }
