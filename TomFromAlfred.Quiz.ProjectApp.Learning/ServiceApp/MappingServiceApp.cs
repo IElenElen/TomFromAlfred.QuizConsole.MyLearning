@@ -30,6 +30,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             }
 
             _entitySupport.QuestionIdToChoiceId[questionId] = choiceId;
+            Console.WriteLine($"Zmapowano QuestionId {questionId} z ChoiceId {choiceId}");
         }
 
         public int GetChoiceForQuestion(int questionId)
@@ -39,7 +40,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 return choiceId; // zwraca znaleziony choiceId
             }
 
-            throw new KeyNotFoundException($"Nie znaleziono wyboru dla pytania o ID {questionId}.");
+            throw new KeyNotFoundException($"Nie znaleziono wyboru dla pytania o Id {questionId}.");
         }
     }
 }

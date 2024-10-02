@@ -29,10 +29,22 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 
         public Question(int questionId, int? questionNumber = null, string? questionContent = null)
         {
+            if (string.IsNullOrEmpty(questionContent))
+            {
+                Console.WriteLine($"Uwaga: Pytanie o Id {questionId} ma pustą treść.");
+            }
+
+            if (questionNumber == null)
+            {
+                Console.WriteLine($"Uwaga: Pytanie o Id {questionId} nie ma przypisanego numeru.");
+            }
+
             QuestionId = questionId;
             QuestionNumber = questionNumber;
             QuestionContent = questionContent;
             IsActive = true;
+
+            Console.WriteLine($"Pytanie z Id {QuestionId} zostało utworzone. Treść pytania: {QuestionContent ?? "brak"}");
         }
     }
 }

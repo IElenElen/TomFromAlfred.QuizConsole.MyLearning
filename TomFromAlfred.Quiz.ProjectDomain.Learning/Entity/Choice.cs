@@ -9,6 +9,8 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
     /* Muszę pamiętać, że jeśli zmieni się kolejność pytań
        to określony wybór muszę przypisać do określonego pytania */
+
+    //Console do sprawdzenia tutaj!!!
     public class Choice
     {
         //Id jest dla mnie, użytkownik widzi tylko numer
@@ -22,15 +24,27 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 
         public Choice(int choiceId, int? choiceNumber, EntitySupport.OptionLetter optionLetter, string? choiceContent = null)
         {
+            if (choiceNumber == null)
+            {
+                Console.WriteLine($"Uwaga: Wybór o Id {choiceId} nie ma przypisanego numeru.");
+            }
+
             if (!Enum.IsDefined(typeof(EntitySupport.OptionLetter), optionLetter))
             {
                 throw new ArgumentException("Niepoprawna wartość dla Option Letter.", nameof(optionLetter));
+            }
+
+            if (string.IsNullOrEmpty(choiceContent))
+            {
+                Console.WriteLine($"Uwaga: Wybór o Id {choiceId} ma pustą treść.");
             }
 
             ChoiceId = choiceId;
             ChoiceNumber = choiceNumber;
             OptionLetter = optionLetter;
             ChoiceContent = choiceContent;
+
+            Console.WriteLine($"Wybór z Id {ChoiceId} został utworzony. Treść wyboru: {ChoiceContent ?? "brak"}");
         }
     }
 }

@@ -11,7 +11,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Cofam się w rozwoju...");
+            Console.WriteLine("Cofam się w rozwoju..."); //komentarze w quiz dokończyć i jeszcze raz analiza mojego rozumowania!!!
 
             // Poniżej daję info użytkownikowi
 

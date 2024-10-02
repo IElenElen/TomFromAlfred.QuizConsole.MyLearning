@@ -22,12 +22,14 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
         public int AssignQuestionId() //przypisanie id dla entity Question
         {
             _questionId++; //inkrementacja licznika pytań
+            Console.WriteLine($"Przypisano nowe QuestionId: {_questionId}"); // śledzenie inkrementacji QuestionId
             return _questionId; //zwracanie nowego QuestionId
         }
 
         public int AssignChoiceId() //przypisanie id dla entity Choice (analogia dla Question)
         {
             _choiceId++;
+            Console.WriteLine($"Przypisano nowe ChoiceId: {_choiceId}"); // śledzenie inkrementacji ChoiceId
             return _choiceId;
         }
 
