@@ -21,7 +21,8 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             Console.WriteLine();
 
             // Inicjalizacja serwisów i menedżerów
-            
+            Console.WriteLine("Inicjalizacja serwisów...");
+
             var questionServiceApp = new QuestionServiceApp(); 
             var questionsDataService = new QuestionsDataService(questionServiceApp); //przekazanie instancji
             var questionsRaffleService = new QuestionsRaffleServiceApp(questionServiceApp); //używanie tej samej instancji
@@ -48,7 +49,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             );
 
             // wyświetlenie quizu
+            Console.WriteLine("Rozpoczynamy quiz...");
             quizManager.PresentAQuiz();
+            Console.WriteLine("Quiz zakończony.");
         }
     }
 }

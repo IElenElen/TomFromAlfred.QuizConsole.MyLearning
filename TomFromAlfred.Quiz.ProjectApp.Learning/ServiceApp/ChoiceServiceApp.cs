@@ -17,9 +17,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public void AddChoice(Choice choice)
         {
+            Console.WriteLine($"Próba dodania wyboru o numerze: {choice.ChoiceNumber}.");
+
             int choiceNumber = choice.ChoiceNumber.GetValueOrDefault(0); //jeśli ChoiceNr jest null, system poda 0 jako domyślną wartość
             if (_choices.Any(c => c.ChoiceNumber == choice.ChoiceNumber))
             {
+                Console.WriteLine("Wybór o podanym id istnieje.");
                 throw new ArgumentException("Wybór o tym Id już istnieje.");
             }
             _choices.Add(choice);
@@ -29,13 +32,16 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public Choice GetChoiceById(int choiceId)
         {
+            Console.WriteLine($"Próba pobrania wyboru o ID: {choiceId}.");
             return _choices.FirstOrDefault(c => c.ChoiceId == choiceId);
         }
 
         public Choice GetChoiceByNumber(int userChoiceNumber)
         {
             int choiceNumber = userChoiceNumber - 1;
+            Console.WriteLine($"Próba pobrania wyboru o numerze: {userChoiceNumber}.");
 
+            Console.WriteLine($"Wybór o numerze {userChoiceNumber} nie został znaleziony.");
             return _choices.FirstOrDefault(c => c.ChoiceNumber == choiceNumber)
                    ?? throw new KeyNotFoundException($"Wybór o podanym Id {choiceNumber} nie został znaleziony.");
         }
@@ -43,6 +49,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         public void RemoveChoiceByNumber(int userChoiceNumber)
         {
             int choiceNumber = userChoiceNumber - 1;
+            Console.WriteLine($"Próba usunięcia wyboru o numerze: {userChoiceNumber}.");
 
             var choice = GetChoiceByNumber(choiceNumber);
             if (choice != null)
@@ -67,6 +74,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 return;
             }
 
+            Console.WriteLine("Aktualizacja numerów wyborów...");
+
             for (int i = 0; i < _choices.Count; i++)
             {
                 if (_choices[i].ChoiceNumber == choiceNumber)
@@ -80,6 +89,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public List<Choice> GetAllChoices()
         {
+            Console.WriteLine($"Pobieranie wszystkich wyborów, liczba wyborów: {_choices.Count}.");
             return new List<Choice>(_choices);
         }
     }

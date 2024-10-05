@@ -22,6 +22,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
         public bool VerifyAnswer(int questionId, char userChoice)
         {
+            Console.WriteLine($"Weryfikacja odpowiedzi dla pytania {questionId}...");
+
             if (!_answerVerifierServiceApp.ContentCorrectSets.Any(c => c.QuestionId == questionId))
             {
                 Console.WriteLine("Nieprawidłowe Id pytania.");
@@ -43,6 +45,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 Console.WriteLine("Odpowiedź błędna. Brak punktu.");
             }
 
+            Console.WriteLine($"Aktualna liczba punktów: {_totalPoints}");
             Console.WriteLine();
         }
 

@@ -13,6 +13,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             Console.WriteLine("Czy chcesz zakończyć quiz? (wpisz 'k' aby zakończyć, 'n' aby kontynuować)");
 
             char userInputX = char.ToLower(Console.ReadKey().KeyChar);
+            Console.WriteLine($"\nNaciśnięty klawisz: {userInputX}");
+
             Console.WriteLine();
 
                     if (userInputX == 'k' || userInputX == 'K')
@@ -22,7 +24,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                     }
                     else if (userInputX == 'n')
                     {
-                    return false;
+                        Console.WriteLine("Kontynuacja quizu.");
+                        return false;
                     }
 
             Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.");

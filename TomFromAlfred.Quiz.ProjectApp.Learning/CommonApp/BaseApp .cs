@@ -19,12 +19,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 
         public List<T> GetAll()
         {
+            Console.WriteLine($"Pobieranie wszystkich encji, liczba encji: {Entities.Count}");
             return Entities;
         }
 
         public void Add(T entity)
         {
             Entities.Add(entity);
+            Console.WriteLine($"Dodano encję: {entity}");
         }
 
         public void Update(T entity)
@@ -45,6 +47,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
         public void Remove(T entity)
         {
             Entities.Remove(entity);
+            Console.WriteLine($"Usunięto encję: {entity}");
         }
     }
 }

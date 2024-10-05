@@ -58,6 +58,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 Console.WriteLine($"Pytanie {question.QuestionNumber}: {question.QuestionContent}");
 
                 var choices = _choicesService.GetAllChoices().Where(c => c.ChoiceId == question.QuestionId).ToList();
+                Console.WriteLine($"Dostępne wybory ({choices.Count}):");
 
                 foreach (var choice in choices)
                 {
@@ -65,12 +66,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 }
 
                 char userChoice = _usersChoicesManager.GetUserChoice();
+                Console.WriteLine($"Użytkownik wybrał opcję: {userChoice}");
 
                 bool result = _resultsManager.VerifyAnswer(question.QuestionId, userChoice);
                 _resultsManager.DisplayResult(result);
 
                 if (_exitManager.CheckForExit())
                 {
+                    Console.WriteLine("Użytkownik zakończył quiz.");
                     break;
                 }
             }

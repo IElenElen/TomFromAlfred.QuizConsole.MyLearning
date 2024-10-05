@@ -16,18 +16,21 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         public QuestionServiceApp(IEnumerable<Question>? initialQuestions = null)
         {
             AllQuestions = (initialQuestions ?? Enumerable.Empty<Question>()).ToList();
+            Console.WriteLine($"Inicjalizowano QuestionServiceApp z {AllQuestions.Count} pytaniami.");
         }
 
         public void AddQuestion(Question question)
         {
             if (AllQuestions.Any(q => q.QuestionContent == question.QuestionContent))
             {
+                Console.WriteLine($"Pytanie o treści '{question.QuestionContent}' już istnieje.");
                 throw new InvalidOperationException("Takie pytanie już istnieje.");
             }
 
             int newQuestionNumber = AllQuestions.Count;
             question.QuestionNumber = newQuestionNumber;
-            AllQuestions.Add(question); 
+            AllQuestions.Add(question);
+            Console.WriteLine($"Dodano pytanie o treści '{question.QuestionContent}' z numerem {newQuestionNumber}.");
             UpdateQuestionNumbers();
         }
 
@@ -36,9 +39,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             int questionNumber = userQuestionNumber - 1;
             if (questionNumber < 0 || questionNumber >= AllQuestions.Count)
             {
+                Console.WriteLine($"Brak pytania o numerze {userQuestionNumber}.");
                 return null;
             }
 
+            Console.WriteLine($"Znaleziono pytanie o numerze {userQuestionNumber}.");
             return AllQuestions[questionNumber];
         }
 
@@ -79,6 +84,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             for (int i = 0; i < AllQuestions.Count; i++)
             {
                 AllQuestions[i].QuestionNumber = i;
+                Console.WriteLine($"Zaktualizowano numer pytania o ID {AllQuestions[i].QuestionId} na {i + 1}.");
             }
 
             Console.WriteLine("Numery pytań zostały zaktualizowane.");

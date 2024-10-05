@@ -20,11 +20,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
         public void InitializeData()
         {
+            Console.WriteLine("Inicjalizacja domyślnych danych odpowiedzi...");
             ContentCorrectSets.Add(new ContentCorrectSet(9, EntitySupport.OptionLetter.A, " ")); //na razie zmyślone
+            Console.WriteLine("Domyślne dane odpowiedzi zostały zainicjalizowane.");
         }
 
         public void LoadDataFromJson(string filePath)
         {
+            Console.WriteLine($"Rozpoczynanie wczytywania danych z pliku: {filePath}");
+
             if (File.Exists(filePath))
             {
                 try
@@ -41,6 +45,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                     }
 
                     ContentCorrectSets = loadedData;
+                    Console.WriteLine($"Wczytano {ContentCorrectSets.Count} zestawów poprawnych odpowiedzi.");
                 }
                 catch (JsonException jsonEx)
                 {
@@ -74,6 +79,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
             try
             {
+                Console.WriteLine($"Rozpoczynanie zapisu danych do pliku: {filePath}");
+
                 var directory = Path.GetDirectoryName(filePath);
 
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
@@ -84,6 +91,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                 var options = new JsonSerializerOptions { WriteIndented = true };
                 var json = JsonSerializer.Serialize(ContentCorrectSets, options);
                 File.WriteAllText(filePath, json);
+
                 Console.WriteLine("Dane zostały pomyślnie zapisane do pliku.");
             }
             catch (UnauthorizedAccessException authEx)

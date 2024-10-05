@@ -36,13 +36,18 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                     return new List<Question>();
                 }
 
+                Console.WriteLine("Aktualizacja numerów pytań przed losowaniem.");
                 _questionServiceApp.UpdateQuestionNumbers();
 
+
+                Console.WriteLine("Tasowanie pytań...");
                 List<Question> shuffledQuestions = allQuestions.OrderBy(q => _random.Value.Next()).ToList();
+                Console.WriteLine("Pytania zostały przetasowane.");
 
                 for (int i = 0; i < shuffledQuestions.Count; i++)
                 {
                     shuffledQuestions[i].QuestionNumber = i + 1; // numeracja od 1 dla użytkownika
+                    Console.WriteLine($"Pytanie {shuffledQuestions[i].QuestionContent} ma nowy numer: {shuffledQuestions[i].QuestionNumber}");
                 }
 
                 return shuffledQuestions;

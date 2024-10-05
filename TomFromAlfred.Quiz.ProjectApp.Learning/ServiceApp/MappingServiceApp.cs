@@ -19,13 +19,17 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public void AddChoiceToQuestion(int questionId, int choiceId)
         {
+            Console.WriteLine($"Rozpoczynanie mapowania pytania o Id {questionId} z wyborem o Id {choiceId}...");
+
             if (_entitySupport.QuestionIdToChoiceId.ContainsKey(questionId))
             {
+                Console.WriteLine($"Błąd: Pytanie o Id {questionId} już ma przypisany wybór.");
                 throw new ArgumentException($"Pytanie o Id {questionId} już ma przypisany wybór o Id {_entitySupport.QuestionIdToChoiceId[questionId]}.");
             }
 
             if (!_entitySupport.QuestionIdToChoiceId.ContainsValue(choiceId))
             {
+                Console.WriteLine($"Błąd: Nie znaleziono wyboru o Id {choiceId}.");
                 throw new ArgumentException($"Nie znaleziono wyboru o Id {choiceId}.");
             }
 
@@ -35,11 +39,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public int GetChoiceForQuestion(int questionId)
         {
+            Console.WriteLine($"Pobieranie wyboru dla pytania o Id {questionId}...");
+
             if (_entitySupport.QuestionIdToChoiceId.TryGetValue(questionId, out var choiceId))
             {
+                Console.WriteLine($"Znaleziono wybór o Id {choiceId} dla pytania o Id {questionId}.");
                 return choiceId; // zwraca znaleziony choiceId
             }
 
+            Console.WriteLine($"Błąd: Nie znaleziono wyboru dla pytania o Id {questionId}.");
             throw new KeyNotFoundException($"Nie znaleziono wyboru dla pytania o Id {questionId}.");
         }
     }

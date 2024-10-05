@@ -34,6 +34,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 Console.Write("Twój wybór (wpisz a, b lub c): ");
                 keyInfo = _inputReader.ReadKey();
                 userChoice = char.ToLower(keyInfo.KeyChar); //ponowne odczytanie znaku
+                Console.WriteLine($"\nNaciśnięty klawisz: {userChoice}");
             }
             Console.WriteLine(); // nowa linia po wprowadzeniu wyboru
             return userChoice;  // zwrócenie prawidłowego wyboru użytkownika

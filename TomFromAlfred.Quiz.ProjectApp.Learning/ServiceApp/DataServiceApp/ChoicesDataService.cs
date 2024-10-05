@@ -33,12 +33,16 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                 new (8, 8, EntitySupport.OptionLetter.B, "dobra"),
                 new (8, 8, EntitySupport.OptionLetter.C, "nie")
             });
+
+            Console.WriteLine("Zainicjowano domyślne dane wyborów.");
         }
 
         public void SaveToJson(string filePath)
         {
             try
             {
+                Console.WriteLine($"Rozpoczynanie zapisu danych do pliku: {filePath}");
+
                 var directory = Path.GetDirectoryName(filePath);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
@@ -49,6 +53,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                 JsonSerializerOptions options = new() { WriteIndented = true };
                 var json = JsonSerializer.Serialize(_choices, options);
                 File.WriteAllText(filePath, json);
+
+                Console.WriteLine("Zapisano dane wyborów do pliku.");
             }
             catch (UnauthorizedAccessException uae)
             {
@@ -70,6 +76,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
         public void LoadFromJson(string filePath)
         {
+            Console.WriteLine($"Rozpoczynanie wczytywania danych z pliku: {filePath}");
+
             if (File.Exists(filePath))
             {
                 try

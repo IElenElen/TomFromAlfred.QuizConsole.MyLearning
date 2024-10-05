@@ -18,12 +18,15 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
         {
             if (!Enum.IsDefined(typeof(EntitySupport.OptionLetter), letterCorrectAnswer))
             {
+                Console.WriteLine($"Błąd: Niepoprawna wartość dla LetterCorrectAnswer: {letterCorrectAnswer}");
                 throw new ArgumentException("Niepoprawna wartość dla Letter Correct Answer.", nameof(letterCorrectAnswer));
             }
 
             QuestionId = questionId;
             LetterCorrectAnswer = letterCorrectAnswer;
-            ContentCorrectAnswer = contentCorrectAnswer; 
+            ContentCorrectAnswer = contentCorrectAnswer;
+
+            Console.WriteLine($"Utworzono poprawny zestaw dla pytania o id: {questionId}, z odpowiedzią: {contentCorrectAnswer ?? "brak treści"}.");
         }
     }
 }
