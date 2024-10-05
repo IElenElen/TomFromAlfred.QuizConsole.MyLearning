@@ -13,10 +13,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
         private readonly List<Choice> _choices = new List<Choice>();
         public ChoicesDataService()
         {
-            InitializeDefaultData();
+            InitializeDefaultDataForChoice();
         }
 
-        private void InitializeDefaultData()
+        private void InitializeDefaultDataForChoice()
         {
             _choices.AddRange(
             new List<Choice>

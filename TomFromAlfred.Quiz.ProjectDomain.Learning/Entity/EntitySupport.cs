@@ -18,6 +18,7 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 
         private int _questionId = 0; //licznik (id) pytań
         private int _choiceId = 0; //licznik (id) wyborów
+        public List<Choice> Choices { get; set; } 
 
         public int AssignQuestionId() //przypisanie id dla entity Question
         {
@@ -33,6 +34,6 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
             return _choiceId;
         }
 
-        public Dictionary<int, int> QuestionIdToChoiceId { get; set; } = new(); //mapowanie questionId z choiceId
+        public Dictionary<int, List<int>> QuestionIdToChoiceIds { get; } = new Dictionary<int, List<int>>();
     }
 }

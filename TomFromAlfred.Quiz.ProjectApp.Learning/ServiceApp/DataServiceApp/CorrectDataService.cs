@@ -15,10 +15,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
         public CorrectDataService()
         {
             ContentCorrectSets = new List<ContentCorrectSet>();
-            InitializeData();
+            InitializeDataCorrectData();
         }
 
-        public void InitializeData()
+        public void InitializeDataCorrectData()
         {
             Console.WriteLine("Inicjalizacja domyślnych danych odpowiedzi...");
             ContentCorrectSets.Add(new ContentCorrectSet(9, EntitySupport.OptionLetter.A, " ")); //na razie zmyślone
@@ -40,7 +40,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                     if (loadedData == null || loadedData.Any(c => c.QuestionId <= 0 || !Enum.IsDefined(typeof(EntitySupport.OptionLetter), c.LetterCorrectAnswer)))
                     {
                         Console.WriteLine("Dane odpowiedzi są niekompletne lub niepoprawne.");
-                        InitializeData();
+                        InitializeDataCorrectData();
                         return;
                     }
 
@@ -50,22 +50,22 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                 catch (JsonException jsonEx)
                 {
                     Console.WriteLine($"Błąd deserializacji JSON: {jsonEx.Message}");
-                    InitializeData();
+                    InitializeDataCorrectData();
                 }
                 catch (IOException ioEx)
                 {
                     Console.WriteLine($"Błąd odczytu pliku: {ioEx.Message}");
-                    InitializeData();
+                    InitializeDataCorrectData();
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Wystąpił nieoczekiwany błąd: {ex.Message}");
-                    InitializeData();
+                    InitializeDataCorrectData();
                 }
             }
             else
             {
-                InitializeData();
+                InitializeDataCorrectData();
             }
         }
 
