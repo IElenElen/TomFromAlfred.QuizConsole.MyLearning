@@ -8,6 +8,9 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 {
     //Klasa bazowa to klasa wspólnych cech, ktorych nie chcemy powtarzać w serwisach i / lub menadżerach...
+
+    //Sprawdzenie null dla Update - uwzględnienie komunikatu CS8602
+
     public class BaseApp<T> : IOperations<T> 
     {
         public List<T> Entities { get; set; }
@@ -31,6 +34,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 
         public void Update(T entity)
         {
+            if (entity == null) // sprawdzenie, czy entity nie jest null przed dalszym działaniem
+            {
+                Console.WriteLine("Brak encji do aktualizacji.");
+                return;
+            }
+
             var existingEntity = Entities.FirstOrDefault(e => e.Equals(entity)); //szukanie istniejącego obiektu
 
             if (entity != null)

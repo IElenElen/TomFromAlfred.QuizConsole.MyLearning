@@ -19,17 +19,17 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
     public class QuestionsDataService
     {
         private readonly QuestionServiceApp _questionServiceApp;
-        private QuestionServiceApp questionServiceApp;
-
+        private readonly QuestionServiceApp questionServiceApp; 
         public QuestionsDataService(QuestionServiceApp questionServiceApp, Question question)
         {
-            if (questionServiceApp == null)
+            if (questionServiceApp == null) //ochrona w przypadku null
             {
                 throw new ArgumentNullException(nameof(questionServiceApp), "QuestionServiceApp nie może być null");
             }
 
             Console.WriteLine("Inicjalizacja QuestionsDataService z pytaniem.");
             _questionServiceApp = questionServiceApp;
+            this.questionServiceApp = questionServiceApp;
 
             if (_questionServiceApp.AllQuestions == null)
             {
@@ -56,6 +56,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
             Console.WriteLine("Inicjalizacja QuestionsDataService bez pytania.");
             _questionServiceApp = questionServiceApp;
+            this.questionServiceApp = questionServiceApp; 
 
             if (_questionServiceApp.AllQuestions == null)
             {
@@ -134,7 +135,23 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
             try
             {
+                if (string.IsNullOrWhiteSpace(filePath)) 
+                {
+                    throw new ArgumentNullException(nameof(filePath), "Ścieżka pliku nie może być pusta lub null.");
+                }
+
+                if (json == null)
+                {
+                    throw new ArgumentNullException(nameof(json), "Dane JSON nie mogą być null.");
+                }
+
                 string directory = Path.GetDirectoryName(filePath);
+
+                if (string.IsNullOrEmpty(directory)) //info o null
+                {
+                    Console.WriteLine("Ścieżka katalogu jest nieprawidłowa.");
+                    return;
+                }
 
                 if (!Directory.Exists(directory))
                 {

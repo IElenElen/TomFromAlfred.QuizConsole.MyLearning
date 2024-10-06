@@ -66,7 +66,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
             if (_entitySupport.QuestionIdToChoiceMap.TryGetValue(questionId, out var choiceIds))
             {
-                Console.WriteLine($"Znaleziono wybory o Id: {string.Join(", ", choiceIds)} dla pytania o Id {questionId}.");
+                Console.WriteLine($"Znaleziono wybór o Id: {string.Join(", ", choiceIds)} dla pytania o Id {questionId}.");
                 return choiceIds; // zwraca listę znalezionych choiceIds
             }
 

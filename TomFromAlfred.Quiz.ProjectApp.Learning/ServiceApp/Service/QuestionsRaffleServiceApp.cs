@@ -16,7 +16,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
     public class QuestionsRaffleServiceApp
     {
         private readonly QuestionServiceApp _questionServiceApp;
-        private static readonly ThreadLocal<Random> _random = new(() => new Random());
+        private readonly ThreadLocal<Random> _random = new ThreadLocal<Random>(() => new Random());
 
         public QuestionsRaffleServiceApp(QuestionServiceApp questionServiceApp)
         {
@@ -41,7 +41,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
 
                 Console.WriteLine("Tasowanie pytań...");
-                List<Question> shuffledQuestions = allQuestions.OrderBy(q => _random.Value.Next()).ToList();
+
+                if (allQuestions == null || !allQuestions.Any()) //dla null
+                {
+                    Console.WriteLine("Brak pytań do przetasowania.");
+                    return new List<Question>(); // zwróć pustą listę
+                }
+
+                List<Question> shuffledQuestions = allQuestions.OrderBy(q => _random.Value.Next()).ToList(); //null "okodzony" wyżej
                 Console.WriteLine("Pytania zostały przetasowane.");
 
                 for (int i = 0; i < shuffledQuestions.Count; i++)

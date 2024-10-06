@@ -36,7 +36,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             Console.WriteLine($"Wybór o numerze {choice.ChoiceNumber} został dodany.");
         }
 
-        public Choice GetChoiceById(int choiceId)
+        public Choice? GetChoiceById(int choiceId)
         {
             Console.WriteLine($"Próba pobrania wyboru o ID: {choiceId}.");
             return _choices.FirstOrDefault(c => c.ChoiceId == choiceId);

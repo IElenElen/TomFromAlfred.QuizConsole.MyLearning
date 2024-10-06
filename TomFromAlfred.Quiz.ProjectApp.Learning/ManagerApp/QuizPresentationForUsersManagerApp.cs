@@ -23,7 +23,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
         private readonly ResultsAndUsersPointsManagerApp _resultsManager;
         private readonly UsersExitManagerApp _exitManager;
         private readonly int _questionNumber;
-        private readonly object _entitySupport;
+        private EntitySupport _entitySupport; 
 
         public QuizPresentationForUsersManagerApp(
             MappingServiceApp mappingServiceApp, //typ, parametr
@@ -31,7 +31,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             ChoiceServiceApp choicesService,
             UsersChoicesManagerApp usersChoicesManager,
             ResultsAndUsersPointsManagerApp resultsManager,
-            UsersExitManagerApp exitManager)
+            UsersExitManagerApp exitManager,
+            EntitySupport entitySupport)
         {
             _mappingServiceApp = mappingServiceApp ?? throw new ArgumentNullException(nameof(mappingServiceApp)); //pole, wartość do pola przypisana
                                                    //?? sprawdzam czy jest null, Argument... = typ wyjątku
@@ -40,6 +41,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             _usersChoicesManager = usersChoicesManager ?? throw new ArgumentNullException(nameof(usersChoicesManager));
             _resultsManager = resultsManager ?? throw new ArgumentNullException(nameof(resultsManager));
             _exitManager = exitManager ?? throw new ArgumentNullException(nameof(exitManager));
+            _entitySupport = entitySupport ?? throw new ArgumentNullException(nameof(entitySupport));
         }
 
         public void PresentAQuiz() 

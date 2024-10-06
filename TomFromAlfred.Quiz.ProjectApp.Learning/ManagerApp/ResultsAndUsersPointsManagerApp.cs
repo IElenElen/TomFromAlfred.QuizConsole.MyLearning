@@ -24,7 +24,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
         {
             Console.WriteLine($"Weryfikacja odpowiedzi dla pytania {questionId}...");
 
-            if (!_answerVerifierServiceApp.ContentCorrectSets.Any(c => c.QuestionId == questionId))
+            if (_answerVerifierServiceApp.ContentCorrectSets == null || !_answerVerifierServiceApp.ContentCorrectSets.Any(c => c.QuestionId == questionId))
             {
                 Console.WriteLine("Nieprawidłowe Id pytania.");
                 return false;
