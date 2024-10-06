@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
-namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
+namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 {
-    public class AnswerVerifierServiceApp 
+    public class AnswerVerifierServiceApp
     {
         public List<ContentCorrectSet>? ContentCorrectSets { get; set; }
 
@@ -23,8 +23,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 ContentCorrectSets = new List<ContentCorrectSet>();
             }
 
-            var newCorrectSet = new ContentCorrectSet(questionId, optionLetter, contentCorrectAnswer); 
-                
+            var newCorrectSet = new ContentCorrectSet(questionId, optionLetter, contentCorrectAnswer);
+
             ContentCorrectSets.Add(newCorrectSet);
         }
 

@@ -34,6 +34,6 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
             return _choiceId;
         }
 
-        public Dictionary<int, List<int>> QuestionIdToChoiceIds { get; } = new Dictionary<int, List<int>>();
+        public Dictionary<int, List<int>> QuestionIdToChoiceMap { get; } = new Dictionary<int, List<int>>();
     }
 }

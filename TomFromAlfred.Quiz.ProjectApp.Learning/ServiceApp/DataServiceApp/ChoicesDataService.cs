@@ -37,6 +37,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
             Console.WriteLine("Zainicjowano domyślne dane wyborów.");
         }
 
+        public List<Choice> GetChoices()
+        {
+            Console.WriteLine("Pobranie listy wyborów.");
+            return new List<Choice>(_choices);
+        }
+
         public void SaveToJson(string filePath)
         {
             try

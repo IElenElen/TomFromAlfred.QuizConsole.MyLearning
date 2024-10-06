@@ -4,12 +4,16 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
+    /* Gdy system wyświetla pytania, używa np. metody DisplayQuestions,
+           która generuje losowe pytania i ustawia ich numerację od 1 do n,
+           tak aby były zrozumiałe dla użytkownika. */
+
     public class QuizPresentationForUsersManagerApp //klasa prezentująca quiz
     {
         private readonly MappingServiceApp _mappingServiceApp; //zakres, możliwość działania, typ obiketu, pole
@@ -37,10 +41,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             _resultsManager = resultsManager ?? throw new ArgumentNullException(nameof(resultsManager));
             _exitManager = exitManager ?? throw new ArgumentNullException(nameof(exitManager));
         }
-
-        /* Gdy system wyświetla pytania, używa np. metody DisplayQuestions,
-           która generuje losowe pytania i ustawia ich numerację od 1 do n,
-           tak aby były zrozumiałe dla użytkownika. */
 
         public void PresentAQuiz() 
         {

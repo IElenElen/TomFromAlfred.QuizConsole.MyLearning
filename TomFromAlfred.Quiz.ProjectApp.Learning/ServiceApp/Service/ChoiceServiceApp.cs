@@ -4,16 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
-namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
+namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 {
     //Menadżery rozmawiają z klientem, serwisy odpowiadają za pamięć i dane.
     //Po interfejsie dziedziczy serwis a nie klasa bazowa!!!
 
-    public class ChoiceServiceApp : BaseApp<Choice> 
+    public class ChoiceServiceApp : BaseApp<Choice>
     {
-        private readonly List<Choice> _choices = new List<Choice>();
+        private readonly List<Choice> _choices;
+
+        public ChoiceServiceApp(ChoicesDataService choicesDataService)
+        {
+            _choices = choicesDataService.GetChoices();
+        }
 
         public void AddChoice(Choice choice)
         {
@@ -26,7 +32,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 throw new ArgumentException("Wybór o tym Id już istnieje.");
             }
             _choices.Add(choice);
-            UpdateChoiceNumber(choiceNumber); 
+            UpdateChoiceNumber(choiceNumber);
             Console.WriteLine($"Wybór o numerze {choice.ChoiceNumber} został dodany.");
         }
 
@@ -80,7 +86,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             {
                 if (_choices[i].ChoiceNumber == choiceNumber)
                 {
-                    _choices[i].ChoiceId = i;  
+                    _choices[i].ChoiceId = i;
                 }
             }
 
@@ -95,4 +101,3 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     }
 }
 
-        

@@ -14,7 +14,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             Console.WriteLine("Oczekiwanie na naciśnięcie klawisza...");
 
             ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true); //metoda statyczna, keyInfo = zmienna, ConsoleKeyInfo = struktura
-            Console.Write(keyInfo.KeyChar); // wyświetlenie znaku na konsoli po naciśnięciu klawisza, tzn. wartości
+            Console.Write(keyInfo.KeyChar); //wyświetlenie znaku na konsoli po naciśnięciu klawisza, tzn. wartości
             Console.WriteLine($"Naciśnięto klawisz: {keyInfo.Key}, znak: {keyInfo.KeyChar}");
             return keyInfo;
         }

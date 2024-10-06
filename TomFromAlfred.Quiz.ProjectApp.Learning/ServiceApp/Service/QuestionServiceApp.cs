@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
-namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
+namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 {
     //Klasa serwisowa pytań odpowiada za dodawanie, zmiany i usuwanie pytań
 
