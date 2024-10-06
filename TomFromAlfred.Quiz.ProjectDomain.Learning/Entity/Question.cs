@@ -17,6 +17,7 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
         //Id jest dla mnie, użytkownik widzi tylko numer
         public int QuestionId { get; set; } = -1; //id question jest mi potrzebne, bo muszę przypisać wybór do pytania podczas losowania
                                             //kolejne id będą na stałe przypisane do pytań
+                                            //-1 oznacza brak id 
         public int? QuestionNumber { get; set; } //nr, jest dynamiczny podczas wyświetlania, aby odpowiadał kolejności
 
         /* Pytanie musi wiązać się z: 

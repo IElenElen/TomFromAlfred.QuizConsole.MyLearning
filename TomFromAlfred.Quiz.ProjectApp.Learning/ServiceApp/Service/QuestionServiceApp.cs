@@ -12,6 +12,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
     public class QuestionServiceApp : BaseApp<Question>
     {
+        private readonly EntitySupport _entitySupport = new EntitySupport();
         public List<Question> AllQuestions { get; set; } = new List<Question>();
         public QuestionServiceApp(IEnumerable<Question>? initialQuestions = null)
         {
@@ -21,16 +22,22 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
         public void AddQuestion(Question question)
         {
-            if (AllQuestions.Any(q => q.QuestionContent == question.QuestionContent))
+            if (AllQuestions.Any(q => q.QuestionId == question.QuestionId))
             {
-                Console.WriteLine($"Pytanie o treści '{question.QuestionContent}' już istnieje.");
+                Console.WriteLine($"Pytanie o id '{question.QuestionId}' już istnieje.");
                 throw new InvalidOperationException("Takie pytanie już istnieje.");
             }
 
-            int newQuestionNumber = AllQuestions.Count;
-            question.QuestionNumber = newQuestionNumber;
+            var entitySupport = new EntitySupport();
+            question.QuestionId = entitySupport.AssignQuestionId();
+
+            int systemIndex = AllQuestions.Count; // zaczynamy od 0, 1, 2...
+            question.QuestionNumber = systemIndex + 1; // numerujemy od 1 dla użytkownika
+
+            question.IsActive = true;
             AllQuestions.Add(question);
-            Console.WriteLine($"Dodano pytanie o treści '{question.QuestionContent}' z numerem {newQuestionNumber}.");
+
+            Console.WriteLine($"Dodano pytanie o id: {question.QuestionId}, o numerze: {question.QuestionNumber} i o treści: {question.QuestionContent}.");
             UpdateQuestionNumbers();
         }
 

@@ -23,16 +23,28 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
         public void AddChoice(Choice choice)
         {
-            Console.WriteLine($"Próba dodania wyboru o numerze: {choice.ChoiceNumber}.");
+            Console.WriteLine($"Próba dodania wyboru o id: {choice.ChoiceId}.");
 
-            int choiceNumber = choice.ChoiceNumber.GetValueOrDefault(0); //jeśli ChoiceNr jest null, system poda 0 jako domyślną wartość
-            if (_choices.Any(c => c.ChoiceNumber == choice.ChoiceNumber))
+            if (_choices.Any(c => c.ChoiceId == choice.ChoiceId))
             {
                 Console.WriteLine("Wybór o podanym id istnieje.");
                 throw new ArgumentException("Wybór o tym Id już istnieje.");
             }
+
+            if (choice.ChoiceId == -1)
+            {
+                Console.WriteLine("Dla nowego wyboru przypisano id.");
+                var entitySupport = new EntitySupport();
+                choice.ChoiceId = entitySupport.AssignChoiceId();
+            }
+
+            int systemIndex = _choices.Count; // `_choices` to lista wszystkich wyborów, system numeruje od 0
+            choice.ChoiceNumber = systemIndex + 1; // numer dla użytkownika od 1
+
             _choices.Add(choice);
-            UpdateChoiceNumber(choiceNumber);
+
+            UpdateChoiceNumber(choice.ChoiceNumber.GetValueOrDefault());
+
             Console.WriteLine($"Wybór o numerze {choice.ChoiceNumber} został dodany.");
         }
 

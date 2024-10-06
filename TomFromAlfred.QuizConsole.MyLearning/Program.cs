@@ -24,7 +24,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
     //Komentarze w quiz dokończyć i jeszcze raz analiza mojego rozumowania!!!
     
-    /* 06.10.24 - uporałam się z brakiem wyboru, teraz kwestia id */
+    /* 06.10.24 -  kwestia id pytania - w trakcie */
 
 
     //Najmniejsze szczegoły również ważne :-), szczególnie przy szukaniu błędów
@@ -71,7 +71,8 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 choiceService,
                 usersChoicesManager,
                 resultsManager,
-                exitManager
+                exitManager,
+                entitySupport
             );
 
             // wyświetlenie quizu

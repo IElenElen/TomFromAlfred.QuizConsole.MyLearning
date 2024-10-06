@@ -13,7 +13,7 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
     public class Choice
     {
         //Id jest dla mnie, użytkownik widzi tylko numer
-        public int ChoiceId { get; set; } = -1; //id unikalne dla Choice
+        public int ChoiceId { get; set; } = -1; //id unikalne dla Choice, -1 oznacza na starcie brak id
 
         public int? ChoiceNumber { get; set; } //nr, jest dynamiczny podczas wyświetlania, aby odpowiadał kolejności
 

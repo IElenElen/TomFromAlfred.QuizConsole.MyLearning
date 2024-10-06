@@ -36,7 +36,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
             foreach (var choiceId in choiceIds)  // iteracja po każdym Id wyboru
             {
-                var choice = _entitySupport.Choices.SingleOrDefault(c => c.ChoiceId == choiceId);
+                var choice = _entitySupport.Choices?.SingleOrDefault(c => c.ChoiceId == choiceId);
                 if (choice == null)
                 {
                     Console.WriteLine($"Błąd: Nie znaleziono wyboru o Id {choiceId}.");
@@ -55,7 +55,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
             var choices = _entitySupport.QuestionIdToChoiceMap[questionId];
 
-            var choiceLetters = choices.Select(cId => _entitySupport.Choices.Single(c => c.ChoiceId == cId).OptionLetter.ToString());
+            var choiceLetters = choices.Select(cId => _entitySupport.Choices?.Single(c => c.ChoiceId == cId).OptionLetter.ToString());
 
             Console.WriteLine($"Pytanie {questionId} ma przypisane wybory: {string.Join(", ", choiceLetters)}");
         }

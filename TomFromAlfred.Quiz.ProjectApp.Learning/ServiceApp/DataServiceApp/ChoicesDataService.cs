@@ -18,8 +18,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
 
         private void InitializeDefaultDataForChoice()
         {
-            _choices.AddRange(
-            new List<Choice>
+            var defaultChoices = new List<Choice>
             {
                 new (6, 6, EntitySupport.OptionLetter.A, "poprawna"), //id wyboru, nr wyboru, litera opcji, treść wyboru
                 new (6, 6, EntitySupport.OptionLetter.B, "zła"),
@@ -32,7 +31,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
                 new (8, 8, EntitySupport.OptionLetter.A, "też nie"),
                 new (8, 8, EntitySupport.OptionLetter.B, "dobra"),
                 new (8, 8, EntitySupport.OptionLetter.C, "nie")
-            });
+            };
+
+            foreach (var choice in defaultChoices)
+            {
+                _choices.Add(choice); // korzystam z AddChoice - ID będzie przypisane tylko, jeśli jest -1
+            }
 
             Console.WriteLine("Zainicjowano domyślne dane wyborów.");
         }

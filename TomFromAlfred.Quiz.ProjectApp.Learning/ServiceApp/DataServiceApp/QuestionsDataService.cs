@@ -14,8 +14,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
        analogiczna sprawa z choices i correct odp.
      */
 
-    //"Nieprawidłowe Id pytania." - komunikat w konsoli 02.10.24
-
     public class QuestionsDataService
     {
         private readonly QuestionServiceApp _questionServiceApp;
@@ -65,27 +63,35 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp
             }
 
             InitializeQuestions();
+            Console.WriteLine("Pomyślnie zainicjalizowano pytania.");
+
         }
 
         private void InitializeQuestions()
         {
             Console.WriteLine("Inicjalizacja listy pytań...");
-            _questionServiceApp.AllQuestions ??= new List<Question>();
 
             if (!_questionServiceApp.AllQuestions.Any())
             {
                 Console.WriteLine("Dodawanie początkowych pytań.");
-                _questionServiceApp.AllQuestions.AddRange(new List<Question>
-                {
-                    new(6, 6, "Pytanie specjalnie do usuwania nr 1. Niech będzie odp A."), //id, nr, treść pytania
-                    new(7, 7, "Pytanie do usuwania nr 2. Odp C."),
-                    new(8, 8, "Pytanie też do testu nr 3. Z odp B.")
-                });
+
+                var initialQuestions = GetInitialQuestions(); // pobierz początkowe pytania
+                _questionServiceApp.AllQuestions.AddRange(initialQuestions);
             }
             else
             {
                 Console.WriteLine("Pytania już istnieją, inicjalizacja zakończona.");
             }
+        }
+
+        private List<Question> GetInitialQuestions()
+        {
+            return new List<Question>
+            {
+                new Question(6, 6, "Pytanie specjalnie do usuwania nr 1. Niech będzie odp A."),
+                new Question(7, 7, "Pytanie do usuwania nr 2. Odp C."),
+                new Question(8, 8, "Pytanie też do testu nr 3. Z odp B.")
+            };
         }
 
         public IEnumerable<Question> GetAllQuestions()
