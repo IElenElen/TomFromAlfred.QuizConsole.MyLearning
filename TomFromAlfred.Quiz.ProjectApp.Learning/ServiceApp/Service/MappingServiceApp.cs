@@ -29,6 +29,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
         {
             Console.WriteLine($"Rozpoczynanie mapowania pytania o Id {questionId} z wyborami o Id {string.Join(", ", choiceIds)}...");
 
+            Console.WriteLine($"Istniejące pytania: {string.Join(", ", _entitySupport.Questions.Select(q => q.QuestionId))}");
+
+            var question = _entitySupport.Questions?.SingleOrDefault(q => q.QuestionId == questionId);
+            if (question == null)
+            {
+                Console.WriteLine($"Błąd: Nieprawidłowe Id pytania {questionId}.");
+                throw new ArgumentException($"Nie znaleziono pytania o Id {questionId}.");
+            }
+
             if (!_entitySupport.QuestionIdToChoiceMap.ContainsKey(questionId))
             {
                 _entitySupport.QuestionIdToChoiceMap[questionId] = new List<int>();

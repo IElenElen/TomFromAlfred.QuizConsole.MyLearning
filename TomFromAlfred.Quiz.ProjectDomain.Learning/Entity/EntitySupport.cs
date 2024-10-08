@@ -16,18 +16,20 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
             C
         }
 
-        private int _questionId = 0; //licznik (id) pytań
+        private int _currentQuestionId = 0; // przechowuj aktualne Id pytania
         private int _choiceId = 0; //licznik (id) wyborów
+
+        public List<Question>? Questions { get; set; } // lub inna definicja
         public List<Choice>? Choices { get; set; } 
 
-        public int AssignQuestionId() //przypisanie id dla entity Question
+        public virtual int AssignQuestionId() //przypisanie id dla entity Question
         {
-            _questionId++; //inkrementacja licznika pytań
-            Console.WriteLine($"Przypisano nowe QuestionId: {_questionId}"); // śledzenie inkrementacji QuestionId
-            return _questionId; //zwracanie nowego QuestionId
+            _currentQuestionId++; // zwiększ Id o 1
+            Console.WriteLine($"Przypisano nowe QuestionId: {_currentQuestionId}"); // śledzenie inkrementacji QuestionId
+            return _currentQuestionId; 
         }
 
-        public int AssignChoiceId() //przypisanie id dla entity Choice (analogia dla Question)
+        public int AssignChoiceId() //przypisanie id dla entity Choice 
         {
             _choiceId++;
             Console.WriteLine($"Przypisano nowe ChoiceId: {_choiceId}"); // śledzenie inkrementacji ChoiceId

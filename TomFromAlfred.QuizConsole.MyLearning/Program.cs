@@ -24,7 +24,8 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
     //Komentarze w quiz dokończyć i jeszcze raz analiza mojego rozumowania!!!
     
-    /* 06.10.24 -  kwestia id pytania - w trakcie */
+    /* 08.10.24 - dziś nadal sprawdzanie id pytania
+     * naprawdę cofam się w rozwoju... :-( */
 
 
     //Najmniejsze szczegoły również ważne :-), szczególnie przy szukaniu błędów
@@ -45,14 +46,16 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             // Inicjalizacja serwisów i menedżerów
             Console.WriteLine("Inicjalizacja serwisów...");
 
-            var questionServiceApp = new QuestionServiceApp(); 
+            var entitySupport = new EntitySupport();
+
+            IEnumerable<Question>? questions = null;
+            var questionServiceApp = new QuestionServiceApp(entitySupport, questions); 
             var questionsDataService = new QuestionsDataService(questionServiceApp); //przekazanie instancji
             var questionsRaffleService = new QuestionsRaffleServiceApp(questionServiceApp); //używanie tej samej instancji
 
             var choicesDataService = new ChoicesDataService();
             var choiceService = new ChoiceServiceApp(choicesDataService);
 
-            var entitySupport = new EntitySupport();
             var mappingServiceApp = new MappingServiceApp(choiceService, entitySupport);
 
             var inputReader = new ConsoleInputReaderManagerApp();

@@ -12,33 +12,60 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
     public class QuestionServiceApp : BaseApp<Question>
     {
-        private readonly EntitySupport _entitySupport = new EntitySupport();
+        private readonly EntitySupport _entitySupport;
+        private IEnumerable<Question> _questions; 
         public List<Question> AllQuestions { get; set; } = new List<Question>();
-        public QuestionServiceApp(IEnumerable<Question>? initialQuestions = null)
+        public QuestionServiceApp(EntitySupport entitySupport, IEnumerable<Question>? initialQuestions = null)
         {
+            _entitySupport = entitySupport; // użycie istniejącej instancji
+            _questions = AllQuestions; 
             AllQuestions = (initialQuestions ?? Enumerable.Empty<Question>()).ToList();
             Console.WriteLine($"Inicjalizowano QuestionServiceApp z {AllQuestions.Count} pytaniami.");
         }
 
         public void AddQuestion(Question question)
         {
+            question.QuestionId = _entitySupport.AssignQuestionId();
+            Console.WriteLine($"Dodawanie pytania: {question.QuestionContent} z Id: {question.QuestionId}");
+
+
             if (AllQuestions.Any(q => q.QuestionId == question.QuestionId))
             {
                 Console.WriteLine($"Pytanie o id '{question.QuestionId}' już istnieje.");
                 throw new InvalidOperationException("Takie pytanie już istnieje.");
             }
 
-            var entitySupport = new EntitySupport();
-            question.QuestionId = entitySupport.AssignQuestionId();
-
             int systemIndex = AllQuestions.Count; // zaczynamy od 0, 1, 2...
             question.QuestionNumber = systemIndex + 1; // numerujemy od 1 dla użytkownika
 
             question.IsActive = true;
+
             AllQuestions.Add(question);
+            _entitySupport.Questions?.Add(question); // dodaj pytanie do EntitySupport
 
             Console.WriteLine($"Dodano pytanie o id: {question.QuestionId}, o numerze: {question.QuestionNumber} i o treści: {question.QuestionContent}.");
             UpdateQuestionNumbers();
+        }
+
+        public List<string> PrintIdForAllQuestions()  //metoda dla sprawdzania id
+        {
+            if (AllQuestions.Count == 0)
+            {
+                return new List<string> { "Brak pytań." };
+            }
+
+            var questions = _questions; // lista pytań
+
+            var results = new List<string> { "Lista wszystkich pytań:" };
+
+            Console.WriteLine("Lista wszystkich pytań:");
+
+            foreach (var question in questions)
+            {
+                results.Add($"Pytanie ID: {question.QuestionId}, Numer: {question.QuestionNumber}, Treść: {question.QuestionContent}");
+            }
+
+            return results; // zwróć listę wyników
         }
 
         public Question? GetQuestionByNumber(int userQuestionNumber)
@@ -82,6 +109,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
         public void UpdateQuestionNumbers() //aktualizacja numerów pytań
         {
+            Console.WriteLine("Aktualizowanie numerów pytań.");
+
             if (AllQuestions.Count == 0)
             {
                 Console.WriteLine("Brak pytań do aktualizacji numerów.");
