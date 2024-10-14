@@ -31,7 +31,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
             Console.WriteLine($"Istniejące pytania: {string.Join(", ", _entitySupport.Questions.Select(q => q.QuestionId))}");
 
-            var question = _entitySupport.Questions?.SingleOrDefault(q => q.QuestionId == questionId);
+            var question = _entitySupport.Questions?.SingleOrDefault(q => q.QuestionId == questionId); //nullość
             if (question == null)
             {
                 Console.WriteLine($"Błąd: Nieprawidłowe Id pytania {questionId}.");

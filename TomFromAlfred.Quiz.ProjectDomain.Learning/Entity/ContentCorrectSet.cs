@@ -7,7 +7,7 @@ using static TomFromAlfred.Quiz.ProjectDomain.Learning.Entity.EntitySupport;
 
 namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
-    //Klasa poprawnych zestawów (do (numeru) pytania przypisana litera i treść poprawnej odpowiedzi (opcji w woborze))
+    //Klasa poprawnych zestawów (do (id) pytania przypisana litera i treść poprawnej odpowiedzi (opcji w woborze))
     public class ContentCorrectSet
     {
         public int QuestionId { get; }

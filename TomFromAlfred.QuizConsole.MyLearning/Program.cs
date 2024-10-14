@@ -11,7 +11,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
      * Pytania połączone z wyborem za pomocą id, które jest stałe i ukryte dla użytkownika. 
      * Wybór ma m.in. id, do tego trzy opcje A B C wraz z treściami.
      * Quiz jednokrotnego wyboru. 
-     * Quiz w zwykłej kolejności - losowanie mi na razie nie wychodzi. Quiz z losowanymi pytaniami - kiedyś.
+     * Quiz w zwykłej kolejności - losowanie mi na razie nie wychodzi.
      * Entity: Question - budowa pojedynczego pytania; Choice - budowa pojedynczego wyboru; CorrectSet - budowa poprawnej odpowiedzi;
      * Nr - jedna z właściwosci pytania i wyboru, pokazuje się użytkownikowi po kolei.
      * EntitySupport - wsparcie dla Entity.
@@ -51,7 +51,6 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             IEnumerable<Question>? questions = null;
             var questionServiceApp = new QuestionServiceApp(entitySupport, questions); 
             var questionsDataService = new QuestionsDataService(questionServiceApp); //przekazanie instancji
-            //var questionsRaffleService = new QuestionsRaffleServiceApp(questionServiceApp); //używanie tej samej instancji
 
             var choicesDataService = new ChoicesDataService();
             var choiceService = new ChoiceServiceApp(choicesDataService);

@@ -7,9 +7,6 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
-    /* Muszę pamiętać, że jeśli zmieni się kolejność pytań
-       to określony wybór muszę przypisać do określonego pytania */
-
     public class Choice
     {
         //Id jest dla mnie, użytkownik widzi tylko numer

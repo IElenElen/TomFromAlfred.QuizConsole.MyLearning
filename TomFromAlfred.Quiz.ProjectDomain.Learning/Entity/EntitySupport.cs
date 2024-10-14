@@ -19,7 +19,7 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
         private int _currentQuestionId = 0; // przechowuj aktualne Id pytania
         private int _choiceId = 0; //licznik (id) wyborów
 
-        public List<Question>? Questions { get; set; } // lub inna definicja
+        public List<Question>? Questions { get; set; } 
         public List<Choice>? Choices { get; set; } 
 
         public virtual int AssignQuestionId() //przypisanie id dla entity Question

@@ -8,14 +8,12 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
     public class Question
     {
-        /* Pytania mają swoje id, do wyświetlania zaś numery. 
-           Losowanie to będzie stworzenie nowej listy, użytkownik zobaczy numerację pytań od 1 do X, 
-           a faktycznie rzecz biorąc za każdym nowym podejściem do quizu, pytania będą losowane. */
+        /* Pytania mają swoje id (id przypisane systemowo), do wyświetlania zaś numery. */
 
         //Właściwości możliwe dopiero do wprowadzenia, zatem są nullable czyli numer i treść
 
         //Id jest dla mnie, użytkownik widzi tylko numer
-        public int QuestionId { get; set; } = -1; //id question jest mi potrzebne, bo muszę przypisać wybór do pytania podczas losowania
+        public int QuestionId { get; set; } = -1; //id question jest mi potrzebne, bo muszę przypisać wybór do pytania
                                             //kolejne id będą na stałe przypisane do pytań
                                             //-1 oznacza brak id 
         public int? QuestionNumber { get; set; } //nr, jest dynamiczny podczas wyświetlania, aby odpowiadał kolejności

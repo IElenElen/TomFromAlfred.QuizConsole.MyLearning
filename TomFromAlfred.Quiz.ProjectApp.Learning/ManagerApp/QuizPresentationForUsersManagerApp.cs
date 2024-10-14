@@ -11,7 +11,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
     /* Gdy system wyświetla pytania, używa np. metody DisplayQuestions,
-           która generuje losowe pytania i ustawia ich numerację od 1 do n,
+           która generuje pytania i ustawia ich numerację od 1 do n,
            tak aby były zrozumiałe dla użytkownika. */
 
     public class QuizPresentationForUsersManagerApp //klasa prezentująca quiz
@@ -58,12 +58,19 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             {
                 var choices = choiceIds
                     .Select(cId => _entitySupport.Choices?.SingleOrDefault(c => c.ChoiceId == cId))
-                    .Where(choice => choice != null)
+                    .Where(choice => choice != null) //anulacja nula
                     .ToList();
 
-                foreach (var choice in choices)
+                if (choices.Count > -1) //system liczy od 0, tu mamy id 
                 {
-                    Console.WriteLine($"Opcja {choice.OptionLetter}: {choice.ChoiceContent}");
+                    foreach (var choice in choices)
+                    {
+                        Console.WriteLine($"Opcja {choice.OptionLetter}: {choice.ChoiceContent}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Brak przypisanych wyborów do tego pytania.");
                 }
             }
             else
