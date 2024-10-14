@@ -11,9 +11,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
      * Pytania połączone z wyborem za pomocą id, które jest stałe i ukryte dla użytkownika. 
      * Wybór ma m.in. id, do tego trzy opcje A B C wraz z treściami.
      * Quiz jednokrotnego wyboru. 
-     * Quiz z losowanymi pytaniami.
+     * Quiz w zwykłej kolejności - losowanie mi na razie nie wychodzi. Quiz z losowanymi pytaniami - kiedyś.
      * Entity: Question - budowa pojedynczego pytania; Choice - budowa pojedynczego wyboru; CorrectSet - budowa poprawnej odpowiedzi;
-     * Nr - jedna z właściwosci pytania i wyboru, pokazuje się użytkownikowi po kolei, a treści pytań i ich wyborów mają być losowane.
+     * Nr - jedna z właściwosci pytania i wyboru, pokazuje się użytkownikowi po kolei.
      * EntitySupport - wsparcie dla Entity.
      * Abstrakt - interfejsy (mega ubogie = podstawowe), część wspólna - klasa bazowa (bardzo prosta).
      * Serwisy App: DataServiceApp (m.in. inicjalizacja danych, obsługa plików) oraz zwykłe Service (obsługa pytań, wyborów, weryfikacji odpowiedzi
@@ -51,7 +51,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             IEnumerable<Question>? questions = null;
             var questionServiceApp = new QuestionServiceApp(entitySupport, questions); 
             var questionsDataService = new QuestionsDataService(questionServiceApp); //przekazanie instancji
-            var questionsRaffleService = new QuestionsRaffleServiceApp(questionServiceApp); //używanie tej samej instancji
+            //var questionsRaffleService = new QuestionsRaffleServiceApp(questionServiceApp); //używanie tej samej instancji
 
             var choicesDataService = new ChoicesDataService();
             var choiceService = new ChoiceServiceApp(choicesDataService);
@@ -70,7 +70,6 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             var quizManager = new QuizPresentationForUsersManagerApp
             (
                 mappingServiceApp,
-                questionsRaffleService, 
                 choiceService,
                 usersChoicesManager,
                 resultsManager,
@@ -80,7 +79,8 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
             // wyświetlenie quizu
             Console.WriteLine("Rozpoczynamy quiz...");
-            quizManager.PresentAQuiz();
+            int questionId = 0;
+            quizManager.PresentAQuiz(questionId);
             Console.WriteLine("Quiz zakończony.");
         }
     }

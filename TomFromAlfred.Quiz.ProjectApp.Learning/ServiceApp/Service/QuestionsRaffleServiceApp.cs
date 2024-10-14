@@ -13,7 +13,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
     //Podczasz losowania pytania, system losuje pytania na podstawie ich pozycji w liście, a nie na podstawie Id!!!
 
     //Klasa losowania treści pytań
-    public class QuestionsRaffleServiceApp
+    /*
+     public class QuestionsRaffleServiceApp
     {
         private readonly QuestionServiceApp _questionServiceApp;
         private readonly ThreadLocal<Random> _random = new ThreadLocal<Random>(() => new Random());
@@ -65,6 +66,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
                 return new List<Question>();
             }
         }
-    }
+    } 
+    */
 }
 

@@ -7,7 +7,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 {
-    public class MappingServiceApp //klasa łączenia pytania z jego wyborem id i opcjami A B C
+    public class MappingServiceApp //klasa łączenia pytania z jego wyborem id i opcjami A B C wraz z treścią
 
     {
         private readonly ChoiceServiceApp _choiceServiceApp;
