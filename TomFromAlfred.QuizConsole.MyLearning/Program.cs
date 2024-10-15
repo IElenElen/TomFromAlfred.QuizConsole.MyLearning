@@ -1,4 +1,7 @@
 ﻿
+using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
+using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
+
 namespace TomFromAlfred.QuizConsole.MyLearning
 {
     /*
@@ -31,11 +34,13 @@ namespace TomFromAlfred.QuizConsole.MyLearning
      Testy w xunit: jednostkowe i integracyjne
      */
 
+    //15.10.24 Tworzę entity Question.
+
     public class Program //zmiana widoczności kolejnych klas
     {
         static void Main(string[] args)
         {
-           
+            GenericCommonPartCrud<Question> commonPartCrudApp = new GenericCommonPartCrud<Question>();
         }
     }
 }

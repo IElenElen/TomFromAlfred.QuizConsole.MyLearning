@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <Folder Include="Abstract\" />
-    <Folder Include="CommonApp\" />
     <Folder Include="ManagerApp\" />
     <Folder Include="ServiceApp\Service\" />
   </ItemGroup>
