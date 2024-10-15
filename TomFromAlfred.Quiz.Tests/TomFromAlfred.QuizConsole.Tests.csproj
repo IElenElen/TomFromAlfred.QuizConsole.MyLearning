@@ -33,4 +33,9 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Integration Tests\" />
+    <Folder Include="Tests Services\" />
+  </ItemGroup>
+
 </Project>

@@ -1,9 +1,4 @@
-﻿using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.DataServiceApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
-using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
-using TomFromAlfred.Quiz.Tests;
+﻿using TomFromAlfred.Quiz.Tests;
 
 namespace TomFromAlfred.QuizConsole.MyLearning
 {
@@ -34,53 +29,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Cofam się w rozwoju..."); //komentarze 
-
-            // Poniżej daję info użytkownikowi
-
-            Console.WriteLine("Pytania poniższego quizu są jednokrotnego wyboru. Po zapoznaniu się z treścią pytania naciśnij a, b lub c,");
-            Console.WriteLine("wybierając odpowiedź według Ciebie poprawną.");
-            Console.WriteLine("Za poprawną odpowiedż otrzymasz jeden punkt, za błędną brak punktu.");
-            Console.WriteLine();
-
-            // Inicjalizacja serwisów i menedżerów
-            Console.WriteLine("Inicjalizacja serwisów...");
-
-            var entitySupport = new EntitySupport();
-
-            IEnumerable<Question>? questions = null;
-            var questionServiceApp = new QuestionServiceApp(entitySupport, questions); 
-            var questionsDataService = new QuestionsDataService(questionServiceApp); //przekazanie instancji
-
-            var choicesDataService = new ChoicesDataService();
-            var choiceService = new ChoiceServiceApp(choicesDataService);
-
-            var mappingServiceApp = new MappingServiceApp(choiceService, entitySupport);
-
-            var inputReader = new ConsoleInputReaderManagerApp();
-            var usersChoicesManager = new UsersChoicesManagerApp(inputReader);
-
-            var contentCorrectSets = new List<ContentCorrectSet>(); 
-            var answerVerifierServiceApp = new AnswerVerifierServiceApp(contentCorrectSets);
-            var resultsManager = new ResultsAndUsersPointsManagerApp(answerVerifierServiceApp);
-
-            var exitManager = new UsersExitManagerApp();
-
-            var quizManager = new QuizPresentationForUsersManagerApp
-            (
-                mappingServiceApp,
-                choiceService,
-                usersChoicesManager,
-                resultsManager,
-                exitManager,
-                entitySupport
-            );
-
-            // wyświetlenie quizu
-            Console.WriteLine("Rozpoczynamy quiz...");
-            int questionId = 0;
-            quizManager.PresentAQuiz(questionId);
-            Console.WriteLine("Quiz zakończony.");
+           
         }
     }
 }

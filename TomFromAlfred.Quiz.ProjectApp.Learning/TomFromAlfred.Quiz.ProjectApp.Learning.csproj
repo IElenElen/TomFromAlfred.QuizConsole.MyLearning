@@ -14,4 +14,11 @@
     <ProjectReference Include="..\TomFromAlfred.Quiz.ProjectDomain.Learning\TomFromAlfred.Quiz.ProjectDomain.Learning.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstract\" />
+    <Folder Include="CommonApp\" />
+    <Folder Include="ManagerApp\" />
+    <Folder Include="ServiceApp\Service\" />
+  </ItemGroup>
+
 </Project>
