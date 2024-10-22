@@ -1,5 +1,7 @@
 ﻿
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.MyLearning
@@ -23,9 +25,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
      Budowa:
 
-     Interfejs jaki?
+     Interfejs jaki? dla serwisu Crud 
      
-     Klasa wspólna: dla crud klasa serwisowa, dla pracy na plikach json - też klasa serwisowa
+     Klasa wspólna: dla pracy na plikach json - klasa serwisowa
      
      Menadżery
 
@@ -40,7 +42,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
-            GenericCommonPartCrud<Question> commonPartCrudApp = new GenericCommonPartCrud<Question>();
+            ICrudService<Question> questionService = new QuestionService();
         }
     }
 }
