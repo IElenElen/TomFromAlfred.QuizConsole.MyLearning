@@ -1,6 +1,5 @@
 ﻿
 using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
-using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
