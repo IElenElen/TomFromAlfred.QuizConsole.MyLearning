@@ -12,17 +12,18 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     public class QuestionService : ICrudService<Question>
     {
         private List<Question> _questions = new List<Question>(); //lista pytań
+        public int id = 0;
 
         public void Add(Question entity)
         {
             _questions.Add(entity);
-            Console.WriteLine($"Dodano pytanie: {entity.Content}");
+            Console.WriteLine($"Dodano pytanie: {entity.QuestionContent}");
         }
 
         public void Delete(Question entity)
         {
             _questions.Remove(entity);
-            Console.WriteLine($"Usunięto pytanie o Id {entity.Id}");
+            Console.WriteLine($"Usunięto pytanie: {entity.QuestionContent}");
         }
 
         public IEnumerable<Question> GetAll()
@@ -32,11 +33,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public void Update(Question entity)
         {
-            var question = _questions.FirstOrDefault(q => q.Id == entity.Id);
+            var question = _questions.FirstOrDefault(q => q.QuestionId == entity.QuestionId);
             if (question != null)
             {
-                question.Content = entity.Content;
-                Console.WriteLine($"Zaktualizowano pytanie o Id {entity.Id}");
+                question.QuestionContent = entity.QuestionContent;
+                Console.WriteLine($"Zaktualizowano pytanie o Id {entity.QuestionId}");
             }
         }
     }

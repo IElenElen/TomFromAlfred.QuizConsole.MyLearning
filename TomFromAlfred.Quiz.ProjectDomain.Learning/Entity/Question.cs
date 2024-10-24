@@ -13,13 +13,13 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
      */
     public class Question //klasa publiczna, bo pytanie to podstawa w budowie Quizu
     {
-        public int Id { get; set; }
-        public required string Content { get; set; } //co jeśli dopiero tworzę treść???
+        public int QuestionId { get; set; }
+        public required string QuestionContent { get; set; } //co jeśli dopiero tworzę treść???
 
-        public Question(int id, string content)
+        public Question(int questionId, string questionContent)
         {
-            Id = id;
-            Content = content;
+            QuestionId = questionId;
+            QuestionContent = questionContent;
         }
     }
 }

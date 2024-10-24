@@ -35,13 +35,11 @@ namespace TomFromAlfred.QuizConsole.MyLearning
      Testy w xunit: jednostkowe i integracyjne
      */
 
-    //15.10.24 Tworzę entity Question.
-
     public class Program //zmiana widoczności kolejnych klas
     {
         static void Main(string[] args)
         {
-            ICrudService<Question> questionService = new QuestionService();
+            ICrudService<Question> questionService = new QuestionService(); //inicjalizacja obiektu QuestionService, jest zmienną o typie interfejsu, tworzony przy użyciu klasy QuestionService
         }
     }
 }
