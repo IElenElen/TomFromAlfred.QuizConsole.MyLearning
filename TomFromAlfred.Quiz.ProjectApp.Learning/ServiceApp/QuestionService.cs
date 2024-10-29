@@ -14,6 +14,18 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         private List<Question> _questions = new List<Question>(); //lista pytań
         public int id = 0;
 
+        public QuestionService()
+        {
+            InitializeQuestions();
+        }
+
+        private void InitializeQuestions()
+        {
+            _questions.Add(new Question(1, "Co następuje po lecie?"));
+            _questions.Add(new Question(2, "Co jest stolicą Polski?"));
+            _questions.Add(new Question(3, "Jaki jest najwyższy szczyt świata?"));
+        }
+
         public void Add(Question entity)
         {
             _questions.Add(entity);
@@ -38,6 +50,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             {
                 question.QuestionContent = entity.QuestionContent;
                 Console.WriteLine($"Zaktualizowano pytanie o Id {entity.QuestionId}");
+            }
+        }
+
+        public void DisplayAllQuestions()
+        {
+            Console.WriteLine("Lista wszystkich pytań:");
+            foreach (var question in _questions)
+            {
+                Console.WriteLine($"Pytanie Id: {question.QuestionId}, Treść: {question.QuestionContent}");
             }
         }
     }

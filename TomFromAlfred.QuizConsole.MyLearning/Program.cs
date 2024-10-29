@@ -39,7 +39,8 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
-            ICrudService<Question> questionService = new QuestionService(); //inicjalizacja obiektu QuestionService, jest zmienną o typie interfejsu, tworzony przy użyciu klasy QuestionService
+            QuestionService questionService = new QuestionService(); //inicjalizacja nowego obiektu 
+            questionService.DisplayAllQuestions(); //wywołuję metodę Display, dla wyświetlenia przykładowych pytań
         }
     }
 }
