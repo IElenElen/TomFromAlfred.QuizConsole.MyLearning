@@ -14,12 +14,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         private List<Question> _questions = new List<Question>(); //lista pytań
         public int id = 0;
 
-        public QuestionService()
+        public QuestionService() //inicjacja pytań w konstruktorze
         {
             InitializeQuestions();
         }
 
-        private void InitializeQuestions()
+        private void InitializeQuestions() 
         {
             _questions.Add(new Question(1, "Co następuje po lecie?"));
             _questions.Add(new Question(2, "Co jest stolicą Polski?"));
@@ -53,12 +53,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             }
         }
 
-        public void DisplayAllQuestions()
+        public void DisplayAllQuestions() //metoda dla wyświetlania listy pytań
         {
             Console.WriteLine("Lista wszystkich pytań:");
             foreach (var question in _questions)
             {
-                Console.WriteLine($"Pytanie Id: {question.QuestionId}, Treść: {question.QuestionContent}");
+                Console.WriteLine($"Pytanie {question.QuestionId}: {question.QuestionContent}");
             }
         }
     }
