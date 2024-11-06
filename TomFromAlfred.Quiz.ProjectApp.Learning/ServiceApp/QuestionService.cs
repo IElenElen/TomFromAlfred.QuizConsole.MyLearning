@@ -12,7 +12,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     public class QuestionService : ICrudService<Question>
     {
         private List<Question> _questions = new List<Question>(); //lista pytań
-        public int id = 0;
+        public int questionId = 0;
 
         public QuestionService() //inicjacja pytań w konstruktorze
         {
@@ -29,13 +29,13 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         public void Add(Question entity)
         {
             _questions.Add(entity);
-            Console.WriteLine($"Dodano pytanie: {entity.QuestionContent}");
+            Console.WriteLine($"Dodano pytanie: {entity.QuestionId}");
         }
 
         public void Delete(Question entity)
         {
             _questions.Remove(entity);
-            Console.WriteLine($"Usunięto pytanie: {entity.QuestionContent}");
+            Console.WriteLine($"Usunięto pytanie: {entity.QuestionId}");
         }
 
         public IEnumerable<Question> GetAll()

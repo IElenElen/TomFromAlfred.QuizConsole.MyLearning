@@ -41,6 +41,8 @@ namespace TomFromAlfred.QuizConsole.MyLearning
         {
             QuestionService questionService = new QuestionService(); //inicjalizacja nowego obiektu 
             questionService.DisplayAllQuestions(); //wywołuję metodę Display, dla wyświetlenia przykładowych pytań
+            ChoiceService choiceService = new ChoiceService();
+            choiceService.DisplayAllChoices();
         }
     }
 }
