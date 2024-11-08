@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
-    //jaką tu robię budowe???
     public class Choice
     {
         public int ChoiceId { get; set; }

@@ -1,6 +1,9 @@
 ﻿
+using System.Collections.Generic;
 using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.MyLearning
@@ -12,7 +15,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
      Wyświetlenie zestawów quizu, po kolei. Najpierw nr 1, czekanie na odpowiedź, weryfikacja odpowiedzi, potem zestaw nr 2 itd.
 
-     Numeruję zestaw jako całość, który wyświetla się użytkwnikowi. Czy to dobry pomysł???
+     Numeruję zestaw jako całość, który wyświetla się użytkwnikowi. Czy to dobry pomysł??? TAK
 
      Odliczanie czasu??? Może się nie udać...
 
@@ -39,10 +42,14 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
-            QuestionService questionService = new QuestionService(); //inicjalizacja nowego obiektu 
-            questionService.DisplayAllQuestions(); //wywołuję metodę Display, dla wyświetlenia przykładowych pytań
-            ChoiceService choiceService = new ChoiceService();
-            choiceService.DisplayAllChoices();
+            var questionService = new QuestionService();
+            var choiceService = new ChoiceService();
+            var correctAnswerService = new CorrectAnswerService();
+
+            var quizService = new QuizService(questionService, choiceService, correctAnswerService);
+            var quizManager = new OuizManager(quizService, choiceService, correctAnswerService);
+
+            quizManager.ConductQuiz(); // przeprowadzenie quizu
         }
     }
 }
