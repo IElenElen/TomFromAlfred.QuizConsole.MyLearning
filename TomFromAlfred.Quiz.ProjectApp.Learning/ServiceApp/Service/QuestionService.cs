@@ -10,16 +10,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 {
     //kolejne metody posortowanie alfabetycznie
     /*
-    08.11.24 zarówno pytania jak i wybory wyświetlają się po kolei. Zatem teraz nowa klasa QuizSerwis, która łączy te elementy.
-    Metoda Dispaly usunięta w Serwisach Pytania i Wyboru - dane pobiera Serwis Quizu za pomocą IEnumerable.
-    Teraz do pytania przypisałam jego zestaw wyboru.
+    Do pytania przypisałam jego zestaw wyboru.
     */
     public class QuestionService : ICrudService<Question>
     {
-        private List<Question> _questions = new List<Question>(); // lista pytań
+        private List<Question> _questions = new List<Question>(); // Lista pytań
         public int questionId = 0;
 
-        public QuestionService() // inicjacja pytań w konstruktorze
+        public QuestionService() // Inicjacja pytań w konstruktorze
         {
             InitializeQuestions();
         }

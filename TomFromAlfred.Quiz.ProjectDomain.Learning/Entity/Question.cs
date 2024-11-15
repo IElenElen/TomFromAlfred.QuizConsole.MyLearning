@@ -11,7 +11,7 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
      Właściwości Question to Id - generowane przez system oraz treść. 
      Na jakiej podstawie łaczę pytanie z jego zestawem wyboru???
      */
-    public class Question //klasa publiczna, bo pytanie to podstawa w budowie Quizu
+    public class Question //Klasa publiczna, bo pytanie to podstawa w budowie Quizu
     {
         public int QuestionId { get; set; }
         public string QuestionContent { get; set; } 

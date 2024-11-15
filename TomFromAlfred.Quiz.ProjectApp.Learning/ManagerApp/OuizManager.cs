@@ -8,53 +8,65 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class OuizManager
+    public class QuizManager
     {
         private readonly QuizService _quizService;
-        private readonly ChoiceService _choiceService;
-        private readonly CorrectAnswerService _correctAnswerService;
+        private readonly ScoreService _scoreService;
 
-        public OuizManager(QuizService quizService, ChoiceService choiceService, CorrectAnswerService correctAnswerService)
+        public QuizManager(QuizService quizService, ChoiceService choiceService, ScoreService scoreService)
         {
             _quizService = quizService;
-            _choiceService = choiceService;
-            _correctAnswerService = correctAnswerService;
+            _scoreService = scoreService;
         }
+        
         public void ConductQuiz()
         {
-            // Wyświetlam pytania bez poprawnych odpowiedzi
-            _quizService.DispalyQuiz();
+            var questions = _quizService.GetQuestions();
+            _scoreService.StartNewQuiz(questions.Count()); // Inicjalizacja punktacji
 
-            // Iteracja przez wszystkie pytania i przeprowadzam quiz
-            foreach (var question in _quizService.GetQuestions())
+            foreach (var question in questions)
             {
-                Console.WriteLine($"Twoja odpowiedź dla pytania \"{question.QuestionContent}\" (Wybierz A, B lub C): ");
-                char userChoiceLetter = Console.ReadLine().ToUpper()[0];
+                Console.WriteLine($"{question.QuestionContent}");
 
-                // Pobieram opcję odpowiadającą wyborowi użytkownika
-                var choiceForQuestion = _choiceService.GetAll()
-                    .Where(choice => choice.ChoiceId == question.QuestionId && choice.ChoiceLetter == userChoiceLetter)
-                    .FirstOrDefault();
-
-                if (choiceForQuestion == null)
+                var choicesForQuestion = _quizService.GetChoicesForQuestion(question.QuestionId);
+                foreach (var choice in choicesForQuestion)
                 {
-                    Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.");
-                    continue;
+                    Console.WriteLine($"{choice.ChoiceLetter}: {choice.ChoiceContent}");
                 }
 
-                // Sprawdzam, czy odpowiedź użytkownika jest poprawna
-                bool isCorrect = _quizService.CheckAnswer(question.QuestionId, choiceForQuestion.ChoiceContent);
+                char userChoiceLetter;
+                while (true)
+                {
+                    Console.Write("Twoja odpowiedź (Wybierz A, B lub C): ");
+                    var userInput = Console.ReadLine()?.Trim().ToUpper();
 
+                    if (string.IsNullOrEmpty(userInput) || userInput.Length != 1 ||
+                        !choicesForQuestion.Any(c => c.ChoiceLetter == userInput[0]))
+                    {
+                        Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.\n");
+                        continue;
+                    }
+
+                    userChoiceLetter = userInput[0];
+                    break;
+                }
+
+                var isCorrect = _quizService.CheckAnswer(question.QuestionId, userChoiceLetter);
                 if (isCorrect)
                 {
-                    Console.WriteLine("Poprawna odpowiedź!");
+                    Console.WriteLine("Poprawna odpowiedź!\n");
+                    _scoreService.IncrementScore(); // Zwiększa punktację
                 }
                 else
                 {
-                    Console.WriteLine("Niestety, to nie jest poprawna odpowiedź.");
+                    var correctAnswer = _quizService.GetCorrectAnswerForQuestion(question.QuestionId);
+                    Console.WriteLine($"Zła odpowiedź. Poprawna odpowiedź to: {correctAnswer}\n");
                 }
-                Console.WriteLine();
             }
+
+            Console.WriteLine("Koniec quizu!");
+            _scoreService.DisplayScoreSummary(); // Wyświetlenie wyników
         }
     }
 }
+

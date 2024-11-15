@@ -15,7 +15,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
     {
         private readonly List<CorrectAnswer> _correctAnswers = new List<CorrectAnswer>
         {
-            new CorrectAnswer(0, "Jesień"),           // poprawna odpowiedź dla pytania 0
+            new CorrectAnswer(0, "Jesień"),           // Poprawna odpowiedź dla pytania 0
             new CorrectAnswer(1, "Warszawa"),
             new CorrectAnswer(2, "Mount Everest")
         };

@@ -38,18 +38,19 @@ namespace TomFromAlfred.QuizConsole.MyLearning
      Testy w xunit: jednostkowe i integracyjne
      */
 
-    public class Program //zmiana widoczności kolejnych klas
+    public class Program // Zmiana widoczności kolejnych klas
     {
         static void Main(string[] args)
         {
             var questionService = new QuestionService();
             var choiceService = new ChoiceService();
             var correctAnswerService = new CorrectAnswerService();
-
             var quizService = new QuizService(questionService, choiceService, correctAnswerService);
-            var quizManager = new OuizManager(quizService, choiceService, correctAnswerService);
+            var scoreService = new ScoreService(); // Dodaj ScoreService
 
-            quizManager.ConductQuiz(); // przeprowadzenie quizu
+            var quizManager = new QuizManager(quizService, choiceService, scoreService);
+
+            quizManager.ConductQuiz(); // Użycie QuizManager
         }
     }
 }

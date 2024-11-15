@@ -8,11 +8,12 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
-    public class QuizService // klasa zestawu quiz'owego
+    public class QuizService
     {
         private readonly QuestionService _questionService;
         private readonly ChoiceService _choiceService;
         private readonly CorrectAnswerService _correctAnswerService;
+
         public QuizService(QuestionService questionService, ChoiceService choiceService, CorrectAnswerService correctAnswerService)
         {
             _questionService = questionService;
@@ -20,38 +21,38 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             _correctAnswerService = correctAnswerService;
         }
 
-        public void DispalyQuiz()
-        {
-
-            var questions = _questionService.GetAll(); //pobranie wszystkich pytań jako IEnumerable
-            var choices = _choiceService.GetAll(); // analogicznie pobranie wszystkich wyborów
-
-            foreach (var question in questions)
-            {
-                Console.WriteLine($"Zestaw {question.QuestionId + 1}: {question.QuestionContent}");
-
-                var choicesForQuestion = choices.Where(choice => choice.ChoiceId == question.QuestionId);
-                foreach (var choice in choicesForQuestion)
-                {
-                    Console.WriteLine($"   {choice.ChoiceLetter}: {choice.ChoiceContent}");
-                }
-                Console.WriteLine();
-            }
-        }
-
-        // Zwraca wszystkie pytania
+        // Pobieram wszystkie pytania
         public IEnumerable<Question> GetQuestions()
         {
             return _questionService.GetAll();
         }
 
-        // Sprawdza odpowiedź użytkownika
-        public bool CheckAnswer(int questionId, string userAnswer)
+        // Pobieram opcje dla danego pytania
+        public IEnumerable<Choice> GetChoicesForQuestion(int questionId)
+        {
+            return _choiceService.GetAll().Where(choice => choice.ChoiceId == questionId);
+        }
+
+        // Pobieram poprawną odpowiedź dla danego pytania
+        public string GetCorrectAnswerForQuestion(int questionId)
         {
             var correctAnswer = _correctAnswerService.GetAll()
                 .FirstOrDefault(answer => answer.CorrectAnswerId == questionId);
 
-            return correctAnswer != null && correctAnswer.CorrectAnswerContent.Equals(userAnswer, StringComparison.OrdinalIgnoreCase);
+            return correctAnswer?.CorrectAnswerContent ?? "Brak poprawnej odpowiedzi";
+        }
+
+        // Sprawdzam, czy odpowiedź użytkownika jest poprawna
+        public bool CheckAnswer(int questionId, char userChoiceLetter)
+        {
+            var correctAnswer = _correctAnswerService.GetAll()
+                .FirstOrDefault(answer => answer.CorrectAnswerId == questionId);
+
+            var choice = _choiceService.GetAll()
+                .FirstOrDefault(c => c.ChoiceId == questionId && c.ChoiceLetter == userChoiceLetter);
+
+            return choice != null && correctAnswer != null &&
+                   choice.ChoiceContent.Equals(correctAnswer.CorrectAnswerContent, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
