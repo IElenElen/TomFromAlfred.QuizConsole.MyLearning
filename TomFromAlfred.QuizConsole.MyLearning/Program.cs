@@ -1,10 +1,6 @@
-﻿
-using System.Collections.Generic;
-using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
+﻿using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
-using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.MyLearning
 {
@@ -17,7 +13,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
      Numeruję zestaw jako całość, który wyświetla się użytkwnikowi. Czy to dobry pomysł??? TAK
 
-     Odliczanie czasu??? Może się nie udać...
+     Odliczanie czasu???  Odpuszczam po kolejnych nieudanych próbach
 
      Wynik: zliczanie poprawnych odpowiedzi + podanie procentowe poprawności. Wynik na koniec quizu.
 
@@ -47,7 +43,6 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             var correctAnswerService = new CorrectAnswerService();
             var quizService = new QuizService(questionService, choiceService, correctAnswerService);
             var scoreService = new ScoreService(); // Dodaj ScoreService
-
             var quizManager = new QuizManager(quizService, choiceService, scoreService);
 
             quizManager.ConductQuiz(); // Użycie QuizManager

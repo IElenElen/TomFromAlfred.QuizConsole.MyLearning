@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
+﻿using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
@@ -18,7 +13,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             _quizService = quizService;
             _scoreService = scoreService;
         }
-        
+
         public void ConductQuiz()
         {
             var questions = _quizService.GetQuestions();
@@ -39,7 +34,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 {
                     Console.Write("Twoja odpowiedź (Wybierz A, B lub C): ");
                     var userInput = Console.ReadLine()?.Trim().ToUpper();
-
                     if (string.IsNullOrEmpty(userInput) || userInput.Length != 1 ||
                         !choicesForQuestion.Any(c => c.ChoiceLetter == userInput[0]))
                     {
@@ -50,7 +44,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                     userChoiceLetter = userInput[0];
                     break;
                 }
-
                 var isCorrect = _quizService.CheckAnswer(question.QuestionId, userChoiceLetter);
                 if (isCorrect)
                 {
@@ -63,7 +56,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                     Console.WriteLine($"Zła odpowiedź. Poprawna odpowiedź to: {correctAnswer}\n");
                 }
             }
-
             Console.WriteLine("Koniec quizu!");
             _scoreService.DisplayScoreSummary(); // Wyświetlenie wyników
         }
