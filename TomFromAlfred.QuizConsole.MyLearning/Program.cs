@@ -9,17 +9,17 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
      Funkcjonalności:
 
-     Wyświetlenie zestawów quizu, po kolei. Najpierw nr 1, czekanie na odpowiedź, weryfikacja odpowiedzi, potem zestaw nr 2 itd.
+     Wyświetlenie zestawów quizu, po kolei. Najpierw nr 1, czekanie na odpowiedź, weryfikacja odpowiedzi, potem zestaw nr 2 itd. OK
 
      Numeruję zestaw jako całość, który wyświetla się użytkwnikowi. Czy to dobry pomysł??? TAK
 
      Odliczanie czasu???  Odpuszczam po kolejnych nieudanych próbach
 
-     Wynik: zliczanie poprawnych odpowiedzi + podanie procentowe poprawności. Wynik na koniec quizu.
+     Wynik: zliczanie poprawnych odpowiedzi + podanie procentowe poprawności. Wynik na koniec quizu. OK 
 
-     Losowanie zestawów?
+     Losowanie zestawów? OK
 
-     Wyjście z quiz w każdym momencie.
+     Wyjście z quiz w każdym momencie. OK
 
      Budowa:
 
@@ -27,9 +27,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
      
      Klasa wspólna: dla pracy na plikach json - klasa serwisowa
      
-     Menadżery
+     Menadżery: dla Quizu.
 
-     Serwisy: 
+     Serwisy: podserwis dla Entity, serwisy dla Quizu, Punktacji i Zakończenia. 
 
      Testy w xunit: jednostkowe i integracyjne
      */
@@ -42,8 +42,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             var choiceService = new ChoiceService();
             var correctAnswerService = new CorrectAnswerService();
             var quizService = new QuizService(questionService, choiceService, correctAnswerService);
-            var scoreService = new ScoreService(); // Dodaj ScoreService
-            var quizManager = new QuizManager(quizService, choiceService, scoreService);
+            var scoreService = new ScoreService(); 
+            var endService = new EndService();
+            var quizManager = new QuizManager(quizService, choiceService, scoreService, endService);
 
             quizManager.ConductQuiz(); // Użycie QuizManager
         }
