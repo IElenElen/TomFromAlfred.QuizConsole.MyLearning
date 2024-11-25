@@ -42,7 +42,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             var choiceService = new ChoiceService();
             var correctAnswerService = new CorrectAnswerService();
             var quizService = new QuizService(questionService, choiceService, correctAnswerService);
-            var scoreService = new ScoreService(); 
+            var scoreService = new ScoreService();
             var endService = new EndService();
             var quizManager = new QuizManager(quizService, choiceService, scoreService, endService);
 

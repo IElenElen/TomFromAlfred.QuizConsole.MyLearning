@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
@@ -10,49 +11,98 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
     public class QuizService
     {
+        private readonly JsonCommonClass _jsonService;
+        private readonly string _jsonFilePath;
+
         private readonly QuestionService _questionService;
         private readonly ChoiceService _choiceService;
         private readonly CorrectAnswerService _correctAnswerService;
 
-        public QuizService(QuestionService questionService, ChoiceService choiceService, CorrectAnswerService correctAnswerService)
+        private List<Question> _jsonQuestions; // Bufor pytań z JSON
+
+        public QuizService(
+            QuestionService questionService,
+            ChoiceService choiceService,
+            CorrectAnswerService correctAnswerService,
+            JsonCommonClass jsonService,
+            string jsonFilePath)
         {
-            _questionService = questionService;
-            _choiceService = choiceService;
-            _correctAnswerService = correctAnswerService;
+            _questionService = questionService ?? throw new ArgumentNullException(nameof(questionService));
+            _choiceService = choiceService ?? throw new ArgumentNullException(nameof(choiceService));
+            _correctAnswerService = correctAnswerService ?? throw new ArgumentNullException(nameof(correctAnswerService));
+            _jsonService = jsonService ?? throw new ArgumentNullException(nameof(jsonService));
+            _jsonFilePath = jsonFilePath ?? throw new ArgumentNullException(nameof(jsonFilePath));
+
+            // Inicjalizacja pytań z JSON
+            LoadQuestionsFromJson();
         }
 
-        // Pobieram wszystkie pytania
-        public IEnumerable<Question> GetQuestions()
+        public void InitializeJsonService(JsonCommonClass jsonService, string jsonFilePath)
+        {
+            _jsonService = jsonService ?? throw new ArgumentNullException(nameof(jsonService));
+            _jsonFilePath = jsonFilePath ?? throw new ArgumentNullException(nameof(jsonFilePath));
+            LoadQuestionsFromJson();
+        }
+
+
+        // Wczytanie pytań z JSON
+        private void LoadQuestionsFromJson()
+        {
+            if (_jsonService == null || string.IsNullOrEmpty(_jsonFilePath))
+            {
+                throw new InvalidOperationException("JSON service is not initialized.");
+            }
+
+            try
+            {
+                _jsonQuestions = _jsonService.ReadFromFile<List<Question>>(_jsonFilePath) ?? new List<Question>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd podczas wczytywania pytań z pliku JSON: {ex.Message}");
+                _jsonQuestions = new List<Question>();
+            }
+        }
+
+        // Pobranie wszystkich pytań z serwisów (dotychczasowa obsługa)
+        public IEnumerable<Question> GetQuestionsFromServices()
         {
             return _questionService.GetAll();
         }
 
-        // Pobieram opcje dla danego pytania
-        public IEnumerable<Choice> GetChoicesForQuestion(int questionId)
+        // Pobranie wszystkich pytań z JSON
+        public IEnumerable<Question> GetQuestionsFromJson()
         {
-            return _choiceService.GetAll().Where(choice => choice.ChoiceId == questionId);
+            return _jsonQuestions;
         }
 
-        // Pobieram poprawną odpowiedź dla danego pytania
-        public string GetCorrectAnswerForQuestion(int questionId)
+        // Dodanie pytania do JSON
+        public void AddQuestionToJson(Question question)
         {
-            var correctAnswer = _correctAnswerService.GetAll()
-                .FirstOrDefault(answer => answer.CorrectAnswerId == questionId);
+            if (question == null) throw new ArgumentNullException(nameof(question));
 
-            return correctAnswer?.CorrectAnswerContent ?? "Brak poprawnej odpowiedzi";
+            _jsonQuestions.Add(question);
+            SaveQuestionsToJson();
         }
 
-        // Sprawdzam, czy odpowiedź użytkownika jest poprawna
-        public bool CheckAnswer(int questionId, char userChoiceLetter)
+        // Zapis pytań do pliku JSON
+        private void SaveQuestionsToJson()
         {
-            var correctAnswer = _correctAnswerService.GetAll()
-                .FirstOrDefault(answer => answer.CorrectAnswerId == questionId);
+            try
+            {
+                _jsonService.WriteToFile(_jsonFilePath, _jsonQuestions);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd podczas zapisywania pytań do pliku JSON: {ex.Message}");
+            }
+        }
 
-            var choice = _choiceService.GetAll()
-                .FirstOrDefault(c => c.ChoiceId == questionId && c.ChoiceLetter == userChoiceLetter);
-
-            return choice != null && correctAnswer != null &&
-                   choice.ChoiceContent.Equals(correctAnswer.CorrectAnswerContent, StringComparison.OrdinalIgnoreCase);
+        // Pobranie wszystkich pytań (z serwisów + JSON)
+        public IEnumerable<Question> GetAllQuestions()
+        {
+            var serviceQuestions = GetQuestionsFromServices();
+            return serviceQuestions.Concat(_jsonQuestions).ToList(); // Łączenie pytań z serwisów i JSON
         }
     }
 }

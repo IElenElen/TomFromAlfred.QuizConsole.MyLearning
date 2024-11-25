@@ -1,5 +1,7 @@
-﻿using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
+﻿using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
@@ -11,9 +13,20 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
         public QuizManager(QuizService quizService, ChoiceService choiceService, ScoreService scoreService, EndService endService)
         {
-            _quizService = quizService;
-            _scoreService = scoreService;
-            _endService = endService;
+            _quizService = quizService ?? throw new ArgumentNullException(nameof(quizService));
+            _scoreService = scoreService ?? throw new ArgumentNullException(nameof(scoreService));
+            _endService = endService ?? throw new ArgumentNullException(nameof(endService));
+
+            InitializeJsonService();
+        }
+
+        // Metoda inicjalizująca obsługę JSON
+        private void InitializeJsonService()
+        {
+            const string jsonFilePath = @"C:\Users\Ilka\Desktop\.net\Quiz Tomek Konsola\questions.Tomek.json";
+
+            var jsonService = new JsonCommonClass();
+            _quizService.InitializeJsonService(jsonService, jsonFilePath); // Przekazujemy ścieżkę do QuizService
         }
 
         public void ConductQuiz()
@@ -24,16 +37,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             Console.WriteLine("Jeśli przejdziesz cały Quiz, otrzymasz informację o ilości i procencie uzyskanych punktów.");
             Console.WriteLine();
 
-            // Przekształcenie IEnumerable na List i losowanie
             var random = new Random();
-            var questions = _quizService.GetQuestions()
-                .ToList() // Zamiana IEnumerable na List
-                .OrderBy(_ => random.Next()) // Losowanie kolejności
+            var questions = _quizService.GetAllQuestions()
+                .ToList()
+                .OrderBy(_ => random.Next())
                 .ToList();
 
-            _scoreService.StartNewQuiz(questions.Count); // Inicjalizacja punktacji
+            _scoreService.StartNewQuiz(questions.Count);
 
-            int displayNumber = 1; // Numeracja wyświetlana dla użytkownika zaczyna się od 1
+            int displayNumber = 1;
 
             foreach (var question in questions)
             {
@@ -52,10 +64,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                     Console.Write("Twoja odpowiedź: ");
                     var userInput = Console.ReadLine()?.Trim().ToUpper();
 
-                    // Sprawdzenie, czy użytkownik chce zakończyć quiz
                     if (_endService.ShouldEnd(userInput))
                     {
-                        _endService.EndQuiz(); // Obsługa zakończenia quizu
+                        _endService.EndQuiz();
                     }
 
                     if (string.IsNullOrEmpty(userInput) || userInput.Length != 1 ||
@@ -75,7 +86,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 {
                     Console.WriteLine();
                     Console.WriteLine("Poprawna odpowiedź!\n");
-                    _scoreService.IncrementScore(); // Zwiększa punktację
+                    _scoreService.IncrementScore();
                 }
                 else
                 {
@@ -84,12 +95,48 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                     Console.WriteLine($"Zła odpowiedź. Poprawna odpowiedź to: {correctAnswer}\n");
                 }
 
-                displayNumber++; // Zwiększanie numeracji wyświetlanej użytkownikowi
+                displayNumber++;
             }
 
             Console.WriteLine("Koniec quizu!");
             Console.WriteLine();
-            _scoreService.DisplayScoreSummary(); // Wyświetlenie wyników
+            _scoreService.DisplayScoreSummary();
+        }
+
+        // Dodanie nowego pytania
+        public void AddQuestion()
+        {
+            Console.Write("Podaj treść pytania: ");
+            var content = Console.ReadLine();
+
+            Console.WriteLine("Dodaj odpowiedzi (wpisz po jednej, kończąc ENTER):");
+            var choices = new List<string>();
+            char choiceLetter = 'A';
+
+            while (true)
+            {
+                Console.Write($"{choiceLetter}: ");
+                var choiceContent = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(choiceContent))
+                    break;
+
+                choices.Add(choiceContent);
+                choiceLetter++;
+            }
+
+            Console.Write("Podaj poprawną odpowiedź (literę A, B, itd.): ");
+            var correctAnswerLetter = Console.ReadLine()?.ToUpper();
+
+            if (correctAnswerLetter == null || correctAnswerLetter.Length != 1 || correctAnswerLetter[0] < 'A' || correctAnswerLetter[0] >= 'A' + choices.Count)
+            {
+                Console.WriteLine("Nieprawidłowa odpowiedź. Dodawanie pytania anulowane.");
+                return;
+            }
+
+            var question = new Question(_quizService.GetAllQuestions().Max(q => q.QuestionId) + 1, content);
+            _quizService.AddQuestionToJson(question);
+            Console.WriteLine("Dodano nowe pytanie!");
         }
     }
 }
