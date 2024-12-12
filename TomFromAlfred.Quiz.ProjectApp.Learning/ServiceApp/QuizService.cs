@@ -11,14 +11,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
     public class QuizService
     {
-        private readonly JsonCommonClass _jsonService;
-        private readonly string _jsonFilePath;
+        private JsonCommonClass _jsonService;
+        private string _jsonFilePath;
 
         private readonly QuestionService _questionService;
         private readonly ChoiceService _choiceService;
         private readonly CorrectAnswerService _correctAnswerService;
 
-        private List<Question> _jsonQuestions; // Bufor pytań z JSON
+        private List<Question> _jsonQuestions = new(); // Bufor pytań z JSON
 
         public QuizService(
             QuestionService questionService,
@@ -43,7 +43,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             _jsonFilePath = jsonFilePath ?? throw new ArgumentNullException(nameof(jsonFilePath));
             LoadQuestionsFromJson();
         }
-
 
         // Wczytanie pytań z JSON
         private void LoadQuestionsFromJson()
@@ -103,6 +102,26 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         {
             var serviceQuestions = GetQuestionsFromServices();
             return serviceQuestions.Concat(_jsonQuestions).ToList(); // Łączenie pytań z serwisów i JSON
+        }
+
+        // Pobranie odpowiedzi dla pytania ???
+        public IEnumerable<Choice> GetChoicesForQuestion(int questionId)
+        {
+            return _choiceService.GetChoicesByQuestionId(questionId);
+        }
+
+        // Sprawdzenie poprawności odpowiedzi ???
+        public bool CheckAnswer(int questionId, char userChoiceLetter)
+        {
+            var correctAnswer = _correctAnswerService.GetCorrectAnswerByQuestionId(questionId);
+            return correctAnswer?.ChoiceLetter == userChoiceLetter;
+        }
+
+        // Pobranie poprawnej odpowiedzi dla pytania ???
+        public char GetCorrectAnswerForQuestion(int questionId)
+        {
+            var correctAnswer = _correctAnswerService.GetCorrectAnswerByQuestionId(questionId);
+            return correctAnswer?.ChoiceLetter ?? ' ';
         }
     }
 }

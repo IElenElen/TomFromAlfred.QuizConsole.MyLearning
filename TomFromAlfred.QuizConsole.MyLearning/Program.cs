@@ -1,4 +1,5 @@
-﻿using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
+﻿using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
 
@@ -41,12 +42,25 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             var questionService = new QuestionService();
             var choiceService = new ChoiceService();
             var correctAnswerService = new CorrectAnswerService();
-            var quizService = new QuizService(questionService, choiceService, correctAnswerService);
+
+            // Instancja JsonCommonClass i ścieżki pliku JSON
+            var jsonService = new JsonCommonClass();
+            string jsonFilePath = "questions.json"; // Ścieżka do pliku JSON
+
+            // Instancja QuizService z kompletnymi argumentami
+            var quizService = new QuizService(
+                questionService,
+                choiceService,
+                correctAnswerService,
+                jsonService,
+                jsonFilePath
+            );
+
             var scoreService = new ScoreService();
             var endService = new EndService();
             var quizManager = new QuizManager(quizService, choiceService, scoreService, endService);
 
-            quizManager.ConductQuiz(); // Użycie QuizManager
+            quizManager.ConductQuiz(); // Uruchomienie QuizManager
         }
     }
 }
