@@ -103,25 +103,5 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             var serviceQuestions = GetQuestionsFromServices();
             return serviceQuestions.Concat(_jsonQuestions).ToList(); // Łączenie pytań z serwisów i JSON
         }
-
-        // Pobranie odpowiedzi dla pytania ???
-        public IEnumerable<Choice> GetChoicesForQuestion(int questionId)
-        {
-            return _choiceService.GetChoicesByQuestionId(questionId);
-        }
-
-        // Sprawdzenie poprawności odpowiedzi ???
-        public bool CheckAnswer(int questionId, char userChoiceLetter)
-        {
-            var correctAnswer = _correctAnswerService.GetCorrectAnswerByQuestionId(questionId);
-            return correctAnswer?.ChoiceLetter == userChoiceLetter;
-        }
-
-        // Pobranie poprawnej odpowiedzi dla pytania ???
-        public char GetCorrectAnswerForQuestion(int questionId)
-        {
-            var correctAnswer = _correctAnswerService.GetCorrectAnswerByQuestionId(questionId);
-            return correctAnswer?.ChoiceLetter ?? ' ';
-        }
     }
 }
