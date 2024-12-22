@@ -14,6 +14,9 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 
         public Choice (int choiceId, char choiceLetter, string choiceContent)
         {
+            if (choiceLetter < 'A' || choiceLetter > 'Z') // Walidacja zakresu
+                throw new ArgumentException("Litera odpowiedzi musi być w zakresie A-Z.");
+
             ChoiceId = choiceId;
             ChoiceLetter = choiceLetter;
             ChoiceContent = choiceContent;

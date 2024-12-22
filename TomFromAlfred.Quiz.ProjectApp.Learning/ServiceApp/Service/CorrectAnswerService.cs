@@ -46,5 +46,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
                 Console.WriteLine($"Zaktualizowano poprawną odpowiedź o Id {entity.CorrectAnswerId}");
             }
         }
+        public CorrectAnswer GetCorrectAnswerForQuestion(int questionId) // Poprawna odpowiedź dla pytania
+        {
+            return _correctAnswers.FirstOrDefault(ca => ca.CorrectAnswerId == questionId);
+        }
     }
 }

@@ -38,7 +38,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         }
 
         public void InitializeJsonService(JsonCommonClass jsonService, string jsonFilePath)
-        {
+        { 
+
             _jsonService = jsonService ?? throw new ArgumentNullException(nameof(jsonService));
             _jsonFilePath = jsonFilePath ?? throw new ArgumentNullException(nameof(jsonFilePath));
             LoadQuestionsFromJson();
@@ -102,6 +103,30 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         {
             var serviceQuestions = GetQuestionsFromServices();
             return serviceQuestions.Concat(_jsonQuestions).ToList(); // Łączenie pytań z serwisów i JSON
+        }
+
+        public IEnumerable<Choice> GetChoicesForQuestion(int questionId)
+        {
+            return _choiceService.GetChoicesForQuestion(questionId);
+        }
+
+        public CorrectAnswer GetCorrectAnswerForQuestion(int questionId)
+        {
+            return _correctAnswerService.GetCorrectAnswerForQuestion(questionId);
+        }
+
+        public bool CheckAnswer(int questionId, char userChoiceLetter)
+        {
+            // Pobierz poprawną odpowiedź dla danego pytania
+            var correctAnswer = _correctAnswerService.GetCorrectAnswerForQuestion(questionId);
+            if (correctAnswer == null)
+            {
+                Console.WriteLine($"Brak poprawnej odpowiedzi dla pytania o ID {questionId}.");
+                return false; // Jeśli brak poprawnej odpowiedzi, uznaj odpowiedź za błędną
+            }
+
+            // Sprawdź, czy litera wyboru użytkownika odpowiada poprawnej odpowiedzi
+            return string.Equals(correctAnswer.CorrectAnswerContent, userChoiceLetter.ToString(), StringComparison.OrdinalIgnoreCase);
         }
     }
 }

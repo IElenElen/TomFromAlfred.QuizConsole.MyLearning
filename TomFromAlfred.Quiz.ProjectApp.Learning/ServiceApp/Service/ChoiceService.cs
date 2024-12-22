@@ -63,6 +63,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             return _choices.AsEnumerable(); // Zwraca IEnumerable
         }
 
+        public IEnumerable<Choice> GetChoicesForQuestion(int questionId) // Filtrowanie odpowiedzi na podstawie id pytania
+        {
+            return _choices.Where(c => c.ChoiceId == questionId);
+        }
+
         // Aktualizacja istniejącego wyboru
         public void Update(Choice entity)
         {

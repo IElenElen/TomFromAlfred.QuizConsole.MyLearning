@@ -19,5 +19,11 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
             CorrectAnswerId = correctAnswerId;
             CorrectAnswerContent = correctAnswerContent;
         }
+
+        // Nadpisanie metody ToString dla poprawnego wyświetlania
+        public override string ToString()
+        {
+            return CorrectAnswerContent;
+        }
     }
 }
