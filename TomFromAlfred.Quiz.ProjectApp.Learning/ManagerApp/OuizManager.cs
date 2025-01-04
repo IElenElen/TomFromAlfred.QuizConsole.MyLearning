@@ -20,13 +20,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             InitializeJsonService();
         }
 
-        // Metoda inicjalizująca obsługę JSON
         private void InitializeJsonService()
         {
-            const string jsonFilePath = @"C:\Users\Ilka\Desktop\.net\Quiz Tomek Konsola\questions.Tomek.json";
-
             var jsonService = new JsonCommonClass();
-            _quizService.InitializeJsonService(jsonService, jsonFilePath); // Przekazujemy ścieżkę do QuizService
+            _quizService.InitializeJsonService(jsonService, QuizService.QuestionsFilePath);
         }
 
         public void ConductQuiz()
@@ -39,71 +36,82 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
             var random = new Random();
             var questions = _quizService.GetAllQuestions()
-                .ToList()
                 .OrderBy(_ => random.Next())
                 .ToList();
 
+            var managerHelper = new ManagerHelper(questions);
+
             _scoreService.StartNewQuiz(questions.Count);
+            int displayNumber = 1; // Zmienna do numerowania pytań
 
-            int displayNumber = 1;
-
-            foreach (var question in questions)
+            while (managerHelper.HasNext())
             {
-                Console.WriteLine($"{displayNumber}, {question.QuestionContent}");
+                var currentQuestion = managerHelper.GetCurrentQuestion();
+                Console.WriteLine($"{displayNumber}, {currentQuestion.QuestionContent}");
 
-                var choicesForQuestion = _quizService.GetChoicesForQuestion(question.QuestionId);
-                foreach (var choice in choicesForQuestion)
+                var choices = _quizService.GetChoicesForQuestion(currentQuestion.QuestionId);
+                foreach (var choice in choices)
                 {
                     Console.WriteLine($"{choice.ChoiceLetter}: {choice.ChoiceContent}");
                 }
 
-                char userChoiceLetter;
+                Console.WriteLine();
+                Console.WriteLine("Co chcesz zrobić?");
+                Console.WriteLine("1. Odpowiedzieć na pytanie");
+                Console.WriteLine("2. Przejść do następnego pytania");
+                Console.WriteLine("3. Zakończyć quiz");
 
-                while (true)
+                var userInput = Console.ReadLine()?.Trim();
+
+                switch (userInput)
                 {
-                    Console.Write("Twoja odpowiedź: ");
-                    var userInput = Console.ReadLine()?.Trim().ToUpper();
+                    case "1":
+                        // Odpowiedz na pytanie
+                        Console.Write("Twoja odpowiedź: ");
+                        var answer = Console.ReadLine()?.Trim().ToUpper();
 
-                    if (_endService.ShouldEnd(userInput))
-                    {
-                        _endService.EndQuiz();
-                    }
+                        if (string.IsNullOrEmpty(answer) || !choices.Any(c => c.ChoiceLetter.ToString() == answer))
+                        {
+                            Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.");
+                            continue;
+                        }
 
-                    if (string.IsNullOrEmpty(userInput) || userInput.Length != 1 ||
-                        !choicesForQuestion.Any(c => c.ChoiceLetter == userInput[0]))
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.\n");
+                        if (_quizService.CheckAnswer(currentQuestion.QuestionId, answer[0]))
+                        {
+                            Console.WriteLine("Poprawna odpowiedź!");
+                            _scoreService.IncrementScore();
+                        }
+                        else
+                        {
+                            var correctAnswer = _quizService.GetCorrectAnswerForQuestion(currentQuestion.QuestionId);
+                            Console.WriteLine($"Zła odpowiedź. Poprawna odpowiedź to: {correctAnswer}");
+                        }
+                        break;
+
+                    case "2":
+                        // Pomiń pytanie
+                        Console.WriteLine("Pytanie pominięte.");
+                        break;
+
+                    case "3":
+                        // Zakończ quiz
+                        Console.WriteLine("Zakończono quiz. Dziękujemy za udział!");
+                        _scoreService.DisplayScoreSummary();
+                        return;
+
+                    default:
+                        Console.WriteLine("Nieprawidłowa opcja. Spróbuj ponownie.");
                         continue;
-                    }
-
-                    userChoiceLetter = userInput[0];
-                    break;
                 }
 
-                var isCorrect = _quizService.CheckAnswer(question.QuestionId, userChoiceLetter);
-                if (isCorrect)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Poprawna odpowiedź!\n");
-                    _scoreService.IncrementScore();
-                }
-                else
-                {
-                    var correctAnswer = _quizService.GetCorrectAnswerForQuestion(question.QuestionId);
-                    Console.WriteLine();
-                    Console.WriteLine($"Zła odpowiedź. Poprawna odpowiedź to: {correctAnswer}\n");
-                }
-
-                displayNumber++;
+                displayNumber++; // Zwiększ numer pytania
+                managerHelper.NextQuestion();
             }
 
-            Console.WriteLine("Koniec quizu!");
-            Console.WriteLine();
+            Console.WriteLine("Koniec pytań.");
             _scoreService.DisplayScoreSummary();
         }
 
-        // Dodanie nowego pytania
         public void AddQuestion()
         {
             Console.Write("Podaj treść pytania: ");

@@ -8,16 +8,24 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
     public class EndService
     {
+        private readonly ScoreService _scoreService;
+
+        public EndService(ScoreService scoreService)
+        {
+            _scoreService = scoreService ?? throw new ArgumentNullException(nameof(scoreService));
+        }
+
         public bool ShouldEnd(string userInput)
         {
-            // Jeśli użytkownik wpisze 'k', zakończ quiz
+            // Jeśli użytkownik wpisze 'k', kończę quiz
             return userInput.Trim().ToLower() == "k";
         }
 
         public void EndQuiz()
         {
-            Console.WriteLine("Quiz zakończony przez użytkownika.");
-            Environment.Exit(0); // Kończy program
+            Console.WriteLine("Quiz został przerwany. Dziękujemy za udział!");
+            _scoreService.DisplayScoreSummary();
+            Environment.Exit(0); 
         }
     }
 }

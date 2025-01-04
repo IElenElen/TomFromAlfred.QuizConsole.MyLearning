@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,13 +9,18 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
     public class Choice
     {
+        [JsonProperty("ChoiceId")]
         public int ChoiceId { get; set; }
-        public char ChoiceLetter { get; set; } // np. A, B, C
+
+        [JsonProperty("OptionLetter")] 
+        public char ChoiceLetter { get; set; }
+
+        [JsonProperty("ChoiceContent")]
         public string ChoiceContent { get; set; }
 
-        public Choice (int choiceId, char choiceLetter, string choiceContent)
+        public Choice(int choiceId, char choiceLetter, string choiceContent)
         {
-            if (choiceLetter < 'A' || choiceLetter > 'Z') // Walidacja zakresu
+            if (choiceLetter < 'A' || choiceLetter > 'Z')
                 throw new ArgumentException("Litera odpowiedzi musi być w zakresie A-Z.");
 
             ChoiceId = choiceId;

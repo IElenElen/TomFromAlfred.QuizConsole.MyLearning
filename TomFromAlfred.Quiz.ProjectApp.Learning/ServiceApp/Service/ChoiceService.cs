@@ -17,15 +17,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             // Inicjalizacja wyborów w konstruktorze
             _choices = new List<Choice>
             {
-                new Choice(0, 'A', "Jesień"),
-                new Choice(0, 'B', "Zima"),
-                new Choice(0, 'C', "Wiosna"),
-                new Choice(1, 'A', "Kraków"),
-                new Choice(1, 'B', "Warszawa"),
-                new Choice(1, 'C', "Wrocław"),
-                new Choice(2, 'A', "Kilimandżaro"),
-                new Choice(2, 'B', "Mount Everest"),
-                new Choice(2, 'C', "K2")
+                new Choice(11, 'A', "Jesień"),
+                new Choice(11, 'B', "Zima"),
+                new Choice(11, 'C', "Wiosna"),
+                new Choice(12, 'A', "Kraków"),
+                new Choice(12, 'B', "Warszawa"),
+                new Choice(12, 'C', "Wrocław"),
+                new Choice(13, 'A', "Kilimandżaro"),
+                new Choice(13, 'B', "Mount Everest"),
+                new Choice(13, 'C', "K2")
             };
         }
 
@@ -60,7 +60,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
         // Pobranie wszystkich wyborów
         public IEnumerable<Choice> GetAll()
         {
-            return _choices.AsEnumerable(); // Zwraca IEnumerable
+            return _choices.AsEnumerable(); // Zwracanie IEnumerable
         }
 
         public IEnumerable<Choice> GetChoicesForQuestion(int questionId) // Filtrowanie odpowiedzi na podstawie id pytania

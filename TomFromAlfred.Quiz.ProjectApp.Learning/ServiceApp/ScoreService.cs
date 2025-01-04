@@ -13,13 +13,13 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public void StartNewQuiz(int totalQuestions)
         {
-            _score = 0; // Resetuję punkty
-            _totalQuestions = totalQuestions; // Ustawiam liczbę pytań
+            _score = 0; // Reset punktów
+            _totalQuestions = totalQuestions; // Ustawienie liczby pytań
         }
 
         public void IncrementScore()
         {
-            _score++; // Zwiększam liczbę poprawnych odpowiedzi
+            _score++; // Zwiększenie liczby poprawnych odpowiedzi
         }
 
         public int GetScore()

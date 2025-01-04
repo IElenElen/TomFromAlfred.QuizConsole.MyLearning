@@ -24,9 +24,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
         private void InitializeQuestions()
         {
-            _questions.Add(new Question(0, "Co następuje po lecie?"));
-            _questions.Add(new Question(1, "Co jest stolicą Polski?"));
-            _questions.Add(new Question(2, "Jaki jest najwyższy szczyt świata?"));
+            _questions.Add(new Question(11, "Co następuje po lecie?"));
+            _questions.Add(new Question(12, "Co jest stolicą Polski?"));
+            _questions.Add(new Question(13, "Jaki jest najwyższy szczyt świata?"));
         }
 
         public void Add(Question entity)

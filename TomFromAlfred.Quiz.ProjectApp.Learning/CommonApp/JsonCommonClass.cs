@@ -9,6 +9,18 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 {
     public class JsonCommonClass
     {
+        public void CreateDefaultFile<T>(string filePath, T defaultData)
+        {
+            if (!File.Exists(filePath))
+            {
+                WriteToFile(filePath, defaultData);
+                Console.WriteLine($"Stworzono plik {filePath} z domyślnymi danymi.");
+            }
+            else
+            {
+                Console.WriteLine($"Plik {filePath} już istnieje. Tworzenie domyślnego pliku pominięte.");
+            }
+        }
         // Odczyt danych z pliku JSON
         public T ReadFromFile<T>(string filePath)
         {
@@ -17,6 +29,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
                 throw new FileNotFoundException($"Plik {filePath} nie istnieje.");
             }
 
+            Console.WriteLine($"Wczytuję plik: {filePath}");
             string json = File.ReadAllText(filePath);
             return JsonConvert.DeserializeObject<T>(json);
         }

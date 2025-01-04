@@ -45,19 +45,17 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
             // Instancja JsonCommonClass i ścieżki pliku JSON
             var jsonService = new JsonCommonClass();
-            string jsonFilePath = "questions.json"; // Ścieżka do pliku JSON
 
-            // Instancja QuizService z kompletnymi argumentami
+            // Instancja QuizService
             var quizService = new QuizService(
                 questionService,
                 choiceService,
                 correctAnswerService,
-                jsonService,
-                jsonFilePath
+                jsonService
             );
 
             var scoreService = new ScoreService();
-            var endService = new EndService();
+            var endService = new EndService(scoreService);
             var quizManager = new QuizManager(quizService, choiceService, scoreService, endService);
 
             quizManager.ConductQuiz(); // Uruchomienie QuizManager
