@@ -10,13 +10,14 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
      Funkcjonalności:
 
-     Wyświetlenie zestawów quizu, zestawy losowane.
+     Wyświetlenie zestawów quizu, zestawy losowane. OK
 
      Numeruję zestaw jako całość, który wyświetla się użytkwnikowi. Czy to dobry pomysł??? TAK
 
      Odliczanie czasu???  Odpuszczam po kolejnych nieudanych próbach.
 
-     Wynik: zliczanie poprawnych odpowiedzi + podanie procentowe poprawności. Wynik na koniec quizu, użytkownik musi przejść cały quiz, jeśli chce zobaczyć punktację. OK 
+     Wynik: zliczanie poprawnych odpowiedzi + podanie procentowe poprawności. 
+     Wynik na koniec quizu, użytkownik musi przejść cały quiz, jeśli chce zobaczyć punktację. OK  
 
      Wyjście z quiz w każdym momencie. OK
 
@@ -28,7 +29,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
      
      Menadżery: dla Quizu i pomocnika.
 
-     Serwisy: podserwis dla Entity, serwisy dla Quizu, Punktacji i Zakończenia i pomocnika. 
+     Serwisy: podserwis dla Entity, serwisy dla Quizu, Punktacji i Zakończenia oraz dla pomocnika. 
 
      Testy w xunit: jednostkowe i integracyjne
      */

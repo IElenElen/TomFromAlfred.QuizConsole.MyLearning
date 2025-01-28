@@ -34,7 +34,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
             _scoreService.StartNewQuiz(questions.Count);
             int displayNumber = 1;
-            bool completedAllQuestions = false;
+            bool completedAllQuestions = false; 
 
             while (managerHelper.HasNext())
             {
@@ -51,7 +51,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
                 bool hasAnswered = false;
 
-                Console.WriteLine("Opcje: 1 - Odpowiedź na pytanie, 2 - Przejście do następnego pytania.");
+                Console.WriteLine("1 - Odpowiedź na pytanie, 2 - Przejście do następnego pytania.");
 
                 while (!hasAnswered)
                 {
@@ -62,9 +62,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                         Console.Write("Twoja akcja (1, 2, K): ");
                         userInput = Console.ReadLine()?.Trim() ?? string.Empty; // Jeśli null, przypisz pusty ciąg znaków
 
+                        // Sprawdzenie czy użytkownik chce zakończyć quiz
                         if (_endService.ShouldEnd(userInput))
                         {
-                            _endService.EndQuiz(completedAllQuestions); // Zakończenie quizu przed ukończeniem
+                            // Jeśli nie ma więcej pytań, quiz uznany za ukończony
+                            _endService.EndQuiz(managerHelper.HasNext() == false);
                         }
 
                         if (userInput != "1" && userInput != "2")
@@ -86,7 +88,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
                                 if (!string.IsNullOrEmpty(userResponse) && _endService.ShouldEnd(userResponse))
                                 {
-                                    _endService.EndQuiz(completedAllQuestions); // Zakończenie quizu przed ukończeniem
+                                    // Użytkownik kończy quiz (przed ukończeniem)
+                                    _endService.EndQuiz(false);
                                 }
 
                                 if (!string.IsNullOrEmpty(userResponse) && userResponse.Length == 1 && "ABC".Contains(userResponse))
@@ -129,7 +132,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             completedAllQuestions = true;
 
             Console.WriteLine("Koniec pytań.");
+            _endService.EndQuiz(completedAllQuestions);
         }
+        
 
         public void AddQuestion() // Metoda dodawania pytania
         {

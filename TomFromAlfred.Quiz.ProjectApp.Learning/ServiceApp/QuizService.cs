@@ -31,7 +31,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         private List<Question> _jsonQuestions = new();
         private Dictionary<int, List<Choice>> _jsonChoices = new();
-        private Dictionary<int, string> _correctAnswers = new();
+        private readonly Dictionary<int, string> _correctAnswers = new();
 
         public QuizService(
                 QuestionService questionService,
@@ -95,7 +95,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 return choicesFromService;
             }
 
-            Console.WriteLine($"Brak wyborów dla pytania o ID {questionId}.");
+            Console.WriteLine($"Brak wyborów dla pytania o Id {questionId}.");
             return Enumerable.Empty<Choice>();
         }
 
@@ -268,7 +268,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             }
         }
 
-        private IEnumerable<Choice> ShuffleChoices(IEnumerable<Choice> choices)
+        private IEnumerable<Choice> ShuffleChoices(IEnumerable<Choice> choices) 
         {
             var random = new Random();
             var shuffledChoices = choices.OrderBy(_ => random.Next()).ToList();
@@ -282,7 +282,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             return shuffledChoices;
         }
 
-        private bool IsChoiceRelatedToQuestion(Choice choice, Question question)
+        private static bool IsChoiceRelatedToQuestion(Choice choice, Question question)
         {
             return choice.ChoiceId >= question.QuestionId * 10 && choice.ChoiceId < (question.QuestionId + 1) * 10;
         }

@@ -24,13 +24,13 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         {
             if (quizCompleted)
             {
-                Console.WriteLine("Quiz zakończony. Dziękujemy za udział!");
+                Console.WriteLine("Ukończyłeś / aś Quiz. Dziękujemy za udział!");
                 _scoreService.DisplayScoreSummary();
             }
             else
             {
                 Console.WriteLine("Quiz został przerwany przed zakończeniem. Brak punktów.");
-                _scoreService.ResetScore(); // Resetuje punkty
+                _scoreService.ResetScore();
             }
 
             Environment.Exit(0); // Kończy aplikację

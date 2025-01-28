@@ -49,11 +49,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             if (choiceToRemove != null)
             {
                 _choices.Remove(choiceToRemove);
-                Console.WriteLine($"Usunięto wybór: ID {entity.ChoiceId}, Opcja {entity.ChoiceLetter}.");
+                Console.WriteLine($"Usunięto wybór: Id {entity.ChoiceId}, Opcja {entity.ChoiceLetter}.");
             }
             else
             {
-                Console.WriteLine($"Wybór o ID {entity.ChoiceId} i literze {entity.ChoiceLetter} nie istnieje.");
+                Console.WriteLine($"Wybór o Id {entity.ChoiceId} i literze {entity.ChoiceLetter} nie istnieje.");
             }
         }
 

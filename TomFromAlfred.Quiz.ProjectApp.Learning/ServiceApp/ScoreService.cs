@@ -37,7 +37,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         public void ResetScore()
         {
             _currentScore = 0;
-            Console.WriteLine("Punkty zostały zresetowane.");
         }
 
         public void DisplayScoreSummary()
