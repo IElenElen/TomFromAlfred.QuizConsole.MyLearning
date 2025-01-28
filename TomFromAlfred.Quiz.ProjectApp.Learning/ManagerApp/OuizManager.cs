@@ -5,114 +5,133 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class QuizManager
+    public class QuizManager // Komunikacja z użytkownikiem
     {
         private readonly QuizService _quizService;
         private readonly ScoreService _scoreService;
         private readonly EndService _endService;
 
-        public QuizManager(QuizService quizService, ChoiceService choiceService, ScoreService scoreService, EndService endService)
+        public QuizManager(QuizService quizService, ScoreService scoreService, EndService endService)
         {
             _quizService = quizService ?? throw new ArgumentNullException(nameof(quizService));
             _scoreService = scoreService ?? throw new ArgumentNullException(nameof(scoreService));
             _endService = endService ?? throw new ArgumentNullException(nameof(endService));
-
-            InitializeJsonService();
-        }
-
-        private void InitializeJsonService()
-        {
-            var jsonService = new JsonCommonClass();
-            _quizService.InitializeJsonService(jsonService, QuizService.QuestionsFilePath);
         }
 
         public void ConductQuiz()
         {
+            Console.WriteLine();
             Console.WriteLine("Witamy w Quiz. Jedna odpowiedź tylko poprawna. Do wyboru: A, B lub C.");
             Console.WriteLine("Jeżeli chcesz zakończyć quiz nacisnij K.");
             Console.WriteLine();
             Console.WriteLine("Jeśli przejdziesz cały Quiz, otrzymasz informację o ilości i procencie uzyskanych punktów.");
             Console.WriteLine();
+            Console.WriteLine("Opcje: 1 - Odpowiedź na pytanie, 2 - Przejście do następnego pytania.");
+            Console.WriteLine();
 
-            var random = new Random();
-            var questions = _quizService.GetAllQuestions()
-                .OrderBy(_ => random.Next())
-                .ToList();
-
+            var questions = ManagerHelper.Shuffle(_quizService.GetAllQuestions().ToList());
             var managerHelper = new ManagerHelper(questions);
 
             _scoreService.StartNewQuiz(questions.Count);
-            int displayNumber = 1; // Zmienna do numerowania pytań
+            int displayNumber = 1;
+            bool completedAllQuestions = false;
 
             while (managerHelper.HasNext())
             {
                 var currentQuestion = managerHelper.GetCurrentQuestion();
+
                 Console.WriteLine($"{displayNumber}, {currentQuestion.QuestionContent}");
 
-                var choices = _quizService.GetChoicesForQuestion(currentQuestion.QuestionId);
+                var choices = _quizService.GetShuffledChoicesForQuestion(currentQuestion.QuestionId, out var letterMapping).ToList();
+
                 foreach (var choice in choices)
                 {
                     Console.WriteLine($"{choice.ChoiceLetter}: {choice.ChoiceContent}");
                 }
 
-                Console.WriteLine();
-                Console.WriteLine("Co chcesz zrobić?");
-                Console.WriteLine("1. Odpowiedzieć na pytanie");
-                Console.WriteLine("2. Przejść do następnego pytania");
-                Console.WriteLine("3. Zakończyć quiz");
+                bool hasAnswered = false;
 
-                var userInput = Console.ReadLine()?.Trim();
+                Console.WriteLine("Opcje: 1 - Odpowiedź na pytanie, 2 - Przejście do następnego pytania.");
 
-                switch (userInput)
+                while (!hasAnswered)
                 {
-                    case "1":
-                        // Odpowiedz na pytanie
-                        Console.Write("Twoja odpowiedź: ");
-                        var answer = Console.ReadLine()?.Trim().ToUpper();
+                    // Wymuszanie poprawnej akcji (1, 2)
+                    string userInput = string.Empty; // Inicjalizacja na pusty ciąg znaków
+                    do
+                    {
+                        Console.Write("Twoja akcja (1, 2, K): ");
+                        userInput = Console.ReadLine()?.Trim() ?? string.Empty; // Jeśli null, przypisz pusty ciąg znaków
 
-                        if (string.IsNullOrEmpty(answer) || !choices.Any(c => c.ChoiceLetter.ToString() == answer))
+                        if (_endService.ShouldEnd(userInput))
                         {
-                            Console.WriteLine("Nieprawidłowy wybór. Spróbuj ponownie.");
-                            continue;
+                            _endService.EndQuiz(completedAllQuestions); // Zakończenie quizu przed ukończeniem
                         }
 
-                        if (_quizService.CheckAnswer(currentQuestion.QuestionId, answer[0]))
+                        if (userInput != "1" && userInput != "2")
                         {
-                            Console.WriteLine("Poprawna odpowiedź!");
-                            _scoreService.IncrementScore();
+                            Console.WriteLine("Nieprawidłowa opcja. Wybierz poprawną akcję: 1, 2 lub K.");
                         }
-                        else
-                        {
-                            var correctAnswer = _quizService.GetCorrectAnswerForQuestion(currentQuestion.QuestionId);
-                            Console.WriteLine($"Zła odpowiedź. Poprawna odpowiedź to: {correctAnswer}");
-                        }
-                        break;
+                    } while (userInput != "1" && userInput != "2");
 
-                    case "2":
-                        // Pomiń pytanie
-                        Console.WriteLine("Pytanie pominięte.");
-                        break;
+                    switch (userInput)
+                    {
+                        case "1":
+                            // Wymuszanie poprawnej odpowiedzi (A, B, C)
+                            char userChoiceLetter;
+                            bool validAnswer = false;
+                            do
+                            {
+                                Console.Write("Twoja odpowiedź (A, B, C): ");
+                                var userResponse = Console.ReadLine()?.Trim().ToUpper();
 
-                    case "3":
-                        // Zakończ quiz
-                        Console.WriteLine("Zakończono quiz. Dziękujemy za udział!");
-                        _scoreService.DisplayScoreSummary();
-                        return;
+                                if (!string.IsNullOrEmpty(userResponse) && _endService.ShouldEnd(userResponse))
+                                {
+                                    _endService.EndQuiz(completedAllQuestions); // Zakończenie quizu przed ukończeniem
+                                }
 
-                    default:
-                        Console.WriteLine("Nieprawidłowa opcja. Spróbuj ponownie.");
-                        continue;
+                                if (!string.IsNullOrEmpty(userResponse) && userResponse.Length == 1 && "ABC".Contains(userResponse))
+                                {
+                                    userChoiceLetter = userResponse[0];
+                                    validAnswer = true;
+
+                                    if (_quizService.CheckAnswer(currentQuestion.QuestionId, userChoiceLetter, letterMapping))
+                                    {
+                                        Console.WriteLine("Poprawna odpowiedź!");
+                                        _scoreService.IncrementScore();
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Zła odpowiedź.");
+                                    }
+                                    hasAnswered = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Nieprawidłowy wybór. Wprowadź literę A, B, C.");
+                                }
+                            } while (!validAnswer);
+
+                            break;
+
+                        case "2":
+                            // Pominięcie pytania
+                            Console.WriteLine("Pytanie pominięte.");
+                            hasAnswered = true;
+                            break;
+                    }
                 }
 
-                displayNumber++; // Zwiększ numer pytania
+                displayNumber++;
                 managerHelper.NextQuestion();
             }
 
+            // Użytkownik dotarł do końca quizu
+            completedAllQuestions = true;
+
             Console.WriteLine("Koniec pytań.");
-            _scoreService.DisplayScoreSummary();
         }
 
-        public void AddQuestion()
+        public void AddQuestion() // Metoda dodawania pytania
         {
             Console.Write("Podaj treść pytania: ");
             var content = Console.ReadLine();

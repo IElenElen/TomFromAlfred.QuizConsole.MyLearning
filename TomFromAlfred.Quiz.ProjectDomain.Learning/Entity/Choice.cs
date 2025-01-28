@@ -9,19 +9,17 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
     public class Choice
     {
-        [JsonProperty("ChoiceId")]
+     
         public int ChoiceId { get; set; }
-
-        [JsonProperty("OptionLetter")] 
+        
         public char ChoiceLetter { get; set; }
 
-        [JsonProperty("ChoiceContent")]
         public string ChoiceContent { get; set; }
 
         public Choice(int choiceId, char choiceLetter, string choiceContent)
         {
-            if (choiceLetter < 'A' || choiceLetter > 'Z')
-                throw new ArgumentException("Litera odpowiedzi musi być w zakresie A-Z.");
+            if (choiceLetter < 'A' || choiceLetter > 'C')
+                throw new ArgumentException("Litera odpowiedzi musi być w zakresie A-C.");
 
             ChoiceId = choiceId;
             ChoiceLetter = choiceLetter;

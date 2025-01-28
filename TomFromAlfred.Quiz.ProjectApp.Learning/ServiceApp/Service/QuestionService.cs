@@ -9,6 +9,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 {
     //kolejne metody posortowanie alfabetycznie
+
     /*
     Do pytania przypisałam jego zestaw wyboru.
     */

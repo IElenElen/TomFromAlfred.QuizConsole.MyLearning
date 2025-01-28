@@ -10,6 +10,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     {
         private int _score; // Liczba poprawnych odpowiedzi
         private int _totalQuestions; // Liczba pytań w quizie
+        private int _currentScore;
 
         public void StartNewQuiz(int totalQuestions)
         {
@@ -31,6 +32,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         {
             if (_totalQuestions == 0) return 0; // Uniknięcie dzielenia przez 0
             return ((double)_score / _totalQuestions) * 100;
+        }
+
+        public void ResetScore()
+        {
+            _currentScore = 0;
+            Console.WriteLine("Punkty zostały zresetowane.");
         }
 
         public void DisplayScoreSummary()

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 {
-    public class JsonCommonClass
+    public class JsonCommonClass // Klasa dla json = schemat działania plików
     {
         public void CreateDefaultFile<T>(string filePath, T defaultData)
         {
@@ -31,7 +31,16 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 
             Console.WriteLine($"Wczytuję plik: {filePath}");
             string json = File.ReadAllText(filePath);
-            return JsonConvert.DeserializeObject<T>(json);
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                throw new InvalidDataException($"Plik {filePath} jest pusty lub zawiera nieprawidłowe dane.");
+            }
+
+            var data = JsonConvert.DeserializeObject<T>(json);
+
+            // Uproszczone sprawdzenie null
+            return data ?? throw new JsonException($"Nie udało się zdeserializować danych z pliku {filePath}. Upewnij się, że plik zawiera poprawny JSON.");
         }
 
         // Zapis danych do pliku JSON

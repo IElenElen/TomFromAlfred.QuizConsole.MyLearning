@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
-    public class EndService
+    public class EndService //Klasa dla zakończenia Quizu w każdym momencie
     {
         private readonly ScoreService _scoreService;
 
@@ -15,17 +15,25 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             _scoreService = scoreService ?? throw new ArgumentNullException(nameof(scoreService));
         }
 
-        public bool ShouldEnd(string userInput)
+        public bool ShouldEnd(string? userInput)
         {
-            // Jeśli użytkownik wpisze 'k', kończę quiz
-            return userInput.Trim().ToLower() == "k";
+            return userInput?.Trim().ToLower() == "k";
         }
 
-        public void EndQuiz()
+        public void EndQuiz(bool quizCompleted)
         {
-            Console.WriteLine("Quiz został przerwany. Dziękujemy za udział!");
-            _scoreService.DisplayScoreSummary();
-            Environment.Exit(0); 
+            if (quizCompleted)
+            {
+                Console.WriteLine("Quiz zakończony. Dziękujemy za udział!");
+                _scoreService.DisplayScoreSummary();
+            }
+            else
+            {
+                Console.WriteLine("Quiz został przerwany przed zakończeniem. Brak punktów.");
+                _scoreService.ResetScore(); // Resetuje punkty
+            }
+
+            Environment.Exit(0); // Kończy aplikację
         }
     }
 }

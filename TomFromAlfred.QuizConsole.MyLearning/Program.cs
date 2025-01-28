@@ -10,15 +10,13 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
      Funkcjonalności:
 
-     Wyświetlenie zestawów quizu, po kolei. Najpierw nr 1, czekanie na odpowiedź, weryfikacja odpowiedzi, potem zestaw nr 2 itd. OK
+     Wyświetlenie zestawów quizu, zestawy losowane.
 
      Numeruję zestaw jako całość, który wyświetla się użytkwnikowi. Czy to dobry pomysł??? TAK
 
-     Odliczanie czasu???  Odpuszczam po kolejnych nieudanych próbach
+     Odliczanie czasu???  Odpuszczam po kolejnych nieudanych próbach.
 
-     Wynik: zliczanie poprawnych odpowiedzi + podanie procentowe poprawności. Wynik na koniec quizu. OK 
-
-     Losowanie zestawów? OK
+     Wynik: zliczanie poprawnych odpowiedzi + podanie procentowe poprawności. Wynik na koniec quizu, użytkownik musi przejść cały quiz, jeśli chce zobaczyć punktację. OK 
 
      Wyjście z quiz w każdym momencie. OK
 
@@ -28,9 +26,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
      
      Klasa wspólna: dla pracy na plikach json - klasa serwisowa
      
-     Menadżery: dla Quizu.
+     Menadżery: dla Quizu i pomocnika.
 
-     Serwisy: podserwis dla Entity, serwisy dla Quizu, Punktacji i Zakończenia. 
+     Serwisy: podserwis dla Entity, serwisy dla Quizu, Punktacji i Zakończenia i pomocnika. 
 
      Testy w xunit: jednostkowe i integracyjne
      */
@@ -39,12 +37,11 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         static void Main(string[] args)
         {
+            // Utworzenie instancji wymaganych serwisów
             var questionService = new QuestionService();
             var choiceService = new ChoiceService();
             var correctAnswerService = new CorrectAnswerService();
-
-            // Instancja JsonCommonClass i ścieżki pliku JSON
-            var jsonService = new JsonCommonClass();
+            var jsonService = new JsonCommonClass(); // Serwis JSON
 
             // Instancja QuizService
             var quizService = new QuizService(
@@ -54,11 +51,13 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 jsonService
             );
 
+            // Inicjalizacja serwisów pomocniczych
             var scoreService = new ScoreService();
             var endService = new EndService(scoreService);
-            var quizManager = new QuizManager(quizService, choiceService, scoreService, endService);
 
-            quizManager.ConductQuiz(); // Uruchomienie QuizManager
+            // Utworzenie i uruchomienie QuizManager
+            var quizManager = new QuizManager(quizService, scoreService, endService);
+            quizManager.ConductQuiz();
         }
     }
 }

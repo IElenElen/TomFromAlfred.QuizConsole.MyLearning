@@ -9,10 +9,18 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
+    /* 
+     * Dla pytania: json - questions.Tomek.json ma QuestionId i QuestionContent. Tak jak entity Question.
+     * Dla wyboru: json - choices.Tomek.json ma ChoiceId, ChoiceLetter i ChoiceContent. Tak jak entity Choice.
+     * Dla poprawnego zestawu: json - correctSet.Tomek.json ma QuestionNumber, LetterCorrectAnswer, ContentCorrectAnswer. 
+     * A entity CorrectAnswer ma CorrectAnswerId oraz CorrectAnswerContent.
+     */
+
+
+    //Próba zmapowania danych json JsonHelper i entity CorrectAnswer
     public class QuizService
     {
-        // Stałe ścieżki plików JSON
-        public const string QuestionsFilePath = @"C:\Users\Ilka\Desktop\.net\Quiz Tomek Konsola\question.Tomek.json";
+        public const string QuestionsFilePath = @"C:\Users\Ilka\Desktop\.net\Quiz Tomek Konsola\questions.Tomek.json";
         public const string ChoicesFilePath = @"C:\Users\Ilka\Desktop\.net\Quiz Tomek Konsola\choices.Tomek.json";
         public const string CorrectSetFilePath = @"C:\Users\Ilka\Desktop\.net\Quiz Tomek Konsola\correctSet.Tomek.json";
 
@@ -21,13 +29,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         private readonly ChoiceService _choiceService;
         private readonly CorrectAnswerService _correctAnswerService;
 
-        private List<Question> _jsonQuestions = new(); // Bufor pytań z JSON
+        private List<Question> _jsonQuestions = new();
+        private Dictionary<int, List<Choice>> _jsonChoices = new();
+        private Dictionary<int, string> _correctAnswers = new();
 
         public QuizService(
-            QuestionService questionService,
-            ChoiceService choiceService,
-            CorrectAnswerService correctAnswerService,
-            JsonCommonClass jsonService)
+                QuestionService questionService,
+                ChoiceService choiceService,
+                CorrectAnswerService correctAnswerService,
+                JsonCommonClass jsonService)
         {
             _questionService = questionService ?? throw new ArgumentNullException(nameof(questionService));
             _choiceService = choiceService ?? throw new ArgumentNullException(nameof(choiceService));
@@ -41,41 +51,242 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public void InitializeJsonService(JsonCommonClass jsonService, string jsonFilePath)
         {
-            _jsonService = jsonService ?? throw new ArgumentNullException(nameof(jsonService));
+            if (jsonService == null)
+                throw new ArgumentNullException(nameof(jsonService));
+
             if (!File.Exists(jsonFilePath))
-            {
                 throw new FileNotFoundException($"Plik {jsonFilePath} nie istnieje.");
-            }
+
+            _jsonService = jsonService;
         }
 
-        // Metoda wczytania pytań z pliku JSON
-        private void LoadQuestionsFromJson()
+        public IEnumerable<Question> GetAllQuestions()
         {
-            try
+            if (_jsonQuestions.Any())
             {
-                if (!File.Exists(QuestionsFilePath))
+                Console.WriteLine($"Priorytet JSON: {_jsonQuestions.Count} pytań wczytano z JSON.");
+                Console.WriteLine("Łączenie pytań z JSON i serwisu. Priorytet: JSON.");
+
+                // Łącz dane, ale unikaj duplikatów
+                var jsonQuestionIds = _jsonQuestions.Select(q => q.QuestionId).ToHashSet();
+                var remainingServiceQuestions = _questionService.GetAll().Where(q => !jsonQuestionIds.Contains(q.QuestionId));
+                Console.WriteLine($"Liczba pytań z serwisu dodanych do JSON: {remainingServiceQuestions.Count()}");
+                return _jsonQuestions.Concat(remainingServiceQuestions);
+            }
+
+            Console.WriteLine("Zwracane pytania z serwisu.");
+            return _questionService.GetAll();
+        }
+
+        public IEnumerable<Choice> GetChoicesForQuestion(int questionId)
+        {
+            // Najpierw sprawdź dane z JSON
+            if (_jsonChoices.ContainsKey(questionId))
+            {
+                Console.WriteLine($"Pobrano wybory z JSON dla pytania {questionId}");
+                return _jsonChoices[questionId];
+            }
+
+            // Jeśli brak danych w JSON, sprawdź dane twardo zakodowane
+            var choicesFromService = _choiceService.GetChoicesForQuestion(questionId);
+            if (choicesFromService.Any())
+            {
+                Console.WriteLine($"Pobrano wybory z serwisu dla pytania {questionId}");
+                return choicesFromService;
+            }
+
+            Console.WriteLine($"Brak wyborów dla pytania o ID {questionId}.");
+            return Enumerable.Empty<Choice>();
+        }
+
+        public IEnumerable<Choice> GetShuffledChoicesForQuestion(int questionId, out Dictionary<char, char> letterMapping)
+        {
+            var choices = GetChoicesForQuestion(questionId).ToList();
+            var random = new Random();
+            var shuffledChoices = choices.OrderBy(_ => random.Next()).ToList();
+
+            letterMapping = new Dictionary<char, char>();
+            char newLetter = 'A';
+
+            foreach (var choice in shuffledChoices)
+            {
+                letterMapping[newLetter] = choice.ChoiceLetter; // Nowa litera -> Oryginalna litera
+                Console.WriteLine($"Mapowanie: {newLetter} → {choice.ChoiceLetter}");
+                choice.ChoiceLetter = newLetter; // Aktualizuj literę do przetasowanej
+                newLetter++;
+            }
+
+            return shuffledChoices;
+        }
+
+        public bool CheckAnswer(int questionId, char userChoiceLetter, Dictionary<char, char> letterMapping)
+        {
+            foreach (var mapping in letterMapping)
+            {
+                Console.WriteLine($"Mapowanie liter: Nowa: {mapping.Key}, Oryginalna: {mapping.Value}");
+            }
+
+            if (letterMapping != null && letterMapping.TryGetValue(userChoiceLetter, out var originalLetter))
+            {
+                Console.WriteLine($"Sprawdzanie odpowiedzi: Użytkownik: {userChoiceLetter}, Mapa: {originalLetter}");
+
+                // Sprawdź odpowiedź z JSON
+                if (_correctAnswers.TryGetValue(questionId, out var correctLetter))
                 {
-                    Console.WriteLine($"Plik {QuestionsFilePath} nie istnieje. Tworzę domyślny plik.");
-                    var defaultQuestions = new List<Question>
+                    Console.WriteLine($"Z JSON: Użytkownik: {originalLetter}, Poprawna: {correctLetter}");
+                    if (char.ToUpper(originalLetter) == char.ToUpper(correctLetter[0]))
                     {
-                        new Question(18, "Pytanie 18?"),
-                        new Question(19, "Pytanie 19?"),
-                        new Question(20, "Pytanie 20?")
-                    };
-                    _jsonService.WriteToFile(QuestionsFilePath, defaultQuestions);
+                        Console.WriteLine("Poprawna odpowiedź z JSON.");
+                        return true;
+                    }
                 }
 
+                // Sprawdź odpowiedź z encji
+                var correctAnswerFromService = _correctAnswerService.GetCorrectAnswerForQuestion(questionId);
+                if (correctAnswerFromService != null)
+                {
+                    var correctLetterFromService = GetLetterForAnswer(correctAnswerFromService.CorrectAnswerContent, questionId);
+                    Console.WriteLine($"Z ENCJI: Użytkownik: {originalLetter}, Poprawna: {correctLetterFromService}");
+                    if (char.ToUpper(userChoiceLetter) == char.ToUpper(correctLetterFromService))
+                    {
+                        Console.WriteLine("Poprawna odpowiedź z encji CorrectAnswer.");
+                        return true;
+                    }
+                }
+
+                // Jeśli dotarliśmy tutaj, wszystkie odpowiedzi były błędne
+                Console.WriteLine("Zła odpowiedź.");
+                return false;
+            }
+
+            Console.WriteLine($"Brak mapowania dla litery {userChoiceLetter}. Odpowiedź niepoprawna.");
+            return false;
+        }
+
+        private char GetLetterForAnswer(string answerContent, int questionId)
+        {
+            Console.WriteLine($"Szukam litery dla odpowiedzi: {answerContent} w pytaniu Id {questionId}");
+
+            // Pobierz wszystkie odpowiedzi dla danego pytania
+            var choices = GetChoicesForQuestion(questionId).ToList();
+
+            // Spróbuj znaleźć pasującą odpowiedź (ignorując wielkość liter, jeśli to istotne)
+            var match = choices.FirstOrDefault(c =>
+                string.Equals(c.ChoiceContent, answerContent, StringComparison.OrdinalIgnoreCase));
+
+            if (match != null)
+            {
+                Console.WriteLine($"Znaleziono odpowiedź: {match.ChoiceContent} → Litera: {match.ChoiceLetter}");
+                return match.ChoiceLetter;
+            }
+
+            // Wyświetl wszystkie dostępne odpowiedzi, jeśli brak dopasowania
+            Console.WriteLine($"Dane wejściowe do wyszukiwania: answerContent = '{answerContent}'");
+            foreach (var choice in choices)
+            {
+                Console.WriteLine($"Dostępne odpowiedzi: ChoiceContent = '{choice.ChoiceContent}', ChoiceLetter = '{choice.ChoiceLetter}'");
+            }
+
+            Console.WriteLine("Zwracam '?' jako domyślną wartość.");
+            return '?';
+        }
+
+        private void LoadQuestionsFromJson()
+        {
+            if (!File.Exists(QuestionsFilePath))
+            {
+                Console.WriteLine($"Plik {QuestionsFilePath} nie istnieje.");
+                return;
+            }
+
+            try
+            {
                 _jsonQuestions = _jsonService.ReadFromFile<List<Question>>(QuestionsFilePath) ?? new List<Question>();
-                Console.WriteLine($"Wczytano pytań: {_jsonQuestions.Count}");
+                Console.WriteLine($"Wczytano {_jsonQuestions.Count} pytań z JSON.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Błąd podczas wczytywania pytań z pliku JSON: {ex.Message}");
-                _jsonQuestions = new List<Question>();
+                Console.WriteLine($"Błąd podczas ładowania pytań z JSON: {ex.Message}");
             }
         }
 
-        // Dodanie pytania do pliku JSON
+        private void LoadChoicesFromJson()
+        {
+            if (!File.Exists(ChoicesFilePath))
+            {
+                Console.WriteLine($"Plik {ChoicesFilePath} nie istnieje.");
+                return;
+            }
+
+            var jsonChoices = _jsonService.ReadFromFile<List<Choice>>(ChoicesFilePath) ?? new List<Choice>();
+            _jsonChoices = jsonChoices
+                .GroupBy(c => c.ChoiceId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            foreach (var choice in jsonChoices)
+            {
+                Console.WriteLine($"Wczytano wybór: Id {choice.ChoiceId}, opcja {choice.ChoiceLetter}, treść: {choice.ChoiceContent}.");
+            }
+        }
+
+        private void LoadCorrectSetFromJson()
+        {
+            try
+            {
+                if (!File.Exists(CorrectSetFilePath))
+                {
+                    Console.WriteLine($"Plik {CorrectSetFilePath} nie istnieje.");
+                    return;
+                }
+
+                var correctSet = _jsonService.ReadFromFile<List<JsonHelper>>(CorrectSetFilePath) ?? new List<JsonHelper>();
+
+                foreach (var correct in correctSet)
+                {
+                    // Mapowanie QuestionNumber → CorrectAnswerId
+                    int questionId = correct.QuestionNumber;
+
+                    // Mapowanie poprawnej odpowiedzi do encji
+                    var correctAnswer = new CorrectAnswer(
+                        questionId,
+                        correct.ContentCorrectAnswer
+                    );
+
+                    Console.WriteLine($"Z JSON: Pytanie {correct.QuestionNumber}, Litera: {correct.LetterCorrectAnswer}, Treść: {correct.ContentCorrectAnswer}");
+                    // Dodanie do słownika dla JSON
+                    if (!_correctAnswers.ContainsKey(questionId))
+                    {
+                        _correctAnswers[questionId] = correct.LetterCorrectAnswer; // Tylko litera
+                    }
+
+                    Console.WriteLine($"Wczytano poprawną odpowiedź: {correctAnswer.CorrectAnswerId} → {correctAnswer.CorrectAnswerContent} ({correct.LetterCorrectAnswer})");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd podczas wczytywania poprawnych odpowiedzi z JSON: {ex.Message}");
+            }
+        }
+
+        private IEnumerable<Choice> ShuffleChoices(IEnumerable<Choice> choices)
+        {
+            var random = new Random();
+            var shuffledChoices = choices.OrderBy(_ => random.Next()).ToList();
+
+            char letter = 'A';
+            foreach (var choice in shuffledChoices)
+            {
+                choice.ChoiceLetter = letter++;
+            }
+
+            return shuffledChoices;
+        }
+
+        private bool IsChoiceRelatedToQuestion(Choice choice, Question question)
+        {
+            return choice.ChoiceId >= question.QuestionId * 10 && choice.ChoiceId < (question.QuestionId + 1) * 10;
+        }
+
         public void AddQuestionToJson(Question question)
         {
             if (question == null)
@@ -85,134 +296,19 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             SaveQuestionsToJson();
         }
 
-        // Zapis pytań do pliku JSON
         private void SaveQuestionsToJson()
         {
             try
             {
                 _jsonService.WriteToFile(QuestionsFilePath, _jsonQuestions);
+                Console.WriteLine("Zapisano pytania do pliku JSON.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Błąd podczas zapisywania pytań do pliku JSON: {ex.Message}");
             }
         }
-
-        // Pobranie wszystkich pytań (z serwisów + JSON)
-        public IEnumerable<Question> GetAllQuestions()
-        {
-            var filteredServiceQuestions = _questionService.GetAll()
-                .Where(sq => !_jsonQuestions.Any(jq => jq.QuestionId == sq.QuestionId));
-
-            return _jsonQuestions.Concat(filteredServiceQuestions).ToList();
-        }
-
-        // Wczytanie wyborów z pliku JSON
-        private void LoadChoicesFromJson()
-        {
-            try
-            {
-                if (!File.Exists(ChoicesFilePath))
-                {
-                    Console.WriteLine($"Plik {ChoicesFilePath} nie istnieje. Tworzę domyślny plik.");
-                    var defaultChoices = new List<Choice>
-                    {
-                        new Choice(18, 'A', "Opcja A"),
-                        new Choice(18, 'B', "Opcja B"),
-                        new Choice(18, 'C', "Opcja C")
-                    };
-                    _jsonService.WriteToFile(ChoicesFilePath, defaultChoices);
-                }
-
-                var jsonChoices = _jsonService.ReadFromFile<List<Choice>>(ChoicesFilePath);
-                foreach (var choice in jsonChoices)
-                {
-                    _choiceService.Add(choice);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Błąd podczas wczytywania odpowiedzi z pliku JSON: {ex.Message}");
-            }
-        }
-
-        public IEnumerable<Choice> GetChoicesForQuestion(int questionId)
-        {
-            var jsonChoices = _choiceService.GetAll()
-                .Where(choice => _jsonQuestions.Any(q => q.QuestionId == questionId && IsChoiceRelatedToQuestion(choice, q)))
-                .ToList();
-
-            if (jsonChoices.Any())
-            {
-                return jsonChoices;
-            }
-
-            return _choiceService.GetChoicesForQuestion(questionId);
-        }
-
-        private bool IsChoiceRelatedToQuestion(Choice choice, Question question) //Relacja wyboru do jego pytania
-        {
-            return choice.ChoiceId >= question.QuestionId * 10 && choice.ChoiceId < (question.QuestionId + 1) * 10;
-        }
-
-        private void LoadCorrectSetFromJson()
-        {
-            try
-            {
-                if (!File.Exists(CorrectSetFilePath))
-                {
-                    Console.WriteLine($"Plik {CorrectSetFilePath} nie istnieje. Tworzę domyślny plik.");
-                    var defaultCorrectSets = new List<JsonHelper>
-                    {
-                        new JsonHelper { QuestionNumber = 18, LetterCorrectAnswer = "B", ContentCorrectAnswer = "Odpowiedź B" }
-                    };
-                    _jsonService.WriteToFile(CorrectSetFilePath, defaultCorrectSets);
-                }
-
-                var jsonCorrectSets = _jsonService.ReadFromFile<List<JsonHelper>>(CorrectSetFilePath);
-                foreach (var jsonSet in jsonCorrectSets)
-                {
-                    var correctAnswer = new CorrectAnswer(
-                        jsonSet.QuestionNumber,
-                        jsonSet.ContentCorrectAnswer
-                    );
-                    _correctAnswerService.Add(correctAnswer);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Błąd podczas wczytywania poprawnych odpowiedzi z pliku JSON: {ex.Message}");
-            }
-        }
-
-        public CorrectAnswer GetCorrectAnswerForQuestion(int questionId)
-        {
-            var jsonCorrectAnswer = _correctAnswerService.GetAll()
-                .FirstOrDefault(answer => answer.CorrectAnswerId == questionId);
-
-            if (jsonCorrectAnswer != null)
-            {
-                return jsonCorrectAnswer;
-            }
-
-            return _correctAnswerService.GetAll()
-                .FirstOrDefault(answer => answer.CorrectAnswerId == questionId);
-        }
-
-        public bool CheckAnswer(int questionId, char userChoiceLetter)
-        {
-            var correctAnswer = GetCorrectAnswerForQuestion(questionId);
-            if (correctAnswer == null)
-            {
-                Console.WriteLine($"Brak poprawnej odpowiedzi dla pytania o Id {questionId}.");
-                return false;
-            }
-
-            var correctChoice = GetChoicesForQuestion(questionId)
-                .FirstOrDefault(c => c.ChoiceLetter == userChoiceLetter);
-
-            return correctChoice != null;
-        }
     }
 }
+
 
