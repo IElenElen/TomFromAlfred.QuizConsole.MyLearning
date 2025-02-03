@@ -51,8 +51,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
                 bool hasAnswered = false;
 
-                Console.WriteLine("1 - Odpowiedź na pytanie, 2 - Przejście do następnego pytania.");
-
                 while (!hasAnswered)
                 {
                     // Wymuszanie poprawnej akcji (1, 2)

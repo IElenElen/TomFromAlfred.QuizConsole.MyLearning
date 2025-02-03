@@ -22,7 +22,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
      Wyjście z quiz w każdym momencie. OK
 
      Budowa:
-
+    
      Interfejs jaki? dla serwisu Crud 
      
      Klasa wspólna: dla pracy na plikach json - klasa serwisowa

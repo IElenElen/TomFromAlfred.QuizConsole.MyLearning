@@ -29,7 +29,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             }
             else
             {
-                Console.WriteLine("Quiz został przerwany przed zakończeniem. Brak punktów.");
+                Console.WriteLine("Quiz został przerwany. Brak punktów.");
                 _scoreService.ResetScore();
             }
 
