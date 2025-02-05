@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
-    public class EndService //Klasa dla zakończenia Quizu w każdym momencie
+    public class EndService // Klasa dla zakończenia Quizu w każdym momencie
     {
         private readonly ScoreService _scoreService;
 
@@ -32,8 +32,17 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 Console.WriteLine("Quiz został przerwany. Brak punktów.");
                 _scoreService.ResetScore();
             }
+            // Zastąpienie Exit(0) metodą, która nic nie robi 
+            // Można tutaj użyć no-op metody:
+            NoOpMethod();
 
-            Environment.Exit(0); // Kończy aplikację
+            // Natychmiastowe zakończenie aplikacji
+            //Environment.Exit(0);
+        }
+
+        private void NoOpMethod()
+        {
+            // Pusta metoda, która nie robi nic
         }
     }
 }

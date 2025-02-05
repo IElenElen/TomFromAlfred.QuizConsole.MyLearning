@@ -17,6 +17,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
      Odliczanie czasu???  Odpuszczam po kolejnych nieudanych próbach.
 
      Wynik: zliczanie poprawnych odpowiedzi + podanie procentowe poprawności. 
+
      Wynik na koniec quizu, użytkownik musi przejść cały quiz, jeśli chce zobaczyć punktację. OK  
 
      Wyjście z quiz w każdym momencie. OK

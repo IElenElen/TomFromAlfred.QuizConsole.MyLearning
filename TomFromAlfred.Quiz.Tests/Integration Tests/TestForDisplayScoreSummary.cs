@@ -23,17 +23,18 @@ namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
             var stringWriter = new StringWriter();
             Console.SetOut(stringWriter); // Przechwycenie danych wypisywanych na konsolę
 
-            _scoreService.StartNewQuiz(10); // Inicjalizujemy quiz z 10 pytaniami
-            _scoreService.IncrementScore(); // Zwiększamy wynik o 1
+            _scoreService.StartNewQuiz(10); // Inicjalizuję quiz z 10 pytaniami
+            _scoreService.IncrementScore(); // Zwiększam wynik o 1
 
             // Act
             _scoreService.DisplayScoreSummary(); // Wywołanie metody, która wypisuje wynik
 
             // Assert
             var output = stringWriter.ToString().Trim(); // Pobranie przechwyconego tekstu i usunięcie zbędnych białych znaków
-            Assert.Contains("Zdobyte punkty: 1/10", output); // Sprawdzenie, czy wynik zawiera poprawny tekst
-            Assert.Contains("Procent poprawnych odpowiedzi:", output); // Sprawdzenie, czy tekst zawiera frazę procentową
-            Assert.Contains("10", output); // Sprawdzamy, czy wynik zawiera procent (elastyczność w formacie)
+
+            Assert.Contains("Zdobyte punkty: 1/10", output); // Sprawdzam, czy wynik zawiera poprawny tekst
+            Assert.Contains("Procent poprawnych odpowiedzi:", output); // Sprawdzam, czy tekst zawiera frazę procentową
+            Assert.Contains("10", output); // Sprawdzam, czy wynik zawiera procent (elastyczność w formacie)
         }
     }
 }

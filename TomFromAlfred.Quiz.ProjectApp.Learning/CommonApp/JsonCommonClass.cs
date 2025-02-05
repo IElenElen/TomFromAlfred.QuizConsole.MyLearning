@@ -22,7 +22,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
             }
         }
         // Odczyt danych z pliku JSON
-        public T ReadFromFile<T>(string filePath)
+        public virtual T ReadFromFile<T>(string filePath)
         {
             if (!File.Exists(filePath))
             {

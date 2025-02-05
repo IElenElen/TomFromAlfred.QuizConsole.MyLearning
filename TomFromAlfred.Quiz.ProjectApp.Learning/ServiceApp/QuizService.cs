@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
@@ -17,7 +18,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
      */
 
 
-    //Próba zmapowania danych json JsonHelper i entity CorrectAnswer
+    // Próba zmapowania danych json JsonHelper i entity CorrectAnswer
     public class QuizService
     {
         public const string QuestionsFilePath = @"C:\Users\Ilka\Desktop\.net\Quiz Tomek Konsola\questions.Tomek.json";
@@ -44,7 +45,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             _correctAnswerService = correctAnswerService ?? throw new ArgumentNullException(nameof(correctAnswerService));
             _jsonService = jsonService ?? throw new ArgumentNullException(nameof(jsonService));
 
-            LoadQuestionsFromJson();
+            LoadQuestionsFromJson(QuestionsFilePath);
             LoadChoicesFromJson();
             LoadCorrectSetFromJson();
         }
@@ -60,7 +61,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             _jsonService = jsonService;
         }
 
-        public IEnumerable<Question> GetAllQuestions()
+        public virtual IEnumerable<Question> GetAllQuestions()
         {
             if (_jsonQuestions.Any())
             {
@@ -78,7 +79,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             return _questionService.GetAll();
         }
 
-        public IEnumerable<Choice> GetChoicesForQuestion(int questionId)
+        public virtual IEnumerable<Choice> GetChoicesForQuestion(int questionId)
         {
             // Najpierw sprawdź dane z JSON
             if (_jsonChoices.ContainsKey(questionId))
@@ -99,7 +100,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             return Enumerable.Empty<Choice>();
         }
 
-        public IEnumerable<Choice> GetShuffledChoicesForQuestion(int questionId, out Dictionary<char, char> letterMapping)
+        public virtual IEnumerable<Choice> GetShuffledChoicesForQuestion(int questionId, out Dictionary<char, char> letterMapping)
         {
             var choices = GetChoicesForQuestion(questionId).ToList();
             var random = new Random();
@@ -119,7 +120,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             return shuffledChoices;
         }
 
-        public bool CheckAnswer(int questionId, char userChoiceLetter, Dictionary<char, char> letterMapping)
+        public virtual bool CheckAnswer(int questionId, char userChoiceLetter, Dictionary<char, char> letterMapping)
         {
             foreach (var mapping in letterMapping)
             {
@@ -154,7 +155,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                     }
                 }
 
-                // Jeśli dotarliśmy tutaj, wszystkie odpowiedzi były błędne
+                // Jeśli dotarłam tutaj, wszystkie odpowiedzi były błędne
                 Console.WriteLine("Zła odpowiedź.");
                 return false;
             }
@@ -191,18 +192,31 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             return '?';
         }
 
-        private void LoadQuestionsFromJson()
+        public void LoadQuestionsFromJson(string filePath)
         {
-            if (!File.Exists(QuestionsFilePath))
+            if (!File.Exists(filePath)) // Zmieniam z QuestionsFilePath na parametr filePath
             {
-                Console.WriteLine($"Plik {QuestionsFilePath} nie istnieje.");
+                Console.WriteLine($"Plik {filePath} nie istnieje.");
                 return;
             }
 
             try
             {
-                _jsonQuestions = _jsonService.ReadFromFile<List<Question>>(QuestionsFilePath) ?? new List<Question>();
+                // Wczytanie JSON
+                _jsonQuestions = _jsonService.ReadFromFile<List<Question>>(filePath) ?? new List<Question>();
+
+                // Jeżeli lista jest pusta, rzucam wyjątek
+                if (_jsonQuestions.Count == 0)
+                {
+                    throw new JsonException("JSON does not contain any questions");
+                }
+
                 Console.WriteLine($"Wczytano {_jsonQuestions.Count} pytań z JSON.");
+            }
+            catch (JsonException ex)  // Chwytam tylko wyjątek JsonException
+            {
+                // Ponownie rzucam wyjątek, aby test mógł go przechwycić
+                throw new JsonException("JSON does not contain any questions", ex);
             }
             catch (Exception ex)
             {

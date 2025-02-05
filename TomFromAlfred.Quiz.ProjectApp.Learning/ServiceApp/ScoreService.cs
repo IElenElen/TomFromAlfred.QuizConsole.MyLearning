@@ -36,10 +36,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public void ResetScore()
         {
-            _score = 0; // zmiana na potrzeby testu z _currentScore
+            _score = 0; // Zmiana na potrzeby testu z _currentScore
         }
 
-        public void DisplayScoreSummary() // to dla testów integracyjnych
+        public void DisplayScoreSummary() // To dla testów integracyjnych
         {
             Console.WriteLine($"Zdobyte punkty: {_score}/{_totalQuestions}");
             Console.WriteLine($"Procent poprawnych odpowiedzi: {GetPercentage():F2}%");

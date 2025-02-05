@@ -134,7 +134,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
         }
         
 
-        public void AddQuestion() // Metoda dodawania pytania
+        public void AddQuestion() // Metoda dodawania pytania // Jest mi tu potrzebna???
         {
             Console.Write("Podaj treść pytania: ");
             var content = Console.ReadLine();

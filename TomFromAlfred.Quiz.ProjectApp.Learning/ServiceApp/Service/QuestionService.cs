@@ -8,11 +8,12 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 {
-    //kolejne metody posortowanie alfabetycznie
+    // Kolejne metody posortowanie alfabetycznie
 
     /*
     Do pytania przypisałam jego zestaw wyboru.
     */
+
     public class QuestionService : ICrudService<Question>
     {
         private List<Question> _questions = new List<Question>(); // Lista pytań
@@ -23,7 +24,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             InitializeQuestions();
         }
 
-        private void InitializeQuestions()
+        private void InitializeQuestions() // Tej metody nie testuję
         {
             _questions.Add(new Question(11, "Co następuje po lecie?"));
             _questions.Add(new Question(12, "Co jest stolicą Polski?"));
@@ -42,7 +43,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             Console.WriteLine($"Usunięto pytanie: {entity.QuestionId}");
         }
 
-        public IEnumerable<Question> GetAll()
+        public virtual IEnumerable<Question> GetAll() // Tej metody nie testuję, ona zawiera listę pytań
         {
             return _questions;
         }
