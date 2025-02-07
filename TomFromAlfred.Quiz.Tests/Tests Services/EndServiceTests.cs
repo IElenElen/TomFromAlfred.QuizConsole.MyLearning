@@ -9,6 +9,10 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
     public class EndServiceTests
     {
+
+        // Testy - część do analziy
+
+
         private readonly EndService _endService;
 
         public EndServiceTests()
@@ -91,7 +95,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Contains("Ukończyłeś / aś Quiz. Dziękujemy za udział!", output); // Oczekiwany tekst
         }
 
-        [Fact]
+        [Fact] // Do analizy
         public void EndQuiz_ShouldResetScore_WhenQuizIsNotCompleted() // Do rozważenia
         {
             // Arrange

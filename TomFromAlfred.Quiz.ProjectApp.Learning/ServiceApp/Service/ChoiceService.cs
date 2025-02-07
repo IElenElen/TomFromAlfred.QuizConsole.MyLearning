@@ -30,7 +30,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
         }
 
         // Dodanie nowego wyboru
-        public void Add(Choice entity)
+        public virtual void Add(Choice entity)
         {
             if (_choices.Any(c => c.ChoiceId == entity.ChoiceId && c.ChoiceLetter == entity.ChoiceLetter))
             {

@@ -164,7 +164,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             return false;
         }
 
-        private char GetLetterForAnswer(string answerContent, int questionId)
+        public virtual char GetLetterForAnswer(string answerContent, int questionId)
         {
             Console.WriteLine($"Szukam litery dla odpowiedzi: {answerContent} w pytaniu Id {questionId}");
 
@@ -192,7 +192,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             return '?';
         }
 
-        public void LoadQuestionsFromJson(string filePath)
+        public virtual void LoadQuestionsFromJson(string filePath)
         {
             if (!File.Exists(filePath)) // Zmieniam z QuestionsFilePath na parametr filePath
             {
@@ -224,7 +224,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             }
         }
 
-        private void LoadChoicesFromJson()
+        public virtual void LoadChoicesFromJson()
         {
             if (!File.Exists(ChoicesFilePath))
             {
@@ -243,7 +243,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             }
         }
 
-        private void LoadCorrectSetFromJson()
+        public virtual void LoadCorrectSetFromJson()
         {
             try
             {

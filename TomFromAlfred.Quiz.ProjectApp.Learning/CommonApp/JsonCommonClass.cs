@@ -21,6 +21,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
                 Console.WriteLine($"Plik {filePath} już istnieje. Tworzenie domyślnego pliku pominięte.");
             }
         }
+
         // Odczyt danych z pliku JSON
         public virtual T ReadFromFile<T>(string filePath)
         {
