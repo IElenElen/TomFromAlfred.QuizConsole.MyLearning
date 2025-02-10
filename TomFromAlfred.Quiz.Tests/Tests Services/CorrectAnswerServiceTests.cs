@@ -25,7 +25,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Act
             _correctAnswerService.Add(correctAnswer);
-            var result = _correctAnswerService.GetAll();
+            var result = _correctAnswerService.GetAllActive();
 
             // Assert
             Assert.Contains(correctAnswer, result);
@@ -39,7 +39,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Act
             _correctAnswerService.Add(existingAnswer); // Próba dodania duplikatu
-            var result = _correctAnswerService.GetAll();
+            var result = _correctAnswerService.GetAllActive();
 
             // Assert
             Assert.Equal(3, result.Count()); // Nie dodaję duplikatu, więc lista ma nadal 3 elementy
@@ -54,7 +54,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Act
             _correctAnswerService.Delete(correctAnswer);
-            var result = _correctAnswerService.GetAll();
+            var result = _correctAnswerService.GetAllActive();
 
             // Assert
             Assert.DoesNotContain(correctAnswer, result);
@@ -68,7 +68,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Act
             _correctAnswerService.Delete(nonExistingAnswer); // Próba usunięcia nieistniejącej odpowiedzi
-            var result = _correctAnswerService.GetAll();
+            var result = _correctAnswerService.GetAllActive();
 
             // Assert
             Assert.Equal(3, result.Count()); // Lista nie zmienia się, ponieważ odpowiedź nie istniała
@@ -78,7 +78,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetAll_ShouldReturnAllCorrectAnswers()
         {
             // Act
-            var result = _correctAnswerService.GetAll();
+            var result = _correctAnswerService.GetAllActive();
 
             // Assert
             Assert.Equal(3, result.Count()); // Sprawdzam, czy są 3 poprawne odpowiedzi

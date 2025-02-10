@@ -11,7 +11,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.Abstract
         void Add(T entity);
         void Update(T entity);
         void Delete(T entity);
-        IEnumerable<T> GetAll(); // Elastyczny interfejs, elementy są przetwarzane,
+        IEnumerable<T> GetAllActive(); // Elastyczny interfejs, elementy są przetwarzane,
                                  // kiedy faktycznie są potrzebne tzw. leniwe przetwarzanie
     }
 }

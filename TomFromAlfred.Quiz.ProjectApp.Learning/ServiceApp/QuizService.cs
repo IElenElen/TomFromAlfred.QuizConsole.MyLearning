@@ -70,13 +70,13 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
                 // Łącz dane, ale unikaj duplikatów
                 var jsonQuestionIds = _jsonQuestions.Select(q => q.QuestionId).ToHashSet();
-                var remainingServiceQuestions = _questionService.GetAll().Where(q => !jsonQuestionIds.Contains(q.QuestionId));
+                var remainingServiceQuestions = _questionService.GetAllActive().Where(q => !jsonQuestionIds.Contains(q.QuestionId));
                 Console.WriteLine($"Liczba pytań z serwisu dodanych do JSON: {remainingServiceQuestions.Count()}");
                 return _jsonQuestions.Concat(remainingServiceQuestions);
             }
 
             Console.WriteLine("Zwracane pytania z serwisu.");
-            return _questionService.GetAll();
+            return _questionService.GetAllActive();
         }
 
         public virtual IEnumerable<Choice> GetChoicesForQuestion(int questionId)

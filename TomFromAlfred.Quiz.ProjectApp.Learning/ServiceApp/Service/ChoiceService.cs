@@ -17,15 +17,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             // Inicjalizacja wyborów w konstruktorze
             _choices = new List<Choice>
             {
-                new Choice(11, 'A', "Jesień"),
-                new Choice(11, 'B', "Zima"),
-                new Choice(11, 'C', "Wiosna"),
-                new Choice(12, 'A', "Kraków"),
-                new Choice(12, 'B', "Warszawa"),
-                new Choice(12, 'C', "Wrocław"),
-                new Choice(13, 'A', "Kilimandżaro"),
-                new Choice(13, 'B', "Mount Everest"),
-                new Choice(13, 'C', "K2")
+                new Choice(11, 'A', "Jesień", true),
+                new Choice(11, 'B', "Zima", true),
+                new Choice(11, 'C', "Wiosna", true),
+                new Choice(12, 'A', "Kraków", true),
+                new Choice(12, 'B', "Warszawa", true),
+                new Choice(12, 'C', "Wrocław", true),
+                new Choice(13, 'A', "Kilimandżaro", true),
+                new Choice(13, 'B', "Mount Everest", true),
+                new Choice(13, 'C', "K2", true)
             };
         }
 
@@ -58,9 +58,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
         }
 
         // Pobranie wszystkich wyborów
-        public IEnumerable<Choice> GetAll()
+        public IEnumerable<Choice> GetAllActive()
         {
-            return _choices.AsEnumerable(); // Zwracanie IEnumerable
+            // Zwracam tylko aktywne wybory (IsActive = true)
+            return (_choices ?? new List<Choice>())
+                   .Where(choice => choice.IsActive)  // Filtruję tylko aktywne
+                   .AsEnumerable();
         }
 
         public IEnumerable<Choice> GetChoicesForQuestion(int questionId) // Filtrowanie odpowiedzi na podstawie id pytania
@@ -68,19 +71,24 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             return _choices.Where(c => c.ChoiceId == questionId);
         }
 
-        // Aktualizacja istniejącego wyboru
+        // Aktualizacja istniejącego wyboru - zmiana treści wyboru
         public void Update(Choice entity)
         {
-            var choiceToUpdate = _choices.FirstOrDefault(c => c.ChoiceId == entity.ChoiceId && c.ChoiceLetter == entity.ChoiceLetter);
-            if (choiceToUpdate != null)
+            var existingChoice = _choices.FirstOrDefault(c => c.ChoiceId == entity.ChoiceId);
+
+            if (existingChoice == null)
             {
-                choiceToUpdate.ChoiceContent = entity.ChoiceContent;
-                Console.WriteLine($"Zaktualizowano wybór: Id {entity.ChoiceId}, opcja {entity.ChoiceLetter}.");
+                Console.WriteLine($"Nie znaleziono wyboru do zaktualizowania: Id {entity.ChoiceId}.");
+                return;
             }
-            else
-            {
-                Console.WriteLine($"Nie znaleziono wyboru do zaktualizowania: Id {entity.ChoiceId}, opcja {entity.ChoiceLetter}.");
-            }
+
+            Console.WriteLine($"Przed: Id {existingChoice.ChoiceId}, IsActive: {existingChoice.IsActive}");
+
+            // Aktualizuję treść wyboru
+            existingChoice.ChoiceContent = entity.ChoiceContent;
+
+            Console.WriteLine($"Po: Id {existingChoice.ChoiceId}, IsActive: {existingChoice.IsActive}");
+            Console.WriteLine($"Zaktualizowano wybór: Id {entity.ChoiceId}, opcja {entity.ChoiceLetter}, treść {entity.ChoiceContent}.");
         }
     }
 }

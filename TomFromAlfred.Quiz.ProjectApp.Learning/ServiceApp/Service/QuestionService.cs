@@ -43,7 +43,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             Console.WriteLine($"Usunięto pytanie: {entity.QuestionId}");
         }
 
-        public virtual IEnumerable<Question> GetAll() // Tej metody nie testuję, ona zawiera listę pytań
+        public virtual IEnumerable<Question> GetAllActive() // Tej metody nie testuję, ona zawiera listę pytań
         {
             return _questions;
         }

@@ -16,14 +16,17 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 
         public string ChoiceContent { get; set; }
 
-        public Choice(int choiceId, char choiceLetter, string choiceContent)
+        public bool IsActive { get; set; } 
+
+        public Choice(int choiceId, char choiceLetter, string choiceContent, bool isActive = true)
         {
             if (choiceLetter < 'A' || choiceLetter > 'C')
-                throw new ArgumentException("Litera odpowiedzi musi być w zakresie A-C.");
+                throw new ArgumentException("Niepoprawny znak. Litera odpowiedzi musi być w zakresie A-C.");
 
             ChoiceId = choiceId;
             ChoiceLetter = choiceLetter;
             ChoiceContent = choiceContent;
+            IsActive = isActive;
         }
     }
 }

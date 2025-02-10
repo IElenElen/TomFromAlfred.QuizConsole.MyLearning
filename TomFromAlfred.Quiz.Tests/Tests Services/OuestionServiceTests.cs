@@ -31,7 +31,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             questionService.Add(newQuestion);
 
             //Assert
-            Assert.Contains(newQuestion, questionService.GetAll().ToList());
+            Assert.Contains(newQuestion, questionService.GetAllActive().ToList());
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             questionService.Add(newQuestion);
 
             // Assert
-            Assert.Contains(newQuestion, questionService.GetAll().ToList());
+            Assert.Contains(newQuestion, questionService.GetAllActive().ToList());
         }
 
         [Fact] // Oblany
@@ -62,7 +62,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             questionService.Add(duplicateQuestion);  // Próba dodania pytania z tym samym Id
 
             // Assert
-            var allQuestions = questionService.GetAll().ToList();
+            var allQuestions = questionService.GetAllActive().ToList();
             Assert.Single(allQuestions);  // Lista powinna zawierać tylko jedno pytanie o Id = 1
         }
 
@@ -76,7 +76,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             questionService.Add(null);
 
             // Assert
-            Assert.Empty(questionService.GetAll().ToList());  // Lista powinna pozostać pusta
+            Assert.Empty(questionService.GetAllActive().ToList());  // Lista powinna pozostać pusta
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             questionService.Delete(questionToDelete);
 
             //Assert
-            Assert.DoesNotContain(questionToDelete, questionService.GetAll().ToList());
+            Assert.DoesNotContain(questionToDelete, questionService.GetAllActive().ToList());
         }
 
         [Fact]
@@ -143,7 +143,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             questionService.Update(questionToUpdate);
 
             //Assert
-            var result = questionService.GetAll().First(q => q.QuestionId == 16);
+            var result = questionService.GetAllActive().First(q => q.QuestionId == 16);
             Assert.Equal("Pytanie zmienione", result.QuestionContent);
         }
 
@@ -160,7 +160,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             questionService.Update(sameContentQuestion);
 
             // Assert - Upewniam się, że treść pytania się nie zmieniła
-            var updatedQuestion = questionService.GetAll().First(q => q.QuestionId == 16);
+            var updatedQuestion = questionService.GetAllActive().First(q => q.QuestionId == 16);
             Assert.Equal("Pytanie do aktualizacji.", updatedQuestion.QuestionContent);
         }
 
@@ -175,7 +175,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             questionService.Update(nonExistentQuestion);
 
             //Assert
-            var result = questionService.GetAll().FirstOrDefault(q => q.QuestionId == 99);
+            var result = questionService.GetAllActive().FirstOrDefault(q => q.QuestionId == 99);
             Assert.Null(result);
         }
     }

@@ -32,7 +32,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             Console.WriteLine($"Usunięto poprawną odpowiedź: {entity.CorrectAnswerId}");
         }
 
-        public IEnumerable<CorrectAnswer> GetAll()
+        public IEnumerable<CorrectAnswer> GetAllActive()
         {
             return _correctAnswers;
         }

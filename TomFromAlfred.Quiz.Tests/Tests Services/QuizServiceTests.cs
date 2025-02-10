@@ -115,7 +115,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             _mockJsonCommonClass.Setup(s => s.ReadFromFile<List<Question>>(It.IsAny<string>()))
                 .Returns(mockQuestionsFromJson);
-            _mockQuestionService.Setup(s => s.GetAll())
+            _mockQuestionService.Setup(s => s.GetAllActive())
                 .Returns(mockQuestionsFromService);
 
             // Act
@@ -140,7 +140,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             _mockJsonCommonClass.Setup(s => s.ReadFromFile<List<Question>>(It.IsAny<string>()))
                 .Returns(mockQuestionsFromJson);
-            _mockQuestionService.Setup(s => s.GetAll())
+            _mockQuestionService.Setup(s => s.GetAllActive())
                 .Returns(mockQuestionsFromService);
 
             // Act
@@ -163,7 +163,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             _mockJsonCommonClass.Setup(s => s.ReadFromFile<List<Question>>(It.IsAny<string>()))
                 .Returns(mockQuestionsFromJson);
-            _mockQuestionService.Setup(s => s.GetAll())
+            _mockQuestionService.Setup(s => s.GetAllActive())
                 .Returns(mockQuestionsFromService);
 
             // Act
