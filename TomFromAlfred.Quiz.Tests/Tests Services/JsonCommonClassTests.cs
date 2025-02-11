@@ -10,6 +10,8 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
+    // Oblane: 2 / 2
+
     public class JsonCommonClassTests
     {
         private readonly Mock<JsonCommonClass> _mockJsonCommonClass;
@@ -19,41 +21,42 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _mockJsonCommonClass = new Mock<JsonCommonClass>();
         }
 
-        [Fact]
-        public void CreateDefaultFile_ShouldCreateFile_WhenFileDoesNotExist() // Oblany
+        // 1
+        [Fact] // Oblany
+        public void CreateDefaultFile_ShouldCreateFile_WhenFileDoesNotExist() // Tworzy plik, jeśli ten nie istnieje
         {
             // Arrange
-            string filePath = "defaultFile.json";
-            var defaultData = new List<Question> { new Question(1, "pytanie przykładowe") };
+            string newFilePath = "defaultFile.json";
+            var defaultNewData = new List<Question> { new Question(1, "pytanie przykładowe") };
 
             // Mockuję metodę odczytu pliku, która wyrzuca wyjątek FileNotFoundException, jeśli plik nie istnieje
-            _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Question>>(filePath)).Throws(new FileNotFoundException());
+            _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Question>>(newFilePath)).Throws(new FileNotFoundException());
 
             // Mockuję metodę zapisu do pliku
-            _mockJsonCommonClass.Setup(x => x.WriteToFile(filePath, defaultData));
+            _mockJsonCommonClass.Setup(x => x.WriteToFile(newFilePath, defaultNewData));
 
             // Act
-            _mockJsonCommonClass.Object.CreateDefaultFile(filePath, defaultData); // Wywołanie metody na mocku
+            _mockJsonCommonClass.Object.CreateDefaultFile(newFilePath, defaultNewData); // Wywołanie metody na mocku
 
             // Assert
-            _mockJsonCommonClass.Verify(x => x.WriteToFile(filePath, defaultData), Times.Once); // Sprawdzam, czy WriteToFile zostało wywołane
+            _mockJsonCommonClass.Verify(x => x.WriteToFile(newFilePath, defaultNewData), Times.Once); // Sprawdzam, czy WriteToFile zostało wywołane
         }
 
-        // Testowanie, gdy plik już istnieje
-        [Fact]
-        public void CreateDefaultFile_ShouldNotCreateFile_WhenFileExists() // Oblany
+        // 2
+        [Fact] // Oblany
+        public void CreateDefaultFile_ShouldNotCreateFile_WhenFileAlreadyExists() // Nie tworzy, jeśli plik już istnieje
         {
             // Arrange
-            string filePath = "existingFile.json";
-            var defaultData = new List<Question> {new Question (1, "pytanie przykładowe")};
+            string existingFilePath = "existingFile.json";
+            var defaultNewData = new List<Question> {new Question (1, "pytanie przykładowe")};
 
-            _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Question>>(filePath)).Returns(defaultData);
+            _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Question>>(existingFilePath)).Returns(defaultNewData);
 
             // Act
-            _mockJsonCommonClass.Object.CreateDefaultFile(filePath, defaultData); // Wywołanie metody na mocku
+            _mockJsonCommonClass.Object.CreateDefaultFile(existingFilePath, defaultNewData); // Wywołanie metody na mocku
 
             // Assert
-            _mockJsonCommonClass.Verify(x => x.WriteToFile(filePath, defaultData), Times.Never);
+            _mockJsonCommonClass.Verify(x => x.WriteToFile(existingFilePath, defaultNewData), Times.Never);
         }
     }
 }

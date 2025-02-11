@@ -9,10 +9,10 @@ using Xunit.Abstractions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
+    // Ilość oblanych: 4 / 12
+
     public class ChoiceServiceTests
     {
-        // Ilość oblanych: 4
-
         public required ChoiceService _choiceService;
         private readonly ITestOutputHelper _output;
 
@@ -24,6 +24,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _output.WriteLine($"_choiceService is null: {_choiceService == null}");
         }
 
+        // 1 
         [Fact] // Zaliczony
 
         public void Add_ShouldAddNewChoice_WhenChoiceDoesNotExist() // Ma dodać nowy zestaw wyboru
@@ -44,6 +45,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Contains(newChoice2, _choiceService.GetAllActive());
         }
 
+        // 2
         [Fact] // Oblany, ma problem z liczeniem zestawów!!!
         public void Add_ShouldNotAdd_WhenChoiceExist() // Ma nie dodawać już istniejący wybór
         {
@@ -58,6 +60,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Single(allChoices);
         }
 
+        // 3
         [Fact] // Zaliczony
         public void Delete_ShouldRemoveExistingChoice() // Usuwa istniejący zestaw wyboru, Id
         {
@@ -73,6 +76,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.DoesNotContain(existingChoiceToDelete, allChoices);
         }
 
+        // 4
         [Fact] // Oblany, nadal widzi 9 zestawów, a jest aktywnych tylko 8 !!!
         public void Delete_ShouldNotRemoveChoice_WhenChoiceDoesNotExist() // Nic nie usuwa, jeśli zestaw wyborów nie istnieje
         {
@@ -84,6 +88,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal(8, allChoices.Count()); // Nic w liście nie zmieniam
         }
 
+
+        // 5
         [Fact] // Oblany
         public void GetAll_ShouldReturnAllActiveChoices() // Pobiera wszystkie aktywne wybory
         {
@@ -101,6 +107,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal(8, activeChoices.Count());  
         }
 
+        // 6
         [Fact] // Zaliczony
         public void GetChoicesForQuestion_ShouldReturnFilteredChoices_WhenQuestionIdExists() // Dodaje wybory dla pytania o istniejacym Id
         {
@@ -108,6 +115,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal(3, choicesForQuestion.Count()); // Trzy wybory dla pytania nr 11
         }
 
+        // 7
         [Fact] // Zaliczony
         public void GetChoicesForQuestion_ShouldReturnEmpty_WhenQuestionIdDoesNotExist() // Nie dodaje wyborów, bo pytanie o danym Id nie istnieje
         {
@@ -115,6 +123,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Empty(choicesForQuestion); // Nie ma wyboru dla pytania 100
         }
 
+        // 8
         [Fact] // Zaliczony
         public void Update_ShouldUpdateChoiceContent_WhenChoiceExists() // Możliwa zmiana treści
         {
@@ -130,6 +139,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal("Zmieniona Jesień", updatedChoiceContent.ChoiceContent);
         }
 
+        // 9
         [Fact] // Oblany // Czy on nie będzie integracyjny?
         public void Update_ShouldUpdateChoiceLetter_WhenChoiceExists() // Możliwa zmiana litery wyboru
         {
@@ -161,6 +171,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Null(oldChoiceWithOldLetter);  // Stary wybór z literą 'A' powinien zostać usunięty
         }
 
+        // 10
         [Fact] // Zaliczony :-) nareszcie
         public void Update_ShouldNotUpdate_WhenChoiceDoesNotExist() // Brak zmiany, jeśli dany wybór nie istnieje. Sprawdzam po Id wyboru.
         {
@@ -189,6 +200,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             }
         }
 
+        // 11
         [Fact] // Zaliczony
         public void Update_ShouldThrowArgumentException_WhenChoiceHasInvalidSign() // Wyrzuca wyjątek, jeśli użytkownik podaa niepoprawny znak
         {
@@ -205,6 +217,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             }
         }
 
+        // 12
         [Fact] // Zaliczony
         public void Update_ShouldNotThrow_WhenChoiceHasValidLetter() // Przyjmuje wybór, jeśli użytkownik daje prawidłową literę z zakresu A-C
         {

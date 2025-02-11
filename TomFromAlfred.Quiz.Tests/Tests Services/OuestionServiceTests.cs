@@ -8,24 +8,25 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
+    // Oblane: 4 / 11
+
     public class OuestionServiceTests
     {
+        private readonly QuestionService _questionService; 
 
-        //private readonly QuestionService _questionService; // Dodam tutaj, aby nie powtarzać w każdym teście
-
-        /*public QuestionServiceTests()
+        public OuestionServiceTests()
         {
             // Inicjalizacja przed każdym testem (dodaję tu - tylko raz)
             _questionService = new QuestionService();
-        }*/
+        }
 
-        [Fact]
-
-        public void Add_ShouldAddNewQuestion() 
+        // 1
+        [Fact] // Zaliczony
+        public void Add_ShouldAddNewQuestion() // Dodaje nowe pytanie
         {
             //Arrange
             var questionService = new QuestionService();
-            var newQuestion = new Question(14, "Co to jest c#?");
+            var newQuestion = new Question(14, "Kim był Alfred Szklarski?");
 
             //Act
             questionService.Add(newQuestion);
@@ -34,8 +35,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Contains(newQuestion, questionService.GetAllActive().ToList());
         }
 
-        [Fact]
-        public void Add_ShouldAddNewQuestionToEmptyList()
+        // 2
+        [Fact] // Zaliczony
+        public void Add_ShouldAddNewQuestionToEmptyList() // Dodaje pytanie do pustej listy
         {
             // Arrange
             var questionService = new QuestionService();
@@ -48,8 +50,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Contains(newQuestion, questionService.GetAllActive().ToList());
         }
 
+        // 3
         [Fact] // Oblany
-        public void Add_ShouldNotAddDuplicateQuestion()
+        public void Add_ShouldNotAddDuplicateQuestion() // Nie dodaje duplikatu
         {
             // Arrange
             var questionService = new QuestionService();
@@ -66,8 +69,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Single(allQuestions);  // Lista powinna zawierać tylko jedno pytanie o Id = 1
         }
 
-        [Fact] // Oblany
-        public void Add_ShouldNotAddNullQuestion()
+        // 4
+        [Fact] // Oblany ???
+        public void Add_ShouldNotAddNullQuestion() // Nie dodaje nulla
         {
             // Arrange
             var questionService = new QuestionService();
@@ -79,8 +83,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Empty(questionService.GetAllActive().ToList());  // Lista powinna pozostać pusta
         }
 
-        [Fact]
-        public void Delete_ShouldDeleteExistingQuestion() 
+        // 5
+        [Fact] // Zaliczony
+        public void Delete_ShouldDeleteExistingQuestion() // Usuwa istniejące pytanie
         {
             //Arrange
             var questionService = new QuestionService();
@@ -94,8 +99,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.DoesNotContain(questionToDelete, questionService.GetAllActive().ToList());
         }
 
-        [Fact]
-        public void Delete_ShouldNotThrowExceptionWhenDeletingNonExistingQuestion()
+        // 6
+        [Fact] // Zaliczony
+        public void Delete_ShouldNotThrowExceptionWhenDeletingNonExistingQuestion() // Jeżeli nie usuwam pytania, które nie istnieje, system to "spokojnie" akceptuje
         {
             // Arrange
             var questionService = new QuestionService();
@@ -106,8 +112,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Null(exception);  // Nie oczekuję żadnego wyjątku
         }
 
-        [Fact]
-        public void Delete_ShouldNotThrowExceptionWhenListIsEmpty()
+        // 7
+        [Fact] // Zaliczony
+        public void Delete_ShouldNotThrowExceptionWhenListIsEmpty() // System nie pokazuje wyjątku, jeśli lista jest pusta
         {
             // Arrange
             var questionService = new QuestionService();
@@ -118,8 +125,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Null(exception);  // Nie oczekuję żadnego wyjątku
         }
 
-        [Fact] //Oblany
-        public void Delete_ShouldNotThrowExceptionWhenDeletingNull()
+        // 8
+        [Fact] // Oblany
+        public void Delete_ShouldNotThrowExceptionWhenDeletingNull() // Nie rzuca wyjątku, jeśli usuwam null
         {
             // Arrange
             var questionService = new QuestionService();
@@ -129,43 +137,46 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Null(exception);  // Nie oczekuję żadnego wyjątku
         }
 
-        [Fact] //Oblany
-        public void Update_ShouldUpdateExistingQuestion() 
+        // 9
+        [Fact] // Oblany
+        public void Update_ShouldUpdateExistingQuestion() // Zmienia istniejące pytanie
         {
             //Arrange
             var questionService = new QuestionService();
-            var questionToUpdate = new Question(16, "Pytanie do zmiany.");
+            var questionToUpdate = new Question(12, "Pytanie do zmiany.");
             questionService.Add(questionToUpdate);
 
-            var updatedQuestion = new Question(16, "Pytanie zmienione.");
+            var updatedQuestion = new Question(12, "Pytanie zmienione.");
 
             //Act
             questionService.Update(questionToUpdate);
 
             //Assert
-            var result = questionService.GetAllActive().First(q => q.QuestionId == 16);
+            var result = questionService.GetAllActive().First(q => q.QuestionId == 12);
             Assert.Equal("Pytanie zmienione", result.QuestionContent);
         }
 
-        [Fact] // Oblany
-        public void Update_ShouldOnlyUpdateIfQuestionContentChanges()
+        // 10
+        [Fact] // Zaliczony
+        public void Update_ShouldOnlyUpdateIfQuestionContentChanges() // Powinien zmienić treść, tylko jesli się ona zmienia ???
         {
             // Arrange
             var questionService = new QuestionService();
-            var questionToUpdate = new Question(20, "Pytanie do aktualizacji.");
-            questionService.Add(questionToUpdate);
+            var existingQuestionToUpdate = new Question(13, "Pytanie do aktualizacji.");
+            questionService.Add(existingQuestionToUpdate);
 
             // Act - Aktualizuję to samo pytanie z tą samą treścią (nie zmienia się)
-            var sameContentQuestion = new Question(20, "Pytanie do aktualizacji.");
+            var sameContentQuestion = new Question(13, "Pytanie do aktualizacji.");
             questionService.Update(sameContentQuestion);
 
             // Assert - Upewniam się, że treść pytania się nie zmieniła
-            var updatedQuestion = questionService.GetAllActive().First(q => q.QuestionId == 16);
+            var updatedQuestion = questionService.GetAllActive().First(q => q.QuestionId == 13);
             Assert.Equal("Pytanie do aktualizacji.", updatedQuestion.QuestionContent);
         }
 
-        [Fact]
-        public void Update_ShouldNotUpdateNonExistingQuestion()
+        // 11
+        [Fact] // Zaliczony
+        public void Update_ShouldNotUpdateNonExistingQuestion() // Nie zmienia pytania, które nie istnieje
         {  
             //Arrange
             var questionService = new QuestionService();

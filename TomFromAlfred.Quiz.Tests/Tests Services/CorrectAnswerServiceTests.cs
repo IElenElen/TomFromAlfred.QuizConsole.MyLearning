@@ -8,6 +8,8 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
+    // Oblane: 3 / 9
+
     public class CorrectAnswerServiceTests
     {
         private readonly CorrectAnswerService _correctAnswerService;
@@ -17,104 +19,118 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _correctAnswerService = new CorrectAnswerService();
         }
 
-        [Fact]
-        public void Add_ShouldAddCorrectAnswer_WhenValidEntityIsGiven()
+        // 1
+        [Fact] // Zaliczony
+        public void Add_ShouldAddCorrectAnswer_WhenValidEntityIsGiven() // Dodaje poprawną odpowiedź, jeśli poprawne entity podane
         {
             // Arrange
-            var correctAnswer = new CorrectAnswer(14, "Zima");
+            var correctAnswerToAdd = new CorrectAnswer(14, "Zima", true);
 
             // Act
-            _correctAnswerService.Add(correctAnswer);
+            _correctAnswerService.Add(correctAnswerToAdd);
             var result = _correctAnswerService.GetAllActive();
 
             // Assert
-            Assert.Contains(correctAnswer, result);
+            Assert.Contains(correctAnswerToAdd, result);
         }
 
-        [Fact]
-        public void Add_ShouldNotAddDuplicateCorrectAnswer_WhenSameIdIsGiven()  // Oblany
+        // 2
+        [Fact] // Oblany, widzi 4
+        public void Add_ShouldNotAddDuplicateCorrectAnswer_WhenSameIdIsGiven()  // Nie dodaje duplikatu poprawnej odpowiedzi
         {
             // Arrange
-            var existingAnswer = new CorrectAnswer(11, "Jesień"); // Odpowiedź już istnieje
+            var alreadyExistingCorrectAnswer = new CorrectAnswer(11, "Jesień", true); // Odpowiedź już istnieje
 
             // Act
-            _correctAnswerService.Add(existingAnswer); // Próba dodania duplikatu
+            _correctAnswerService.Add(alreadyExistingCorrectAnswer); // Próba dodania duplikatu
             var result = _correctAnswerService.GetAllActive();
 
             // Assert
-            Assert.Equal(3, result.Count()); // Nie dodaję duplikatu, więc lista ma nadal 3 elementy
+            Assert.Equal(8, result.Count()); // Nie dodaję duplikatu, więc lista ma nadal 8 elementów
         }
 
-
-        [Fact]
-        public void Delete_ShouldRemoveCorrectAnswer_WhenValidEntityIsGiven()
+        // 3
+        [Fact] // Zaliczony
+        public void Delete_ShouldRemoveCorrectAnswer_WhenValidEntityIsGiven() // Usuwa, jeśli poprawne entity jest podane
         {
             // Arrange
-            var correctAnswer = new CorrectAnswer(11, "Jesień");
+            var existingCorrectAnswerToDelete = new CorrectAnswer(11, "Jesień", true);
 
             // Act
-            _correctAnswerService.Delete(correctAnswer);
+            _correctAnswerService.Delete(existingCorrectAnswerToDelete);
             var result = _correctAnswerService.GetAllActive();
 
             // Assert
-            Assert.DoesNotContain(correctAnswer, result);
+            Assert.DoesNotContain(existingCorrectAnswerToDelete, result);
         }
 
-        [Fact]
-        public void Delete_ShouldNotRemoveCorrectAnswer_WhenEntityDoesNotExist()
+        // 4
+        [Fact] // Oblany, widzi 3 zamiast 8
+        public void Delete_ShouldNotRemoveCorrectAnswer_WhenEntityDoesNotExist() // Bez poprawnego entity nic nie usuwa
         {
             // Arrange
-            var nonExistingAnswer = new CorrectAnswer(999, "Brak");
+            var nonExistingCorrectAnswer = new CorrectAnswer(999, "Brak", true);
 
             // Act
-            _correctAnswerService.Delete(nonExistingAnswer); // Próba usunięcia nieistniejącej odpowiedzi
-            var result = _correctAnswerService.GetAllActive();
+            _correctAnswerService.Delete(nonExistingCorrectAnswer); // Próba usunięcia nieistniejącej odpowiedzi
+            var result = _correctAnswerService.GetAllActive().ToList();
 
             // Assert
-            Assert.Equal(3, result.Count()); // Lista nie zmienia się, ponieważ odpowiedź nie istniała
+            Assert.Equal(8, result.Count()); // Lista nie zmienia się, ponieważ odpowiedź nie istniała
         }
 
-        [Fact]
-        public void GetAll_ShouldReturnAllCorrectAnswers()
+        // 5
+        [Fact] // Oblany
+        public void GetAll_ShouldReturnAllCorrectActiveAnswers() // Podaje wszystkie poprawne aktywne odpowiedzi
         {
             // Act
-            var result = _correctAnswerService.GetAllActive();
+            var result = _correctAnswerService.GetAllActive().ToList();
+
+            // Debug - wyświetl liczbę odpowiedzi
+            Console.WriteLine($"Liczba odpowiedzi w GetAllActive(): {result.Count}");
+
+            foreach (var correctAnswer in result)
+            {
+                Console.WriteLine($"Poprawna odpowiedź Id: {correctAnswer.CorrectAnswerId}, treść: {correctAnswer.CorrectAnswerContent}, aktywna: {correctAnswer.IsActive}");
+            }
 
             // Assert
-            Assert.Equal(3, result.Count()); // Sprawdzam, czy są 3 poprawne odpowiedzi
+            Assert.Equal(8, result.Count()); // Sprawdzam, czy jest 8 poprawnych aktywnych odpowiedzi
         }
 
-        [Fact]
-        public void Update_ShouldUpdateCorrectAnswer_WhenValidEntityIsGiven()
+        // 6
+        [Fact] // Zaliczony
+        public void Update_ShouldUpdateCorrectAnswer_WhenValidEntityIsGiven() // Zmiana poprawnej odpowiedzi, jeśli entity poprawne dostarczone
         {
             // Arrange
-            var updatedAnswer = new CorrectAnswer(11, "Zima");
+            var correctAnswerToUpdate = new CorrectAnswer(11, "Zmieniona zima", true);
 
             // Act
-            _correctAnswerService.Update(updatedAnswer);
+            _correctAnswerService.Update(correctAnswerToUpdate);
             var result = _correctAnswerService.GetCorrectAnswerForQuestion(11);
 
             // Assert
-            Assert.Equal("Zima", result.CorrectAnswerContent);
+            Assert.Equal("Zmieniona zima", result.CorrectAnswerContent);
         }
 
-        [Fact]
-        public void Update_ShouldNotUpdateCorrectAnswer_WhenEntityDoesNotExist()
+        // 7
+        [Fact] // Zaliczony
+        public void Update_ShouldNotUpdateCorrectAnswer_WhenEntityDoesNotExist() // Bez zmiany, jeśli entity nie istnieje
         {
             // Arrange
-            var nonExistingAnswer = new CorrectAnswer(999, "Brak");
+            var nonExistingCorrectAnswer = new CorrectAnswer(999, "Brak", true);
 
             // Act
-            _correctAnswerService.Update(nonExistingAnswer); // Próba aktualizacji nieistniejącej odpowiedzi
+            _correctAnswerService.Update(nonExistingCorrectAnswer); // Próba aktualizacji nieistniejącej odpowiedzi
             var result = _correctAnswerService.GetCorrectAnswerForQuestion(999);
 
             // Assert
             Assert.Null(result); // Odpowiedź o takim Id nie istnieje, więc nie powinno być zmiany
         }
 
-
-        [Fact]
-        public void GetCorrectAnswerForQuestion_ShouldReturnCorrectAnswer_WhenValidQuestionIdIsGiven()
+        // 8
+        [Fact] // Zaliczony
+        public void GetCorrectAnswerForQuestion_ShouldReturnCorrectAnswer_WhenValidQuestionIdIsGiven() // Zwraca poprawną odpowiedź, jesli pytanie ma właściwe Id
         {
             // Act
             var result = _correctAnswerService.GetCorrectAnswerForQuestion(12);
@@ -123,8 +139,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal("Warszawa", result.CorrectAnswerContent);
         }
 
-        [Fact]
-        public void GetCorrectAnswerForQuestion_ShouldReturnNull_WhenInvalidQuestionIdIsGiven()
+        // 9
+        [Fact] // Zaliczony
+        public void GetCorrectAnswerForQuestion_ShouldReturnNull_WhenInvalidQuestionIdIsGiven() // Zwraca null, jeśli Id pytania jest niepoprawne
         {
             // Act
             var result = _correctAnswerService.GetCorrectAnswerForQuestion(999); // Id, które nie istnieje
@@ -132,6 +149,5 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Assert
             Assert.Null(result); // Zwrot null
         }
-
     }
 }

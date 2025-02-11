@@ -7,6 +7,8 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 
 namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
 {
+    // Oblane: / 1
+
     public class TestForDisplayScoreSummary
     {
         private readonly ScoreService _scoreService;
@@ -16,6 +18,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
             _scoreService = new ScoreService(); // Inicjalizacja obiektu ScoreService
         }
 
+        // 1
         [Fact]
         public void DisplayScoreSummary_ShouldDisplayCorrectSummary()
         {

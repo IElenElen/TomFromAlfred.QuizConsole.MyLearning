@@ -10,6 +10,8 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
 {
+    // Oblane: / 11
+
     public class AdditionalTestsForTheManager
     {
         private readonly Mock<QuizService> _mockQuizService;
@@ -26,6 +28,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             _quizManager = new QuizManager(_mockQuizService.Object, _mockScoreService.Object, _mockEndService.Object);
         }
 
+        // 1 
         [Fact]
         public void Constructor_ShouldThrowException_WhenQuestionsAreNull() // Oblany
         {
@@ -33,6 +36,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             Assert.Throws<ArgumentNullException>(() => new ManagerHelper(null));
         }
 
+        // 2
         [Fact]
         public void HasNext_ShouldReturnTrue_WhenQuestionsAreAvailable() // Oblany
         {
@@ -52,6 +56,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             Assert.True(result);
         }
 
+        // 3
         [Fact]
         public void HasNext_ShouldReturnFalse_WhenNoMoreQuestions() // Oblany
         {
@@ -71,6 +76,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             Assert.False(result);
         }
 
+        // 4
         [Fact]
         public void GetCurrentQuestion_ShouldReturnCurrentQuestion() // Oblany
         {
@@ -91,6 +97,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             Assert.Equal("Question 1", currentQuestion.QuestionContent);
         }
 
+        // 5
         [Fact]
         public void GetCurrentQuestion_ShouldThrowException_WhenNoMoreQuestions() // Oblany
         {
@@ -107,6 +114,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             Assert.Throws<InvalidOperationException>(() => managerHelper.GetCurrentQuestion());
         }
 
+        // 6
         [Fact]
         public void NextQuestion_ShouldMoveToNextQuestion() // Oblany
         {
@@ -128,6 +136,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             Assert.Equal("Question 2", currentQuestion.QuestionContent);
         }
 
+        // 7
         [Fact]
         public void NextQuestion_ShouldNotExceedQuestionList() // Oblany
         {
@@ -147,6 +156,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             Assert.Throws<InvalidOperationException>(() => managerHelper.GetCurrentQuestion());
         }
 
+        // 8
         [Fact]
         public void Shuffle_ShouldRandomizeListOrder() // Oblany
         {
@@ -162,6 +172,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             Assert.True(questions.All(q => shuffledQuestions.Contains(q))); // Sprawdzam, czy lista zawiera te same elementy
         }
 
+        // 9
         [Fact]
         public void AddQuestion_ShouldAddQuestionCorrectly() // Oblany
         {
@@ -183,6 +194,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             _mockQuizService.Verify(q => q.AddQuestionToJson(It.Is<Question>(q => q.QuestionContent == questionContent)), Times.Once); // Upewniam się, że pytanie zostało dodane do systemu
         }
 
+        // 10
         [Fact]
         public void AddQuestion_ShouldNotAddQuestion_WhenQuestionContentIsEmpty() // Oblany
         {
@@ -197,6 +209,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             _mockQuizService.Verify(q => q.AddQuestionToJson(It.IsAny<Question>()), Times.Never); // Pytanie nie zostało dodane
         }
 
+        // 11
         [Fact]
         public void AddQuestion_ShouldNotAddQuestion_WhenCorrectAnswerIsInvalid() // Oblany
         {

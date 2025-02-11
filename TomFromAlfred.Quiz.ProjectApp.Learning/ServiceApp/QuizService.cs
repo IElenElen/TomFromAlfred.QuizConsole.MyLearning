@@ -263,7 +263,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                     // Mapowanie poprawnej odpowiedzi do encji
                     var correctAnswer = new CorrectAnswer(
                         questionId,
-                        correct.ContentCorrectAnswer
+                        correct.ContentCorrectAnswer,
+                        true
                     );
 
                     Console.WriteLine($"Z JSON: Pytanie {correct.QuestionNumber}, Litera: {correct.LetterCorrectAnswer}, Treść: {correct.ContentCorrectAnswer}");

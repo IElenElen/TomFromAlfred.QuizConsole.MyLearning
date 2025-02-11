@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
 {
+    // Pojedynczy wybór posiada: Id, literę, treść, oznaczoną aktywność
+
     public class Choice
     {
-     
         public int ChoiceId { get; set; }
         
         public char ChoiceLetter { get; set; }

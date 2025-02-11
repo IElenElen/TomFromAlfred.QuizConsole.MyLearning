@@ -12,6 +12,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
 {
+    // Oblane: / 2
     public class QuizIntegrationTests
     {
         private readonly QuizService _quizService;
@@ -43,6 +44,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
             _quizManager = new QuizManager(_quizService, _scoreService, _endService);
         }
 
+        // 1
         [Fact]
         public void ShouldLoadAndProcessQuizDataCorrectly_QuickIntegrationTest() // Za wolny
         {
@@ -123,6 +125,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
             Assert.Contains(loadedChoicesQ2, c => c.ChoiceLetter == 'B' && c.ChoiceContent == "Paris");
         }
 
+        // 2
         [Fact]
         public void ShouldHandleMultipleQuestionsAndAnswersCorrectly() // Za wolny
         {

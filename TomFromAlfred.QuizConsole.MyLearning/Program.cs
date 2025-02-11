@@ -22,6 +22,8 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
      Wyjście z quiz w każdym momencie. OK
 
+     Ustawiłam aktywność - pracuję na aktywnych danych.
+
      Budowa:
     
      Interfejs jaki? dla serwisu Crud 

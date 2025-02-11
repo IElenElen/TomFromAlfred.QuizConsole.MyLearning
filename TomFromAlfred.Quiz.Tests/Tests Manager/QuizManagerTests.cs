@@ -10,6 +10,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
 {
+    // Oblane: / 6
     public class QuizManagerTests
     {
         private readonly Mock<QuizService> _mockQuizService;
@@ -26,6 +27,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             _quizManager = new QuizManager(_mockQuizService.Object, _mockScoreService.Object, _mockEndService.Object);
         }
 
+        // 1
         [Fact]
         public void ConductQuiz_ShouldHandleUserAnsweringCorrectly() // Oblany
         {
@@ -50,6 +52,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             _mockEndService.Verify(e => e.EndQuiz(false), Times.Never); // Sprawdzam, czy quiz się nie kończy, jeśli użytkownik odpowiedział
         }
 
+        // 2
         [Fact]
         public void ConductQuiz_ShouldHandleNoQuestionsAvailable() // Oblany
         {
@@ -65,6 +68,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             // Mogę również zweryfikować, czy użytkownik otrzymał odpowiedni komunikat
         }
 
+        // 3
         [Fact] //Oblany
         public void AddQuestion_ShouldNotAddQuestion_WhenCorrectAnswerIsInvalid() // Inaczej sformułować, bo po prostu nie przechodzę do kolejnego pytania
         {
@@ -86,6 +90,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             _mockQuizService.Verify(q => q.AddQuestionToJson(It.IsAny<Question>()), Times.Never); // Upewniam się, że pytanie nie zostało dodane
         }
 
+        // 4
         [Fact]
         public void ConductQuiz_ShouldNotIncrementScore_WhenAnswerIsIncorrect() // Oblany
         {
@@ -109,6 +114,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             _mockScoreService.Verify(s => s.IncrementScore(), Times.Never); // Sprawdzam, czy punkty nie zostały inkrementowane
         }
 
+        // 5
         [Fact]
         public void ConductQuiz_ShouldSkipQuestion_WhenUserSelectsOption2() // Oblany
         {
@@ -135,6 +141,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             _mockScoreService.Verify(s => s.IncrementScore(), Times.Never); // Upewniam się, że punkty nie zostały inkrementowane
         }
 
+        // 6
         [Fact]
         public void ConductQuiz_ShouldEndQuiz_WhenUserInputsK() // Oblany
         {
@@ -160,7 +167,5 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             // Assert
             _mockEndService.Verify(e => e.EndQuiz(true), Times.Once); // Sprawdzam, czy metoda EndQuiz została wywołana, gdy użytkownik zakończył quiz
         }
-
-
     }
 }

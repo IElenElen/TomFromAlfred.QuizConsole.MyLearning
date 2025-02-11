@@ -21,10 +21,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
         public void ConductQuiz()
         {
             Console.WriteLine();
-            Console.WriteLine("Witamy w Quiz. Jedna odpowiedź tylko poprawna. Do wyboru: A, B lub C.");
+            Console.WriteLine("Witamy w Quiz. Sprawdź, jak dobrze znasz Tomka Wilmowskiego i jego niezwykłe przygody :-).");
+            Console.WriteLine("Każdy zestaw ma tylko jedną poprawną odpowiedź. Do wyboru: A, B lub C.");
             Console.WriteLine("Jeżeli chcesz zakończyć quiz nacisnij K.");
             Console.WriteLine();
-            Console.WriteLine("Jeśli przejdziesz cały Quiz, otrzymasz informację o ilości i procencie uzyskanych punktów.");
+            Console.WriteLine("Jeśli przejdziesz cały Quiz (możesz pytanie pominąć), otrzymasz informację o ilości i procencie uzyskanych punktów.");
             Console.WriteLine();
             Console.WriteLine("Opcje: 1 - Odpowiedź na pytanie, 2 - Przejście do następnego pytania.");
             Console.WriteLine();
