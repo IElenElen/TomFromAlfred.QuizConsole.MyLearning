@@ -20,7 +20,6 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
     // Oblane: 36 / 36
     // Wybieram zamianę metod w klasie na wirtualne
 
-    // Przetestować kolejne metody
     public class QuizServiceTests
     {
         private readonly Mock<QuestionService> _mockQuestionService;

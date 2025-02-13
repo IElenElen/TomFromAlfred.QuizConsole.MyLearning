@@ -268,6 +268,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                     );
 
                     Console.WriteLine($"Z JSON: Pytanie {correct.QuestionNumber}, Litera: {correct.LetterCorrectAnswer}, Treść: {correct.ContentCorrectAnswer}");
+
                     // Dodanie do słownika dla JSON
                     if (!_correctAnswers.ContainsKey(questionId))
                     {

@@ -9,46 +9,76 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 {
     /*
-     Tu zamiast inicjalizacji dodaję dane w nowej prywatnej liście do odczytu.
+     Tu zamiast inicjalizacji dodaję dane w nowym prywatnym słowniku do odczytu.
      */
     public class CorrectAnswerService : ICrudService<CorrectAnswer>
+
     {
-        private readonly List<CorrectAnswer> _correctAnswers = new List<CorrectAnswer>
+        private readonly ChoiceService _choiceService;
+
+        private readonly Dictionary<int, CorrectAnswer> _correctAnswers = new Dictionary<int, CorrectAnswer>
         {
-            new CorrectAnswer(11, "Jesień", true),           // Poprawna odpowiedź dla pytania 11
-            new CorrectAnswer(12, "Warszawa", true),
-            new CorrectAnswer(13, "Mount Everest", true)
+            { 11, new CorrectAnswer(11, "Jesień", true) },
+            { 12, new CorrectAnswer(12, "Warszawa", true) },
+            { 13, new CorrectAnswer(13, "Mount Everest", true) }
         };
 
-        public void Add(CorrectAnswer entity)
+        public void Add(CorrectAnswer correctAnswer)
         {
-            _correctAnswers.Add(entity);
-            Console.WriteLine($"Dodano poprawną odpowiedź: {entity.CorrectAnswerId}");
+            if (correctAnswer == null)
+            {
+                Console.WriteLine("Nie można dodać pustej odpowiedzi.");
+                return;
+            }
+
+            if (_correctAnswers.ContainsKey(correctAnswer.CorrectAnswerId))
+            {
+                Console.WriteLine($"Odpowiedź dla pytania {correctAnswer.CorrectAnswerId} już istnieje.");
+                return;
+            }
+
+            _correctAnswers[correctAnswer.CorrectAnswerId] = correctAnswer;
         }
 
         public void Delete(CorrectAnswer entity)
         {
-            _correctAnswers.Remove(entity);
+            if (entity == null || !_correctAnswers.ContainsKey(entity.CorrectAnswerId))
+            {
+                Console.WriteLine($"Nie można usunąć odpowiedzi, bo nie istnieje.");
+                return;
+            }
+
+            _correctAnswers.Remove(entity.CorrectAnswerId);
             Console.WriteLine($"Usunięto poprawną odpowiedź: {entity.CorrectAnswerId}");
+        }
+
+        public string FindCorrectAnswerContent(int questionId, char letter)
+        {
+            var choice = _choiceService.GetChoicesForQuestion(questionId)
+                                       .FirstOrDefault(c => c.ChoiceLetter == letter);
+            return choice?.ChoiceContent ?? "Nieznana odpowiedź";
         }
 
         public IEnumerable<CorrectAnswer> GetAllActive()
         {
-            return _correctAnswers;
+            return _correctAnswers.Values.Where(answer => answer.IsActive);
         }
 
         public void Update(CorrectAnswer entity)
         {
-            var correctAnswer = _correctAnswers.FirstOrDefault(a => a.CorrectAnswerId == entity.CorrectAnswerId);
-            if (correctAnswer != null)
+            if (entity == null || !_correctAnswers.ContainsKey(entity.CorrectAnswerId))
             {
-                correctAnswer.CorrectAnswerContent = entity.CorrectAnswerContent;
-                Console.WriteLine($"Zaktualizowano poprawną odpowiedź o Id {entity.CorrectAnswerId}");
+                Console.WriteLine($"Nie można zaktualizować odpowiedzi {entity?.CorrectAnswerId ?? 0}, bo nie istnieje.");
+                return;
             }
+
+            _correctAnswers[entity.CorrectAnswerId] = entity;
+            Console.WriteLine($"Zaktualizowano poprawną odpowiedź o Id {entity.CorrectAnswerId}");
         }
-        public CorrectAnswer GetCorrectAnswerForQuestion(int questionId) // Poprawna odpowiedź dla pytania
+
+        public CorrectAnswer GetCorrectAnswerForQuestion(int questionId)
         {
-            return _correctAnswers.FirstOrDefault(ca => ca.CorrectAnswerId == questionId);
+            return _correctAnswers.TryGetValue(questionId, out var correctAnswer) ? correctAnswer : null;
         }
     }
 }

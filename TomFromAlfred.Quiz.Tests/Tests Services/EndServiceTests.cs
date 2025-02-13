@@ -23,7 +23,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         [Theory] // Zaliczony
         [InlineData("k")] // mała litera
         [InlineData("K")] // wielka litera
-        public void ShouldEnd_ShouldReturnTrue_WhenInputIsK(string input) // System kończy Quiz, jesli użytkownik wpisze "k"
+        public void ShouldEnd_ShouldReturnTrue_WhenInputIsK(string input) // Kończy Quiz: jeśli użytkownik wpisze "k"
         {
             // Act
             bool result = _endService.ShouldEnd(input);
@@ -34,7 +34,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 2
         [Fact] // Oblany
-        public void ShouldEnd_ShouldReturnFalse_WhenInputHasSpaces() // Jeśli system dostaje spacje - czeka na właściwy sygnał od użytkownika
+        public void ShouldEnd_ShouldReturnFalse_WhenInputHasSpaces() // Kończy: jeśli system dostaje spacje - czeka na właściwy sygnał
         {
             // Act
             bool result = _endService.ShouldEnd("  k  ");
@@ -45,7 +45,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 3
         [Fact] // Zaliczony
-        public void ShouldEnd_ShouldReturnFalse_WhenInputIsNotK() // Jeśli użytkownik nie wprowadzi K, system nie kończy Quizu
+        public void ShouldEnd_ShouldReturnFalse_WhenInputIsNotK() // Kończy: NIE. Jeśli użytkownik NIE wprowadzi K, system nie kończy Quizu
         {
             // Act
             bool result = _endService.ShouldEnd("nie");
@@ -56,7 +56,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 4
         [Fact] // Zaliczony
-        public void ShouldEnd_ShouldReturnFalse_WhenInputIsNull() // Brak danych od użytkownika, system czeka na interakcję użytkownika
+        public void ShouldEnd_ShouldReturnFalse_WhenInputIsNull() // Kończy: brak danych od użytkownika, system czeka na interakcję 
         {
             // Act
             bool result = _endService.ShouldEnd(null);
@@ -67,7 +67,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 5
         [Fact] // Test przerwany ???
-        public void EndQuiz_ShouldDisplayCompletionMessage_WhenQuizIsCompleted() // Po ukończonym quizie daje oczekiwaną punktację
+        public void EndQuiz_ShouldDisplayCompletionMessage_WhenQuizIsCompleted() // Kończy: po ukończonym Quizie daje oczekiwaną punktację
         {
             // Arrange
             var stringWriter = new StringWriter();
@@ -92,7 +92,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 6
         [Fact] // Do analizy, test przerwany ???
-        public void EndQuiz_ShouldResetScore_WhenQuizIsNotCompleted() // Reset punktacji, jesli quiz nie zakończony
+        public void EndQuiz_ShouldResetScore_WhenQuizIsNotCompleted() // Kończy: reset punktacji, jesli Quiz nie jest ukończony
         {
             // Arrange
             var stringWriter = new StringWriter();

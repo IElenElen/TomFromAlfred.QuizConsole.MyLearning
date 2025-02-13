@@ -30,39 +30,53 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
         }
 
         // Dodanie nowego wyboru
-        public virtual void Add(Choice entity)
+        public void Add(Choice choice)
         {
-            if (_choices.Any(c => c.ChoiceId == entity.ChoiceId && c.ChoiceLetter == entity.ChoiceLetter))
+            if (choice == null)
             {
-                Console.WriteLine($"Wybór o Id {entity.ChoiceId} i literze {entity.ChoiceLetter} już istnieje.");
+                Console.WriteLine("Nie można dodać pustej opcji.");
                 return;
             }
 
-            _choices.Add(entity);
-            Console.WriteLine($"Dodano wybór: Id {entity.ChoiceId}, opcja {entity.ChoiceLetter}.");
+            if (_choices.Any(c => c.ChoiceId == choice.ChoiceId && c.ChoiceLetter == choice.ChoiceLetter))
+            {
+                Console.WriteLine($"Opcja {choice.ChoiceLetter} dla Id {choice.ChoiceId} już istnieje.");
+                return;
+            }
+
+            _choices.Add(choice);
         }
 
         // Usunięcie wyboru
-        public void Delete(Choice entity)
+        public void Delete(Choice choice)
         {
-            var choiceToRemove = _choices.FirstOrDefault(c => c.ChoiceId == entity.ChoiceId && c.ChoiceLetter == entity.ChoiceLetter);
-            if (choiceToRemove != null)
+            if (choice == null)
             {
-                _choices.Remove(choiceToRemove);
-                Console.WriteLine($"Usunięto wybór: Id {entity.ChoiceId}, Opcja {entity.ChoiceLetter}.");
+                Console.WriteLine("Nie można usunąć pustego wyboru.");
+                return;
             }
-            else
+
+            if (!_choices.Contains(choice))
             {
-                Console.WriteLine($"Wybór o Id {entity.ChoiceId} i literze {entity.ChoiceLetter} nie istnieje.");
+                Console.WriteLine($"Opcja {choice.ChoiceLetter} dla Id {choice.ChoiceId} nie istnieje.");
+                return;
             }
+
+            _choices.Remove(choice);
         }
 
         // Pobranie wszystkich wyborów
-        public IEnumerable<Choice> GetAllActive()
+        public IEnumerable<Choice> GetAllActive() 
         {
-            // Zwracam tylko aktywne wybory (IsActive = true)
+            Console.WriteLine($"Liczba wyborów w _choices: {_choices?.Count ?? 0}");
+
+            foreach (var choice in _choices ?? new List<Choice>())
+            {
+                Console.WriteLine($"ChoiceId: {choice.ChoiceId}, IsActive: {choice.IsActive}");
+            }
+
             return (_choices ?? new List<Choice>())
-                   .Where(choice => choice.IsActive)  // Filtruję tylko aktywne
+                   .Where(choice => choice.IsActive) // Tylko aktywne
                    .AsEnumerable();
         }
 
@@ -71,24 +85,30 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             return _choices.Where(c => c.ChoiceId == questionId);
         }
 
-        // Aktualizacja istniejącego wyboru - zmiana treści wyboru
-        public void Update(Choice entity)
+        public void Clear()
         {
-            var existingChoice = _choices.FirstOrDefault(c => c.ChoiceId == entity.ChoiceId);
+            _choices.Clear();
+        }
 
-            if (existingChoice == null)
+        // Aktualizacja istniejącego wyboru - zmiana treści wyboru
+        public void Update(Choice updatedChoice)
+        {
+            if (updatedChoice == null)
             {
-                Console.WriteLine($"Nie znaleziono wyboru do zaktualizowania: Id {entity.ChoiceId}.");
+                Console.WriteLine("Nie można zaktualizować pustego wyboru.");
                 return;
             }
 
-            Console.WriteLine($"Przed: Id {existingChoice.ChoiceId}, IsActive: {existingChoice.IsActive}");
+            var existingChoice = _choices.FirstOrDefault(c => c.ChoiceId == updatedChoice.ChoiceId && c.ChoiceLetter == 'A');
+            if (existingChoice == null)
+            {
+                Console.WriteLine($"Nie znaleziono wyboru do aktualizacji: Id {updatedChoice.ChoiceId}");
+                return;
+            }
 
-            // Aktualizuję treść wyboru
-            existingChoice.ChoiceContent = entity.ChoiceContent;
-
-            Console.WriteLine($"Po: Id {existingChoice.ChoiceId}, IsActive: {existingChoice.IsActive}");
-            Console.WriteLine($"Zaktualizowano wybór: Id {entity.ChoiceId}, opcja {entity.ChoiceLetter}, treść {entity.ChoiceContent}.");
+            // Aktualizuję wybór
+            existingChoice.ChoiceLetter = updatedChoice.ChoiceLetter;
+            existingChoice.ChoiceContent = updatedChoice.ChoiceContent;
         }
     }
 }

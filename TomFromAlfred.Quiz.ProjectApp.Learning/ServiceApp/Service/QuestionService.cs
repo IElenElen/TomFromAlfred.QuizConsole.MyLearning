@@ -33,14 +33,31 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
         public void Add(Question entity)
         {
+            if (entity == null)
+            {
+                Console.WriteLine("Nie można dodać pustego pytania.");
+                return;
+            }
+
             _questions.Add(entity);
-            Console.WriteLine($"Dodano pytanie: {entity.QuestionId}");
         }
 
         public void Delete(Question entity)
         {
-            _questions.Remove(entity);
-            Console.WriteLine($"Usunięto pytanie: {entity.QuestionId}");
+            if (entity == null)
+            {
+                Console.WriteLine("Nie można usunąć pustego pytania.");
+                return;
+            }
+
+            if (_questions.Remove(entity))
+            {
+                Console.WriteLine($"Usunięto pytanie: {entity.QuestionId}");
+            }
+            else
+            {
+                Console.WriteLine($"Nie znaleziono pytania o Id: {entity.QuestionId}, nie można usunąć.");
+            }
         }
 
         public virtual IEnumerable<Question> GetAllActive() // Tej metody nie testuję, ona zawiera listę pytań

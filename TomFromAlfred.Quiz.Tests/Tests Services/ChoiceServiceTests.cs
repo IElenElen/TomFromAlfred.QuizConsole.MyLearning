@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Ilość oblanych: 4 / 12
+    // Ilość oblanych: 0 / 12
 
     public class ChoiceServiceTests
     {
@@ -22,12 +22,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _output = output; 
 
             _output.WriteLine($"_choiceService is null: {_choiceService == null}");
+
+            _choiceService.Clear(); // Metoda do czyszczenia listy
         }
 
         // 1 
         [Fact] // Zaliczony
 
-        public void Add_ShouldAddNewChoice_WhenChoiceDoesNotExist() // Ma dodać nowy zestaw wyboru
+        public void Add_ShouldAddNewChoice_WhenChoiceDoesNotExist() // Dodaje: ma dodać nowy zestaw wyboru, jeśli taki zestaw nie istnieje
         {
             //Arrange
             var newChoice0 = new Choice(22, 'A', "Opcja testowa A");
@@ -46,23 +48,29 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 2
-        [Fact] // Oblany, ma problem z liczeniem zestawów!!!
-        public void Add_ShouldNotAdd_WhenChoiceExist() // Ma nie dodawać już istniejący wybór
+        [Fact] // Zaliczony
+        public void Add_ShouldNotAdd_WhenChoiceExist() // Dodaje: nic nie dodaje, jeśli Choice istnieje
         {
-            //Arrange
-            var existingChoice = new Choice(8, 'A', "Opcja A");
+            // Arrange
+            _choiceService.Clear(); // Czyszczenie dane przed testem
 
-            //Act
+            var existingChoice = new Choice(25, 'A', "Opcja A");
+            _choiceService.Add(existingChoice); // Dodaję pierwszy raz
+
+            var countBefore = _choiceService.GetAllActive().Count();
+
+            // Act - Próbuję dodać tę samą opcję ponownie
             _choiceService.Add(existingChoice);
-            var allChoices = _choiceService.GetAllActive();
 
-            //Assert
-            Assert.Single(allChoices);
+            var countAfter = _choiceService.GetAllActive().Count();
+
+            // Assert - Liczba elementów nie powinna się zmienić
+            Assert.Equal(countBefore, countAfter);
         }
 
         // 3
         [Fact] // Zaliczony
-        public void Delete_ShouldRemoveExistingChoice() // Usuwa istniejący zestaw wyboru, Id
+        public void Delete_ShouldRemoveExistingChoice() // Usuwa: istniejący zestaw wyboru, Id
         {
             //Arrange
             var existingChoiceToDelete = new Choice(22, 'A', "Opcja A");
@@ -77,39 +85,49 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 4
-        [Fact] // Oblany, nadal widzi 9 zestawów, a jest aktywnych tylko 8 !!!
-        public void Delete_ShouldNotRemoveChoice_WhenChoiceDoesNotExist() // Nic nie usuwa, jeśli zestaw wyborów nie istnieje
+        [Fact] // Zaliczony
+        public void Delete_ShouldNotRemoveChoice_WhenChoiceDoesNotExist() // Usuwa: nic nie usuwa, jeśli zestaw wyborów nie istnieje
         {
+            // Arrange
+            var initialCount = _choiceService.GetAllActive().Count(); // Zapisuję liczbę aktywnych elementów przed testem
+
             var noExistingChoiceToDelete = new Choice(89, 'A', "Opcja nieistniejąca");
 
+            // Act
             _choiceService.Delete(noExistingChoiceToDelete);
             var allChoices = _choiceService.GetAllActive();
 
-            Assert.Equal(8, allChoices.Count()); // Nic w liście nie zmieniam
+            // Assert
+            Assert.Equal(initialCount, allChoices.Count()); // Liczba elementów powinna się nie zmienić
         }
 
 
         // 5
-        [Fact] // Oblany
-        public void GetAll_ShouldReturnAllActiveChoices() // Pobiera wszystkie aktywne wybory
+        [Fact] // Zaliczony
+        public void GetAll_ShouldReturnAllActiveChoices() // Pobiera: wszystkie aktywne wybory
         {
-            // Act: Pobieram wszystkie aktywne wybory
+            // Arrange - Wypełniam listę aktywnymi wyborami
+            _choiceService.Clear(); 
+
+            _choiceService.Add(new Choice(40, 'A', "Jesień") { IsActive = true });
+            _choiceService.Add(new Choice(40, 'B', "Zima") { IsActive = true });
+            _choiceService.Add(new Choice(40, 'C', "Wiosna") { IsActive = true });
+            _choiceService.Add(new Choice(41, 'A', "Kraków") { IsActive = true });
+            _choiceService.Add(new Choice(41, 'B', "Warszawa") { IsActive = true });
+            _choiceService.Add(new Choice(41, 'C', "Poznań") { IsActive = true });
+            _choiceService.Add(new Choice(42, 'A', "Jabłko") { IsActive = true });
+            _choiceService.Add(new Choice(42, 'B', "Gruszka") { IsActive = true });
+
+            // Act
             var activeChoices = _choiceService.GetAllActive();
 
-            // Debugging: Wypisanie danych w kolekcji przed testem
-            Console.WriteLine("Active Choices in test:");
-            foreach (var choice in activeChoices)
-            {
-                Console.WriteLine($"ChoiceId: {choice.ChoiceId}, ChoiceLetter: {choice.ChoiceLetter}, ChoiceContent: {choice.ChoiceContent}, IsActive: {choice.IsActive}");
-            }
-
-            // Assert: Oczekuję, że będzie dokładnie 8 aktywnych wyborów
-            Assert.Equal(8, activeChoices.Count());  
+            // Assert
+            Assert.Equal(8, activeChoices.Count());
         }
 
         // 6
         [Fact] // Zaliczony
-        public void GetChoicesForQuestion_ShouldReturnFilteredChoices_WhenQuestionIdExists() // Dodaje wybory dla pytania o istniejacym Id
+        public void GetChoicesForQuestion_ShouldReturnFilteredChoices_WhenQuestionIdExists() // Podaje: wybory dla pytania o istniejacym Id
         {
             var choicesForQuestion = _choiceService.GetChoicesForQuestion(11);
             Assert.Equal(3, choicesForQuestion.Count()); // Trzy wybory dla pytania nr 11
@@ -117,7 +135,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 7
         [Fact] // Zaliczony
-        public void GetChoicesForQuestion_ShouldReturnEmpty_WhenQuestionIdDoesNotExist() // Nie dodaje wyborów, bo pytanie o danym Id nie istnieje
+        public void GetChoicesForQuestion_ShouldReturnEmpty_WhenQuestionIdDoesNotExist() // Podaje: nie podaje wyborów, bo pytanie o danym Id nie istnieje
         {
             var choicesForQuestion = _choiceService.GetChoicesForQuestion(100);
             Assert.Empty(choicesForQuestion); // Nie ma wyboru dla pytania 100
@@ -125,7 +143,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 8
         [Fact] // Zaliczony
-        public void Update_ShouldUpdateChoiceContent_WhenChoiceExists() // Możliwa zmiana treści
+        public void Update_ShouldUpdateChoiceContent_WhenChoiceExists() // Update: zmienia treść wyboru, jeśli wybór istnieje
         {
             // Arrange: Tworzę wybór do zaktualizowania 
             var existingChoiceToUpdateContent = new Choice(11, 'A', "Jesień");
@@ -140,40 +158,40 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 9
-        [Fact] // Oblany // Czy on nie będzie integracyjny?
-        public void Update_ShouldUpdateChoiceLetter_WhenChoiceExists() // Możliwa zmiana litery wyboru
+        [Fact] // Zaliczony
+        public void Update_ShouldUpdateChoiceLetter_WhenChoiceExists() // Update: aktualizuje literę wyboru, jeśli wybór istnieje
         {
-            // Arrange: Tworzę wybór do zaktualizowania (zmiana litery)
-            var existingChoiceWithLetterToUpdate = new Choice(12, 'A', "Kraków");
+            // Arrange - Dodaję wybór do kolekcji przed testem
+            var existingChoice = new Choice(12, 'A', "Kraków") { IsActive = true };
+            _choiceService.Add(existingChoice);
 
-            // Zmieniam literę i treść
-            existingChoiceWithLetterToUpdate.ChoiceLetter = 'B';
-            //existingChoiceWithLetterToUpdate.ChoiceContent = "Kraków z literą B";
+            // Tworzę obiekt do aktualizacji
+            var updatedChoice = new Choice(12, 'B', "Kraków z literą B") { IsActive = true };
 
-            // Act: Aktualizuję wybór (zmiana litery)
-            _choiceService.Update(existingChoiceWithLetterToUpdate);
+            // Act - Aktualizuję wybór
+            _choiceService.Update(updatedChoice);
 
-            // Debugging: Sprawdzam dane przed asercjami
-            var updatedChoiceWithLetter = _choiceService.GetChoicesForQuestion(12); // ???
-            Console.WriteLine("Updated Choice: ");
-            foreach (var choice in updatedChoiceWithLetter)
+            // Debugging - Sprawdzam, co zwraca GetChoicesForQuestion
+            var updatedChoices = _choiceService.GetChoicesForQuestion(12);
+            Console.WriteLine("Updated Choices:");
+            foreach (var choice in updatedChoices)
             {
                 Console.WriteLine($"ChoiceLetter: {choice.ChoiceLetter}, ChoiceContent: {choice.ChoiceContent}");
             }
 
-            // Assert: Sprawdzam, czy litera została zaktualizowana oraz treść
-            var updatedChoiceWithNewLetter = updatedChoiceWithLetter.FirstOrDefault(c => c.ChoiceLetter == 'B');
-            Assert.NotNull(updatedChoiceWithNewLetter); // Upewnij się, że wybór z literą 'B' istnieje
+            // Assert - Sprawdzam, czy zmiana się powiodła
+            var updatedChoiceWithNewLetter = updatedChoices.FirstOrDefault(c => c.ChoiceLetter == 'B');
+            Assert.NotNull(updatedChoiceWithNewLetter);
             Assert.Equal("Kraków z literą B", updatedChoiceWithNewLetter.ChoiceContent);
 
-            // Dodatkowo: Sprawdzam, czy stary wybór z literą 'A' został usunięty
-            var oldChoiceWithOldLetter = updatedChoiceWithLetter.FirstOrDefault(c => c.ChoiceLetter == 'A');
-            Assert.Null(oldChoiceWithOldLetter);  // Stary wybór z literą 'A' powinien zostać usunięty
+            // Sprawdzam, czy stary wybór z literą 'A' został usunięty
+            var oldChoice = updatedChoices.FirstOrDefault(c => c.ChoiceLetter == 'A');
+            Assert.Null(oldChoice);
         }
 
         // 10
         [Fact] // Zaliczony :-) nareszcie
-        public void Update_ShouldNotUpdate_WhenChoiceDoesNotExist() // Brak zmiany, jeśli dany wybór nie istnieje. Sprawdzam po Id wyboru.
+        public void Update_ShouldNotUpdate_WhenChoiceDoesNotExist() // Aktualizacja: brak zmiany, jeśli dany wybór nie istnieje. Sprawdzam po Id wyboru.
         {
             // Arrange
             var existingChoiceToUpdate = new Choice(99, 'A', "Nieistniejąca opcja");
@@ -202,7 +220,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 11
         [Fact] // Zaliczony
-        public void Update_ShouldThrowArgumentException_WhenChoiceHasInvalidSign() // Wyrzuca wyjątek, jeśli użytkownik podaa niepoprawny znak
+        public void Update_ShouldThrowArgumentException_WhenChoiceHasInvalidSign() // Aktualizuje: wyrzuca wyjątek, jeśli użytkownik podaa niepoprawny znak
         {
             // Arrange: Lista znaków, które są niepoprawne (litera spoza zakresu, liczba, znak specjalny)
             var invalidSigns = new[] { 'Z', '1', '$' };
@@ -219,7 +237,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 12
         [Fact] // Zaliczony
-        public void Update_ShouldNotThrow_WhenChoiceHasValidLetter() // Przyjmuje wybór, jeśli użytkownik daje prawidłową literę z zakresu A-C
+        public void Update_ShouldNotThrow_WhenChoiceHasValidLetter() // Aktualizuje: przyjmuje wybór, jeśli system otrzymuje prawidłową literę z zakresu A-C
         {
             // Arrange
             var validChoices = new List<Choice>

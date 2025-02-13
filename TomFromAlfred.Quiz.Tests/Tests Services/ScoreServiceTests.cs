@@ -15,13 +15,11 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
     {
         private readonly ITestOutputHelper _output;
         private ScoreService _scoreService; // Testuję tę klasę
-        //private int _defaultQuestions; // Potrzebuję???
 
         public ScoreServiceTests(ITestOutputHelper output) 
         {
             _output = output;
             _scoreService = new ScoreService(); // Nowy obiekt na potrzeby testu
-            //_defaultQuestions = 10; // Przykładowa liczba, można zmienić tutaj wartość - czy potrzebuję???
         }
 
         // 1
@@ -256,7 +254,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 16
-        [Fact] // Zaliczone
+        [Fact] // Zaliczony
         public void GetPercentage_ShouldReturn0_WhenNoAnswersAreCorrect() // Podaje procenty: zwraca 0, bo nie było poprawnej odpowiedzi od użytkownika lub nastąpił reset
         {
             // Arrange
