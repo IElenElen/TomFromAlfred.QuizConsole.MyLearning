@@ -9,16 +9,17 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 {
     public class JsonCommonClass // Klasa dla json = schemat działania plików
     {
-        public void CreateDefaultFile<T>(string filePath, T defaultData)
+        public virtual void CreateDefaultFile<T>(string filePath, T defaultData)
         {
-            if (!File.Exists(filePath))
+            try
+            {
+                ReadFromFile<T>(filePath);
+                Console.WriteLine($"Plik {filePath} już istnieje. Tworzenie domyślnego pliku pominięte.");
+            }
+            catch (FileNotFoundException)
             {
                 WriteToFile(filePath, defaultData);
                 Console.WriteLine($"Stworzono plik {filePath} z domyślnymi danymi.");
-            }
-            else
-            {
-                Console.WriteLine($"Plik {filePath} już istnieje. Tworzenie domyślnego pliku pominięte.");
             }
         }
 
@@ -45,7 +46,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
         }
 
         // Zapis danych do pliku JSON
-        public void WriteToFile<T>(string filePath, T data)
+        public virtual void WriteToFile<T>(string filePath, T data)
         {
             string json = JsonConvert.SerializeObject(data, Formatting.Indented);
             File.WriteAllText(filePath, json);

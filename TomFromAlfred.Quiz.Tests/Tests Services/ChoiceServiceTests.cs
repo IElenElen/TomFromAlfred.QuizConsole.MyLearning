@@ -21,15 +21,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _choiceService = new ChoiceService();
             _output = output; 
 
-            _output.WriteLine($"_choiceService is null: {_choiceService == null}");
-
             _choiceService.Clear(); // Metoda do czyszczenia listy
         }
 
         // 1 
         [Fact] // Zaliczony
 
-        public void Add_ShouldAddNewChoice_WhenChoiceDoesNotExist() // Dodaje: ma dodać nowy zestaw wyboru, jeśli taki zestaw nie istnieje
+        public void Add_ShouldAddNewChoiceSet_WhenChoiceSetDoesNotExist() // Dodaje: ma dodać nowy zestaw wyboru, jeśli taki zestaw nie istnieje
         {
             //Arrange
             var newChoice0 = new Choice(22, 'A', "Opcja testowa A");
@@ -49,10 +47,10 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 2
         [Fact] // Zaliczony
-        public void Add_ShouldNotAdd_WhenChoiceExist() // Dodaje: nic nie dodaje, jeśli Choice istnieje
+        public void Add_ShouldNotAdd_WhenChoiceExist() // Dodaje: nic nie dodaje, jeśli wybór istnieje
         {
             // Arrange
-            _choiceService.Clear(); // Czyszczenie dane przed testem
+            _choiceService.Clear(); // Czyszczenie danych przed testem
 
             var existingChoice = new Choice(25, 'A', "Opcja A");
             _choiceService.Add(existingChoice); // Dodaję pierwszy raz
@@ -70,7 +68,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 3
         [Fact] // Zaliczony
-        public void Delete_ShouldRemoveExistingChoice() // Usuwa: istniejący zestaw wyboru, Id
+        public void Delete_ShouldRemoveExistingChoice() // Usuwa: istniejący wybóru, Id
         {
             //Arrange
             var existingChoiceToDelete = new Choice(22, 'A', "Opcja A");
@@ -86,7 +84,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 4
         [Fact] // Zaliczony
-        public void Delete_ShouldNotRemoveChoice_WhenChoiceDoesNotExist() // Usuwa: nic nie usuwa, jeśli zestaw wyborów nie istnieje
+        public void Delete_ShouldNotRemoveChoice_WhenChoiceDoesNotExist() // Usuwa: nic nie usuwa, jeśli wybór nie istnieje
         {
             // Arrange
             var initialCount = _choiceService.GetAllActive().Count(); // Zapisuję liczbę aktywnych elementów przed testem
@@ -127,15 +125,26 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 6
         [Fact] // Zaliczony
-        public void GetChoicesForQuestion_ShouldReturnFilteredChoices_WhenQuestionIdExists() // Podaje: wybory dla pytania o istniejacym Id
+        public void GetChoicesForQuestion_ShouldReturnFilteredChoiceSet_WhenQuestionIdExists() // Podaje: wybory dla pytania o istniejacym Id
         {
+            // Arrange - dodanie testowych danych
+            _choiceService.Add(new Choice(11, 'A', "A"));
+            _choiceService.Add(new Choice(11, 'B', "B"));
+            _choiceService.Add(new Choice(11, 'C', "C"));
+
             var choicesForQuestion = _choiceService.GetChoicesForQuestion(11);
+            _output.WriteLine($"Choices count: {choicesForQuestion.Count()}"); // Podgląd
+            foreach (var choice in choicesForQuestion)
+            {
+                Console.WriteLine($"Choice: {choice.ChoiceContent} (Id: {choice.ChoiceId})");
+            }
+
             Assert.Equal(3, choicesForQuestion.Count()); // Trzy wybory dla pytania nr 11
         }
 
         // 7
         [Fact] // Zaliczony
-        public void GetChoicesForQuestion_ShouldReturnEmpty_WhenQuestionIdDoesNotExist() // Podaje: nie podaje wyborów, bo pytanie o danym Id nie istnieje
+        public void GetChoicesForQuestion_ShouldReturnEmptySet_WhenQuestionIdDoesNotExist() // Podaje: nie podaje wyborów, bo pytanie o danym Id nie istnieje
         {
             var choicesForQuestion = _choiceService.GetChoicesForQuestion(100);
             Assert.Empty(choicesForQuestion); // Nie ma wyboru dla pytania 100
@@ -143,7 +152,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 8
         [Fact] // Zaliczony
-        public void Update_ShouldUpdateChoiceContent_WhenChoiceExists() // Update: zmienia treść wyboru, jeśli wybór istnieje
+        public void Update_ShouldUpdateChoiceContent_WhenChoiceExists() // Aktualizuje: zmienia treść wyboru, jeśli wybór istnieje
         {
             // Arrange: Tworzę wybór do zaktualizowania 
             var existingChoiceToUpdateContent = new Choice(11, 'A', "Jesień");
@@ -159,7 +168,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 9
         [Fact] // Zaliczony
-        public void Update_ShouldUpdateChoiceLetter_WhenChoiceExists() // Update: aktualizuje literę wyboru, jeśli wybór istnieje
+        public void Update_ShouldUpdateChoiceLetter_WhenChoiceExists() // Aktualizuje: aktualizuje literę wyboru, jeśli wybór istnieje
         {
             // Arrange - Dodaję wybór do kolekcji przed testem
             var existingChoice = new Choice(12, 'A', "Kraków") { IsActive = true };
@@ -220,7 +229,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 11
         [Fact] // Zaliczony
-        public void Update_ShouldThrowArgumentException_WhenChoiceHasInvalidSign() // Aktualizuje: wyrzuca wyjątek, jeśli użytkownik podaa niepoprawny znak
+        public void Update_ShouldThrowArgumentException_WhenChoiceHasInvalidSign() // Aktualizuje: wyrzuca wyjątek, jeśli użytkownik poda niepoprawny znak
         {
             // Arrange: Lista znaków, które są niepoprawne (litera spoza zakresu, liczba, znak specjalny)
             var invalidSigns = new[] { 'Z', '1', '$' };

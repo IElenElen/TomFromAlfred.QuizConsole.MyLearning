@@ -17,32 +17,21 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public bool ShouldEnd(string? userInput)
         {
-            return userInput?.Trim().ToLower() == "k";
+            return userInput == "k" || userInput == "K"; 
         }
 
-        public void EndQuiz(bool quizCompleted)
+        public string EndQuiz(bool quizCompleted)
         {
             if (quizCompleted)
             {
-                Console.WriteLine("Ukończyłeś / aś Quiz. Dziękujemy za udział!");
                 _scoreService.DisplayScoreSummary();
+                return "Ukończyłeś / aś Quiz. Dziękujemy za udział!";
             }
             else
             {
-                Console.WriteLine("Quiz został przerwany. Brak punktów.");
                 _scoreService.ResetScore();
+                return "Quiz został przerwany. Brak punktów.";
             }
-            // Zastąpienie Exit(0) metodą, która nic nie robi 
-            // Można tutaj użyć no-op metody:
-            NoOpMethod();
-
-            // Natychmiastowe zakończenie aplikacji
-            //Environment.Exit(0);
-        }
-
-        private void NoOpMethod()
-        {
-            // Pusta metoda, która nie robi nic
         }
     }
 }

@@ -7,7 +7,7 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Oblane: 1, przerwane: 2 = do analizy / 6
+    // Oblane: 0 / 4
      
     public class EndServiceTests
     {
@@ -33,86 +33,40 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 2
-        [Fact] // Oblany
-        public void ShouldEnd_ShouldReturnFalse_WhenInputHasSpaces() // Kończy: jeśli system dostaje spacje - czeka na właściwy sygnał
+        [Theory] // Zaliczony
+        [InlineData("  k  ", false)] 
+        [InlineData("  K  ", false)] 
+        [InlineData(" ", false)]  
+        [InlineData("", false)]   
+        public void ShouldEnd_ShouldReturnExpectedResult(string input, bool expected) // Kończy: NIE kończy, jeśli widzi inne zachowania niż wprowadzenie k
         {
             // Act
-            bool result = _endService.ShouldEnd("  k  ");
+            bool result = _endService.ShouldEnd(input);
 
             // Assert
-            Assert.False(result);
+            Assert.Equal(expected, result);
         }
 
         // 3
         [Fact] // Zaliczony
-        public void ShouldEnd_ShouldReturnFalse_WhenInputIsNotK() // Kończy: NIE. Jeśli użytkownik NIE wprowadzi K, system nie kończy Quizu
+        public void EndQuiz_ShouldReturnCompletionMessage_WhenQuizIsCompleted() // Kończy: zwraca info o uzyskanej punktacji, jeśli Quiz ukończony
         {
             // Act
-            bool result = _endService.ShouldEnd("nie");
+            string result = _endService.EndQuiz(true);
 
             // Assert
-            Assert.False(result);
+            Assert.Equal("Ukończyłeś / aś Quiz. Dziękujemy za udział!", result);
         }
 
         // 4
         [Fact] // Zaliczony
-        public void ShouldEnd_ShouldReturnFalse_WhenInputIsNull() // Kończy: brak danych od użytkownika, system czeka na interakcję 
-        {
-            // Act
-            bool result = _endService.ShouldEnd(null);
-
-            // Assert
-            Assert.False(result);
-        }
-
-        // 5
-        [Fact] // Test przerwany ???
-        public void EndQuiz_ShouldDisplayCompletionMessage_WhenQuizIsCompleted() // Kończy: po ukończonym Quizie daje oczekiwaną punktację
-        {
-            // Arrange
-            var stringWriter = new StringWriter();
-            Console.SetOut(stringWriter); // Ustawiam przechwytywanie wyjścia konsoli
-
-            // Zastępuję Environment.Exit(0) metodą no-op (która nic nie robi)
-            var originalExitMethod = typeof(Environment).GetMethod("Exit", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-            var noOpExit = new Action<int>((exitCode) => { /* Nothing */ });
-            originalExitMethod.Invoke(null, new object[] { 0 }); // Zastępuję metodę
-
-            // Act
-            try
-            {
-                _endService.EndQuiz(true); // Wykonaj metodę
-            }
-            catch (Exception) { /* Ignoruj wyjątek */ }
-
-            // Assert
-            var output = stringWriter.ToString();
-            Assert.Contains("Ukończyłeś / aś Quiz. Dziękujemy za udział!", output); // Oczekiwany tekst
-        }
-
-        // 6
-        [Fact] // Do analizy, test przerwany ???
         public void EndQuiz_ShouldResetScore_WhenQuizIsNotCompleted() // Kończy: reset punktacji, jesli Quiz nie jest ukończony
         {
-            // Arrange
-            var stringWriter = new StringWriter();
-            Console.SetOut(stringWriter);
-
-            // Zastępuję Environment.Exit(0) metodą no-op
-            var originalExitMethod = typeof(Environment).GetMethod("Exit", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-            var noOpExit = new Action<int>((exitCode) => { /* Nothing */ });
-            originalExitMethod.Invoke(null, new object[] { 0 }); // Zastępuję metodę
-
             // Act
-            try
-            {
-                _endService.EndQuiz(false); // Wykonaj metodę
-            }
-            catch (Exception) { }
+            string result = _endService.EndQuiz(false);
 
             // Assert
-            var output = stringWriter.ToString();
-            Assert.Contains("Quiz został przerwany. Brak punktów.", output); // Oczekiwany tekst
+            Assert.Equal("Quiz został przerwany. Brak punktów.", result);
         }
     }
 }

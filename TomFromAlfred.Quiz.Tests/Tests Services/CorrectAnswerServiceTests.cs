@@ -52,7 +52,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 3 
         [Fact] //Zaliczony
-        public void Delete_ShouldRemoveCorrectAnswer_WhenValidEntityIsGiven() // Usuwa: poprawną odpowiedź, jeśli podane jest poprawie entity
+        public void Delete_ShouldRemoveCorrectAnswer_WhenValidEntityIsGiven() // Usuwa: poprawną odpowiedź, jeśli poprawnie podane jest entity
         {
             // Arrange
             var existingCorrectAnswerToDelete = new CorrectAnswer(11, "Jesień", true);

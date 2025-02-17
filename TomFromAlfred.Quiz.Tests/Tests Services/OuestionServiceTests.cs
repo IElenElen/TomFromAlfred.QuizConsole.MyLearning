@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Oblane: 1 / 11
+    // Oblane: 0 / 11
 
     public class OuestionServiceTests
     {
@@ -63,7 +63,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             var allBefore = questionService.GetAllActive().ToList();
             _output.WriteLine($"Pytania przed testem: {allBefore.Count}");
 
-            var existingQuestion = new Question(1, "Pytanie testowe");
+            var existingQuestion = new Question(1, "Pytanie testowe x");
             questionService.Add(existingQuestion);
 
             var duplicateQuestion = new Question(1, "Pytanie testowe (duplikat)");
@@ -82,8 +82,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 4
-        [Fact] // Oblany ???
-        public void Add_ShouldNotAddNullQuestion() // Dodaje: nie dodaje, kiedy Question jest null
+        [Fact] // Zaliczony
+        public void Add_ShouldNotAddNullQuestion() // Dodaje: nie dodaje, kiedy pytanie jest null. Lista pytań bez null.
         {
             // Arrange
             var questionService = new QuestionService();
@@ -94,7 +94,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Assert
             var countAfter = questionService.GetAllActive().Count();
-            Assert.Empty(questionService.GetAllActive());  // Lista powinna pozostać pusta
+            Assert.Equal(countBefore, countAfter);  
         }
 
             // 5

@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Oblane: 1 / 18
+    // Oblane: 0 / 18
     public class ScoreServiceTests 
     {
         private readonly ITestOutputHelper _output;
@@ -41,7 +41,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Assert
             Assert.Equal(0, _scoreService.GetScore());
-            Assert.Equal(newActiveQuestionsTotal, _scoreService.GetTotalActiveQuestions());
+            Assert.Equal(newActiveQuestionsTotal, _scoreService.GetTotalActiveSets());
         }
 
         // 2 
@@ -79,7 +79,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void StartNewQuiz_ShouldHandleMaxQuizSets() // Uruchamia Quiz: zachowanie przy max ilości zestawów Quizu
         {
             _scoreService.StartNewQuiz(int.MaxValue);
-            Assert.Equal(int.MaxValue, _scoreService.GetTotalActiveQuestions());
+            Assert.Equal(int.MaxValue, _scoreService.GetTotalActiveSets());
         }
 
         // 6
@@ -98,7 +98,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Assert
             Assert.Equal(0, _scoreService.GetScore()); // Po każdym wywołaniu punkty powinny być zresetowane
-            Assert.Equal(thirdQuizActiveQuestions, _scoreService.GetTotalActiveQuestions()); // Liczba zestawów powinna wynosić 30 w trzecim wywołaniu
+            Assert.Equal(thirdQuizActiveQuestions, _scoreService.GetTotalActiveSets()); // Liczba zestawów powinna wynosić 30 w trzecim wywołaniu
         }
 
         // 7
@@ -146,7 +146,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _scoreService.IncrementScore(); // Kolejne zwiększenie wyniku
 
             // Assert
-            Assert.Equal(15, _scoreService.GetTotalActiveQuestions()); // Sprawdzam, czy liczba pytań pozostała niezmieniona
+            Assert.Equal(15, _scoreService.GetTotalActiveSets()); // Sprawdzam, czy liczba pytań pozostała niezmieniona
         }
 
         // 10
@@ -209,7 +209,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         } 
 
         // 14
-        [Fact] // Oblany - może problem z instancją?
+        [Fact] // Zaliczony
         public void ResetScore_ShouldSetScoreToZero_AfterMultipleIncrements() // Podaje wynik: zwraca 0, po kilku odpowiedziach - przerwanie Quizu
         {
             // Arrange
@@ -220,35 +220,26 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _output.WriteLine("StartNewQuiz() wywołane.");
             _output.WriteLine($"Instance ID after StartNewQuiz: {_scoreService.GetHashCode()}");
 
-            _scoreService.IncrementScore(); // Pierwsza inkrementacja
-            _output.WriteLine($"Score after 1st increment: {_scoreService.GetScore()}");
-            _output.WriteLine($"Instance ID after IncrementScore: {_scoreService.GetHashCode()}");
+            // Inkrementacja wyniku
+            _scoreService.IncrementScore();
+            _scoreService.IncrementScore();
+            _scoreService.IncrementScore();
 
-            _scoreService.IncrementScore(); // Druga
-            _output.WriteLine($"Score after 2nd increment: {_scoreService.GetScore()}");
-
-            _scoreService.IncrementScore(); // Kolejna
-            _output.WriteLine($"Score after 3rd increment: {_scoreService.GetScore()}");
-
-            _scoreService.ResetScore(); // Resetowanie wyniku
-
-            Assert.True(_scoreService.GetScore() > 0, "Score should be greater than 0 before reset.");
-            _output.WriteLine($"Instance ID before reset: {_scoreService.GetHashCode()}");
-            var scoreBeforeReset = _scoreService.GetScore(); // Sprawdzam wynik przed resetem
+            // Pobranie wyniku przed resetem
+            var scoreBeforeReset = _scoreService.GetScore();
             _output.WriteLine($"Score before reset: {scoreBeforeReset}");
-            _output.WriteLine($"Score before reset (before calling ResetScore): {scoreBeforeReset}");
-            Assert.True(_scoreService.GetScore() > 0, "Score should be greater than 0 before reset.");
 
+            // **🔹 Asercja przed resetem!**
+            Assert.True(scoreBeforeReset > 0, "Score should be greater than 0 before reset.");
 
-            // Act
-            _scoreService.ResetScore(); // Reset
-            var scoreAfterReset = _scoreService.GetScore(); // Pobieram wynik
-            _output.WriteLine($"Instance ID after reset: {_scoreService.GetHashCode()}");
+            // Act - reset wyniku
+            _scoreService.ResetScore();
+            var scoreAfterReset = _scoreService.GetScore();
             _output.WriteLine($"Score after reset: {scoreAfterReset}");
 
-            // Assert
-            Assert.True(scoreBeforeReset > 0); // Sprawdzam, czy wynik przed resetem większy niż 0
-            Assert.Equal(0, scoreAfterReset); // Sprawdzam, czy wynik został zresetowany do 0
+            // Assert - wynik powinien być 0 po resecie
+            Assert.Equal(0, scoreAfterReset);
+
             _output.WriteLine("=== End test ===");
         }
 

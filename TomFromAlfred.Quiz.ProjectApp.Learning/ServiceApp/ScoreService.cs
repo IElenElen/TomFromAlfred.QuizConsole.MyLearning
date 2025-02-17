@@ -21,6 +21,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             {
                 throw new ArgumentOutOfRangeException(nameof(newActiveQuestions), "Liczba pytań musi być większa niż 0.");
             }
+            _score = 0; // Reset
             Console.WriteLine("StartNewQuiz() called!");
             _allActiveQuizSets = newActiveQuestions;
         }
@@ -65,9 +66,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         }
 
         // Na potrzeby testu
-        public int GetTotalActiveQuestions() // Zwraca wszystkie aktywne pytania
+        public int GetTotalActiveSets()
         {
-            return _newActiveQuestions;
+            return _allActiveQuizSets;
         }
     }
 }
