@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Oblane: 3 / 18
+    // Oblane: 1 / 18
     public class ScoreServiceTests 
     {
         private readonly ITestOutputHelper _output;
@@ -213,34 +213,51 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void ResetScore_ShouldSetScoreToZero_AfterMultipleIncrements() // Podaje wynik: zwraca 0, po kilku odpowiedziach - przerwanie Quizu
         {
             // Arrange
-            _scoreService.StartNewQuiz(8); // Inicjalizuję quiz
+            _output.WriteLine("=== Start test ===");
+            _output.WriteLine($"Calling StartNewQuiz(8)");
+            _scoreService.StartNewQuiz(8); // Inicjalizuję Quiz
+
+            _output.WriteLine("StartNewQuiz() wywołane.");
+            _output.WriteLine($"Instance ID after StartNewQuiz: {_scoreService.GetHashCode()}");
+
             _scoreService.IncrementScore(); // Pierwsza inkrementacja
             _output.WriteLine($"Score after 1st increment: {_scoreService.GetScore()}");
+            _output.WriteLine($"Instance ID after IncrementScore: {_scoreService.GetHashCode()}");
+
             _scoreService.IncrementScore(); // Druga
             _output.WriteLine($"Score after 2nd increment: {_scoreService.GetScore()}");
+
             _scoreService.IncrementScore(); // Kolejna
             _output.WriteLine($"Score after 3rd increment: {_scoreService.GetScore()}");
+
             _scoreService.ResetScore(); // Resetowanie wyniku
 
+            Assert.True(_scoreService.GetScore() > 0, "Score should be greater than 0 before reset.");
+            _output.WriteLine($"Instance ID before reset: {_scoreService.GetHashCode()}");
             var scoreBeforeReset = _scoreService.GetScore(); // Sprawdzam wynik przed resetem
             _output.WriteLine($"Score before reset: {scoreBeforeReset}");
             _output.WriteLine($"Score before reset (before calling ResetScore): {scoreBeforeReset}");
+            Assert.True(_scoreService.GetScore() > 0, "Score should be greater than 0 before reset.");
+
 
             // Act
             _scoreService.ResetScore(); // Reset
             var scoreAfterReset = _scoreService.GetScore(); // Pobieram wynik
+            _output.WriteLine($"Instance ID after reset: {_scoreService.GetHashCode()}");
+            _output.WriteLine($"Score after reset: {scoreAfterReset}");
 
             // Assert
             Assert.True(scoreBeforeReset > 0); // Sprawdzam, czy wynik przed resetem większy niż 0
             Assert.Equal(0, scoreAfterReset); // Sprawdzam, czy wynik został zresetowany do 0
+            _output.WriteLine("=== End test ===");
         }
 
         // 15
-        [Fact] // Oblany - pokazuje 0
+        [Fact] // Zaliczony
         public void GetPercentage_ShouldReturn100_WhenAllAnswersAreCorrect() // Podaje procenty: zwraca 100, jeśli wszystkie odpowiedzi użytkownika są dobre
         {
             // Arrange
-            _scoreService.StartNewQuiz(10); // Inicjalizuję quiz z 10 pytaniami
+            _scoreService.StartNewQuiz(10); // Inicjalizuję Quiz z 10 pytaniami
             for (int i = 0; i < 10; i++)
             {
                 _scoreService.IncrementScore(); // Inkrementacja wyniku dla każdej odpowiedzi
@@ -258,7 +275,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetPercentage_ShouldReturn0_WhenNoAnswersAreCorrect() // Podaje procenty: zwraca 0, bo nie było poprawnej odpowiedzi od użytkownika lub nastąpił reset
         {
             // Arrange
-            _scoreService.StartNewQuiz(9); // Inicjalizuję quiz z 9 pytaniami
+            _scoreService.StartNewQuiz(9); // Inicjalizuję Quiz z 9 pytaniami
 
             // Act
             var percentage = _scoreService.GetPercentage(); // Pobieram procent
@@ -284,18 +301,22 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 18
-        [Fact] // Oblany - podaje 0
-        public void GetPercentage_ShouldReturnCorrectPercentage_WhenSomeAnswersAreCorrect() // Podaje procenty: podaje poprawne dane, jeśli kilka odpowiedzi użytkownika było dobrych
+        [Fact] // Zaliczony
+        public void GetPercentage_ShouldReturnCorrectPercentage_WhenSomeAnswersAreCorrect() // Podaje procent: zwraca poprawne %, jeśli kilka odpowiedzi użytkownika było dobrych
         {
             // Arrange
-            _scoreService.StartNewQuiz(10); // Inicjalizuję quiz z 10 pytaniami
-            _scoreService.IncrementScore(); // Zwiększam wynik o 1
+            _scoreService.StartNewQuiz(10); // Powinno ustawić AllActiveQuizSets = 10
+            _scoreService.IncrementScore(); // Powinno zwiększyć Score o 1
+
+            // Debugowanie
+            Assert.Equal(10, _scoreService.AllActiveQuizSets); // Sprawdzenie liczby pytań
+            Assert.Equal(1, _scoreService.Score); // Sprawdzenie, czy wynik się zwiększył
 
             // Act
-            var percentage = _scoreService.GetPercentage(); // Pobieram procent
+            var percentage = _scoreService.GetPercentage();
 
             // Assert
-            Assert.Equal(10, percentage); // Oczekiwany wynik to 10% (1 poprawna odpowiedź z 10 pytań)
+            Assert.Equal(10, percentage); // Powinno zwrócić 10%
         }
     }
 }

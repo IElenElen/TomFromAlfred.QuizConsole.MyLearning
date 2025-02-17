@@ -12,14 +12,24 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         private int _newActiveQuestions; // Liczba aktywnych pytań w quizie (w domyśle - zestawy)
         private int _allActiveQuizSets; // Liczba wszystkich aktywnych zestawów Quizu
 
+        public int Score => _score;  // Publiczny getter do testów
+        public int AllActiveQuizSets => _allActiveQuizSets;  // Publiczny getter do testów
+
         public void StartNewQuiz(int newActiveQuestions)
         {
-            if (newActiveQuestions <= 0) 
+            if (newActiveQuestions <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(newActiveQuestions), "Liczba pytań musi być większa niż 0.");
             }
-            _score = 0; // Reset punktów
-            _newActiveQuestions = newActiveQuestions; // Ustawienie liczby aktywnych pytań
+            Console.WriteLine("StartNewQuiz() called!");
+            _allActiveQuizSets = newActiveQuestions;
+        }
+
+        public void RestartQuiz(int newActiveQuestions)
+        {
+            Console.WriteLine("RestartQuiz() called! Resetting score to 0.");
+            _score = 0;
+            _allActiveQuizSets = newActiveQuestions;
         }
 
         public void IncrementScore()

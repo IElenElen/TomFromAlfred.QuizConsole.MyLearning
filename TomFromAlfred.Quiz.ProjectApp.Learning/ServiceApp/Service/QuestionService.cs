@@ -19,10 +19,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
         private List<Question> _questions = new List<Question>(); // Lista pytań
         public int questionId = 0;
 
-        public QuestionService() // Inicjacja pytań w konstruktorze
+        public QuestionService(bool loadDefaults = true)
         {
-            InitializeQuestions();
+            if (loadDefaults)
+            {
+                InitializeQuestions(); // Wczytuje domyślne pytania TYLKO jeśli loadDefaults = true
+            }
         }
+
 
         private void InitializeQuestions() // Tej metody nie testuję
         {
@@ -31,16 +35,23 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             _questions.Add(new Question(13, "Jaki jest najwyższy szczyt świata?"));
         }
 
-        public void Add(Question entity)
+        public void Add(Question newQuestion)
         {
-            if (entity == null)
+            if (newQuestion == null)
             {
-                Console.WriteLine("Nie można dodać pustego pytania.");
-                return;
+                Console.WriteLine("Attempted to add a null question. Skipping.");
+                return; // Nie dodawaj null
             }
 
-            _questions.Add(entity);
+            if (_questions.Any(q => q.QuestionId == newQuestion.QuestionId))
+            {
+                return; // Nie dodawaj duplikatu
+            }
+
+            _questions.Add(newQuestion);
+            Console.WriteLine($"Added question: {newQuestion.QuestionId} - {newQuestion.QuestionContent}");
         }
+
 
         public void Delete(Question entity)
         {

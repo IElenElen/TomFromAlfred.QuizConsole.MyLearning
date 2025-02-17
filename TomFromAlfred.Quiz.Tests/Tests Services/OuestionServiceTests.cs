@@ -1,23 +1,27 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestPlatform.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
+using Xunit.Abstractions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Oblane: 2 / 11
+    // Oblane: 1 / 11
 
     public class OuestionServiceTests
     {
-        private readonly QuestionService _questionService; 
+        private readonly QuestionService _questionService;
+        private readonly ITestOutputHelper _output;
 
-        public OuestionServiceTests()
+        public OuestionServiceTests(ITestOutputHelper output)
         {
             // Inicjalizacja przed każdym testem (dodaję tu - tylko raz)
             _questionService = new QuestionService();
+            _output = output;
         }
 
         // 1
@@ -51,22 +55,30 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 3
-        [Fact] // Oblany
+        [Fact] // Zaliczony
         public void Add_ShouldNotAddDuplicateQuestion() // Dodaje: nie dodaje duplikatu
         {
             // Arrange
             var questionService = new QuestionService();
+            var allBefore = questionService.GetAllActive().ToList();
+            _output.WriteLine($"Pytania przed testem: {allBefore.Count}");
+
             var existingQuestion = new Question(1, "Pytanie testowe");
-            questionService.Add(existingQuestion);  // Dodaję pytanie
+            questionService.Add(existingQuestion);
 
             var duplicateQuestion = new Question(1, "Pytanie testowe (duplikat)");
 
             // Act
-            questionService.Add(duplicateQuestion);  // Próba dodania pytania z tym samym Id
+            questionService.Add(duplicateQuestion);
 
             // Assert
             var allQuestions = questionService.GetAllActive().ToList();
-            Assert.Single(allQuestions);  // Lista powinna zawierać tylko jedno pytanie o Id = 1
+            var countOfQuestionWithId1 = allQuestions.Count(q => q.QuestionId == 1);
+
+            _output.WriteLine($"Pytania po teście: {allQuestions.Count}");
+            _output.WriteLine($"Ilość pytań z Id = 1: {countOfQuestionWithId1}");
+
+            Assert.Equal(1, countOfQuestionWithId1); // Czy Id = 1 pojawia się tylko raz
         }
 
         // 4
@@ -75,11 +87,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var questionService = new QuestionService();
+            var countBefore = questionService.GetAllActive().Count();
 
             // Act
             questionService.Add(null);
 
             // Assert
+            var countAfter = questionService.GetAllActive().Count();
             Assert.Empty(questionService.GetAllActive());  // Lista powinna pozostać pusta
         }
 
