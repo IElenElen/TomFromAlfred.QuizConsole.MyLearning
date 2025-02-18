@@ -7,7 +7,7 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 
 namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
 {
-    // Oblane: / 1
+    // Oblane: 0 / 1
 
     public class TestForDisplayScoreSummary
     {
@@ -19,8 +19,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
         }
 
         // 1
-        [Fact]
-        public void DisplayScoreSummary_ShouldDisplayCorrectSummary()
+        [Fact] // Zaliczony
+        public void DisplayScoreSummary_ShouldDisplayCorrectSummary() // Wyświetla: zdobyte punkty
         {
             // Arrange
             var stringWriter = new StringWriter();

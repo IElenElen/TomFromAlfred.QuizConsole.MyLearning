@@ -10,7 +10,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
 {
-    // Oblane: / 6
+    // Oblane: 6 / 6
     public class QuizManagerTests
     {
         private readonly Mock<QuizService> _mockQuizService;
@@ -28,8 +28,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 1
-        [Fact]
-        public void ConductQuiz_ShouldHandleUserAnsweringCorrectly() // Oblany
+        [Fact] // Oblany
+        public void ConductQuiz_ShouldHandleUserAnsweringCorrectly() // Wyświetla: przyjmuje poprawnie odpowiedź użytkownika
         {
             // Arrange
             var question = new Question(1, "Sample question");
@@ -53,8 +53,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 2
-        [Fact]
-        public void ConductQuiz_ShouldHandleNoQuestionsAvailable() // Oblany
+        [Fact] // Oblany
+        public void ConductQuiz_ShouldHandleNoQuestionsAvailable() // Wyświetla: brak pytań
         {
             // Arrange
             _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(new List<Question>()); // Brak pytań
@@ -70,7 +70,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
 
         // 3
         [Fact] //Oblany
-        public void AddQuestion_ShouldNotAddQuestion_WhenCorrectAnswerIsInvalid() // Inaczej sformułować, bo po prostu nie przechodzę do kolejnego pytania
+        public void AddQuestion_ShouldNotAddQuestion_WhenCorrectAnswerIsInvalid() // Ten test jest bez sensu - inaczej sformułować!!!
         {
             // Arrange
             var questionContent = "What is the capital of France?";
@@ -91,8 +91,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 4
-        [Fact]
-        public void ConductQuiz_ShouldNotIncrementScore_WhenAnswerIsIncorrect() // Oblany
+        [Fact] // Oblany
+        public void ConductQuiz_ShouldNotIncrementScore_WhenAnswerIsIncorrect() // Wyświetla: nie daje punktu, jęśli odpowiedź błędna
         {
             // Arrange
             var question = new Question(1, "Sample question");
@@ -115,8 +115,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 5
-        [Fact]
-        public void ConductQuiz_ShouldSkipQuestion_WhenUserSelectsOption2() // Oblany
+        [Fact] // Oblany
+        public void ConductQuiz_ShouldSkipQuestion_WhenUserSelectsOption2() // Wyświetla: pomija pytanie na żądanie użytkownika
         {
             // Arrange
             var question = new Question(1, "Sample question");
@@ -142,8 +142,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 6
-        [Fact]
-        public void ConductQuiz_ShouldEndQuiz_WhenUserInputsK() // Oblany
+        [Fact] // Oblany
+        public void ConductQuiz_ShouldEndQuiz_WhenUserInputsK() // Wyświetla: przerywa Quzi na żądanie użytkownika
         {
             // Arrange
             var question = new Question(1, "Sample question");

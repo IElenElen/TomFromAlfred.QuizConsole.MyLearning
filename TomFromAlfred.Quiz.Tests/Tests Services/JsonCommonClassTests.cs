@@ -11,7 +11,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Oblane: w trakcie tworzenia testów
+    // Oblane: 0 / 10
 
     public class JsonCommonClassTests
     {
@@ -74,17 +74,18 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             jsonCommon.WriteToFile(testFilePath, testData);
 
             // Assert
-            Assert.True(File.Exists(testFilePath)); // Sprawdza, czy plik został utworzony
+            Assert.True(File.Exists(testFilePath)); // Sprawdzam, czy plik został utworzony
 
             string jsonContent = File.ReadAllText(testFilePath);
-            Assert.Contains("Przykładowe pytanie", jsonContent); // Sprawdza, czy plik zawiera poprawne dane
+            Assert.Contains("Przykładowe pytanie", jsonContent); // Sprawdzam, czy plik zawiera poprawne dane
 
             // Cleanup
             File.Delete(testFilePath);
         }
 
-        [Fact]
-        public void WriteToFile_ShouldCreateEmptyJson_WhenDataIsEmptyList()
+        // 4
+        [Fact] // Zaliczony
+        public void WriteToFile_ShouldCreateEmptyJson_WhenDataIsEmptyList() // Zapisuje: tworzy pusty json, jeśli lista danych jest pusta
         {
             // Arrange
             string testFilePath = "emptyList.json";
@@ -104,8 +105,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             File.Delete(testFilePath);
         }
 
-        [Fact]
-        public void WriteToFile_ShouldThrowArgumentNullException_WhenDataIsNull()
+        // 5 
+        [Fact] // Zaliczony
+        public void WriteToFile_ShouldThrowArgumentNullException_WhenDataIsNull() // Zapisuje: wyrzuca wyjątek, jeśli dane to null
         {
             // Arrange
             string testFilePath = "nullData.json";
@@ -114,13 +116,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => jsonCommon.WriteToFile<object>(testFilePath, null));
         }
-
-        [Fact]
-        public void WriteToFile_ShouldCreateFile_WithSingleObjectJson()
+        
+        // 6
+        [Fact] // Zaliczony
+        public void WriteToFile_ShouldCreateFile_WithSingleObjectJson() // Zapisuje: tworzy plik z pojedynczym obiektem
         {
             // Arrange
             string testFilePath = "singleObject.json";
-            var question = new Question(1, "Pytanie testowe");
+            var question = new Question(0, "Z ilu części składa się powieść Alfreda Szklarskiego?");
             var jsonCommon = new JsonCommonClass();
 
             // Act
@@ -130,31 +133,32 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.True(File.Exists(testFilePath));
 
             string jsonContent = File.ReadAllText(testFilePath);
-            Assert.Contains("\"Pytanie testowe\"", jsonContent); // Sprawdza, czy plik zawiera poprawne dane
+            Assert.Contains("\"Z ilu części składa się powieść Alfreda Szklarskiego?\"", jsonContent);
 
             // Cleanup
             File.Delete(testFilePath);
         }
 
-        [Fact]
-        public void WriteToFile_ShouldThrowException_WhenFilePathIsInvalid()
+        // 7
+        [Fact] // Zaliczony
+        public void WriteToFile_ShouldThrowException_WhenFilePathIsInvalid() // Zapisuje: wyrzuca wyjątek, jeśli ścieżka pliku wadliwa
         {
             // Arrange
             string invalidPath = "?:\\invalid\\path.json"; // Nieprawidłowa ścieżka
-            var testData = new List<Question> { new Question(1, "Przykładowe pytanie") };
+            var testData = new List<Question> { new Question(1, "Z ilu części składa się powieść Alfreda Nowaka?") };
             var jsonCommon = new JsonCommonClass();
 
             // Act & Assert
             Assert.Throws<DirectoryNotFoundException>(() => jsonCommon.WriteToFile(invalidPath, testData));
         }
 
-
-        [Fact]
-        public void ReadFromFile_ShouldReturnCorrectData()
+        // 8
+        [Fact] // Zaliczony
+        public void ReadFromFile_ShouldReturnCorrectData() // Odczytuje: zwraca poprawne dane
         {
             // Arrange
             string testFilePath = "testFile.json";
-            var expectedData = new List<Question> { new Question(1, "Przykładowe pytanie") };
+            var expectedData = new List<Question> { new Question(1, "Z ilu części składa się powieść Alfreda Szklarskiego?") };
             File.WriteAllText(testFilePath, JsonConvert.SerializeObject(expectedData));
 
             var jsonCommon = new JsonCommonClass();
@@ -166,14 +170,15 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.NotNull(result);
             Assert.Single(result);
             Assert.Equal(1, result[0].QuestionId);
-            Assert.Equal("Przykładowe pytanie", result[0].QuestionContent);
+            Assert.Equal("Z ilu części składa się powieść Alfreda Szklarskiego?", result[0].QuestionContent);
 
             // Cleanup
             File.Delete(testFilePath);
         }
 
-        [Fact]
-        public void ReadFromFile_ShouldThrowFileNotFoundException_WhenFileDoesNotExist()
+        // 9
+        [Fact] // Zaliczony
+        public void ReadFromFile_ShouldThrowFileNotFoundException_WhenFileDoesNotExist() // Odczytuje: wyrzuca wyjątek, jeśli plik nie istnieje
         {
             // Arrange
             string nonExistentFile = "doesNotExist.json";
@@ -183,12 +188,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Throws<FileNotFoundException>(() => jsonCommon.ReadFromFile<List<Question>>(nonExistentFile));
         }
 
-        [Fact]
-        public void ReadFromFile_ShouldThrowInvalidDataException_WhenFileIsEmpty()
+        // 10
+        [Fact] // Zaliczony
+        public void ReadFromFile_ShouldThrowInvalidDataException_WhenFileIsEmpty() // Odczytuje: wyrzuca wyjątek, jeśli plik jest pusty
         {
             // Arrange
             string emptyFilePath = "emptyFile.json";
-            File.WriteAllText(emptyFilePath, ""); // Tworzymy pusty plik
+            File.WriteAllText(emptyFilePath, ""); // Tworzę pusty plik
             var jsonCommon = new JsonCommonClass();
 
             // Act & Assert

@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
@@ -25,6 +26,8 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         public const string ChoicesFilePath = @"C:\Users\Ilka\Desktop\.net\Quiz Tomek Konsola\choices.Tomek.json";
         public const string CorrectSetFilePath = @"C:\Users\Ilka\Desktop\.net\Quiz Tomek Konsola\correctSet.Tomek.json";
 
+        private readonly IFileWrapper _fileWrapper; 
+
         private JsonCommonClass _jsonService;
         private readonly QuestionService _questionService;
         private readonly ChoiceService _choiceService;
@@ -38,12 +41,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 QuestionService questionService,
                 ChoiceService choiceService,
                 CorrectAnswerService correctAnswerService,
-                JsonCommonClass jsonService)
+                JsonCommonClass jsonService,
+                IFileWrapper fileWrapper)
         {
             _questionService = questionService ?? throw new ArgumentNullException(nameof(questionService));
             _choiceService = choiceService ?? throw new ArgumentNullException(nameof(choiceService));
             _correctAnswerService = correctAnswerService ?? throw new ArgumentNullException(nameof(correctAnswerService));
             _jsonService = jsonService ?? throw new ArgumentNullException(nameof(jsonService));
+            _fileWrapper = fileWrapper ?? throw new ArgumentNullException(nameof(fileWrapper));
 
             LoadQuestionsFromJson(QuestionsFilePath);
             LoadChoicesFromJson();
@@ -55,7 +60,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             if (jsonService == null)
                 throw new ArgumentNullException(nameof(jsonService));
 
-            if (!File.Exists(jsonFilePath))
+            if (!_fileWrapper.Exists(jsonFilePath)) // Używam mockowalnej wersji File.Exists
                 throw new FileNotFoundException($"Plik {jsonFilePath} nie istnieje.");
 
             _jsonService = jsonService;
@@ -322,6 +327,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             catch (Exception ex)
             {
                 Console.WriteLine($"Błąd podczas zapisywania pytań do pliku JSON: {ex.Message}");
+
+                #if DEBUG
+                throw; // W trybie debug/testów propaguję wyjątek
+                #endif
             }
         }
     }

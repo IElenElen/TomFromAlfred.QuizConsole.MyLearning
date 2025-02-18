@@ -48,7 +48,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
         // Zapis danych do pliku JSON
         public virtual void WriteToFile<T>(string filePath, T data)
         {
-            string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+            if (data == null)
+                throw new ArgumentNullException(nameof(data), "Data cannot be null.");
+
+            string json = JsonConvert.SerializeObject(data);
             File.WriteAllText(filePath, json);
         }
     }

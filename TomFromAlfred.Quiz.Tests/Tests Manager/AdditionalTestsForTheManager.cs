@@ -10,7 +10,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
 {
-    // Oblane: / 11
+    // Oblane: 11 / 11
 
     public class AdditionalTestsForTheManager
     {
@@ -29,16 +29,16 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 1 
-        [Fact]
-        public void Constructor_ShouldThrowException_WhenQuestionsAreNull() // Oblany
+        [Fact] // Oblany
+        public void Constructor_ShouldThrowException_WhenQuestionsAreNull() // ???
         {
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => new ManagerHelper(null));
         }
 
         // 2
-        [Fact]
-        public void HasNext_ShouldReturnTrue_WhenQuestionsAreAvailable() // Oblany
+        [Fact] // Oblany
+        public void HasNext_ShouldReturnTrue_WhenQuestionsAreAvailable() // ???
         {
             // Arrange
             var questions = new List<Question>
@@ -57,8 +57,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 3
-        [Fact]
-        public void HasNext_ShouldReturnFalse_WhenNoMoreQuestions() // Oblany
+        [Fact] // Oblany
+        public void HasNext_ShouldReturnFalse_WhenNoMoreQuestions() // ???
         {
             // Arrange
             var questions = new List<Question>
@@ -77,8 +77,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 4
-        [Fact]
-        public void GetCurrentQuestion_ShouldReturnCurrentQuestion() // Oblany
+        [Fact] // Oblany
+        public void GetCurrentQuestion_ShouldReturnCurrentQuestion() // Podaje: bieżące pytanie
         {
             // Arrange
             var questions = new List<Question>
@@ -98,8 +98,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 5
-        [Fact]
-        public void GetCurrentQuestion_ShouldThrowException_WhenNoMoreQuestions() // Oblany
+        [Fact] // Oblany
+        public void GetCurrentQuestion_ShouldThrowException_WhenNoMoreQuestions() // Podaje: wyjątek, jeśli ???
         {
             // Arrange
             var questions = new List<Question>
@@ -115,8 +115,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 6
-        [Fact]
-        public void NextQuestion_ShouldMoveToNextQuestion() // Oblany
+        [Fact] // Oblany
+        public void NextQuestion_ShouldMoveToNextQuestion() // ???
         {
             // Arrange
             var questions = new List<Question>
@@ -136,9 +136,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             Assert.Equal("Question 2", currentQuestion.QuestionContent);
         }
 
-        // 7
-        [Fact]
-        public void NextQuestion_ShouldNotExceedQuestionList() // Oblany
+        // 7 
+        [Fact] // Oblany
+        public void NextQuestion_ShouldNotExceedQuestionList() // ???
         {
             // Arrange
             var questions = new List<Question>
@@ -157,8 +157,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 8
-        [Fact]
-        public void Shuffle_ShouldRandomizeListOrder() // Oblany
+        [Fact] // Oblany
+        public void Shuffle_ShouldRandomizeListOrder() // ???
         {
             // Arrange
             var questions = new List<int> { 1, 2, 3, 4, 5 };
@@ -173,8 +173,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 9
-        [Fact]
-        public void AddQuestion_ShouldAddQuestionCorrectly() // Oblany
+        [Fact] // Oblany
+        public void AddQuestion_ShouldAddQuestionCorrectly() // Dodaje: poprawnie pytanie do listy
         {
             // Arrange
             var questionContent = "What is the capital of France?";
@@ -195,8 +195,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 10
-        [Fact]
-        public void AddQuestion_ShouldNotAddQuestion_WhenQuestionContentIsEmpty() // Oblany
+        [Fact] // Oblany
+        public void AddQuestion_ShouldNotAddQuestion_WhenQuestionContentIsEmpty() // Dodaje: Nie, jeśli treść pytania pusta
         {
             // Arrange
             string userInput = "\n"; // Użytkownik nie wpisuje pytania
@@ -210,8 +210,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 11
-        [Fact]
-        public void AddQuestion_ShouldNotAddQuestion_WhenCorrectAnswerIsInvalid() // Oblany
+        [Fact] // Oblany
+        public void AddQuestion_ShouldNotAddQuestion_WhenCorrectAnswerIsInvalid() // Dodaje: Nie, jeśli poprawna odpowiedź jest poza zakresem
         {
             // Arrange
             string userInput = "What is the capital of France?\nParis\nLondon\nBerlin\nZ\n"; // Niepoprawna odpowiedź 'Z'

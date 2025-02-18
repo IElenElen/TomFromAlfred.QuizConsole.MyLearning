@@ -11,14 +11,13 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
 using System.Reflection;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Sporo tu roboty
-
-    // Oblane: 36 / 36
-    // Wybieram zamianę metod w klasie na wirtualne
+    // Oblane: 30 / 31
+    // Wybieram zamianę metod w klasach na wirtualne
 
     public class QuizServiceTests
     {
@@ -26,103 +25,116 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         private readonly Mock<ChoiceService> _mockChoiceService;
         private readonly Mock<CorrectAnswerService> _mockCorrectAnswerService;
         private readonly Mock<JsonCommonClass> _mockJsonCommonClass;
-        private readonly QuizService _quizService;
+        private readonly Mock<IFileWrapper> _mockFileWrapper;
+        private QuizService _quizService;
 
 
         public QuizServiceTests()
         {
             // Tworzę mocki dla klas serwisowych
-            _mockQuestionService = new Mock<QuestionService>();
+            _mockQuestionService = new Mock<QuestionService>(false); // Nie ładuje domyślnych pytań
             _mockChoiceService = new Mock<ChoiceService>();
             _mockCorrectAnswerService = new Mock<CorrectAnswerService>();
             _mockJsonCommonClass = new Mock<JsonCommonClass>();
+            _mockFileWrapper = new Mock<IFileWrapper>();
 
-            // Inicjalizacja QuizService z zamockowanymi obiektami
-            _quizService = new QuizService(
-                _mockQuestionService.Object,
-                _mockChoiceService.Object,
-                _mockCorrectAnswerService.Object,
-                _mockJsonCommonClass.Object
-            );
+            // Mockuję File.Exists, aby test nie zależał od rzeczywistych plików
+            _mockFileWrapper.Setup(f => f.Exists(It.IsAny<string>())).Returns(true);
         }
 
         // 1
         [Fact] // Oblany
-        public void InitializeJsonService_ShouldNotThrowException_WhenValidArgumentsArePassed() // Nie wyrzuca wyjątku jeśli ścieżka poprawna
+        public void InitializeJsonService_ShouldNotThrowException_WhenValidArgumentsArePassed() // Inicjalizacja: nie wyrzuca wyjątku, jeśli dane poprawne
         {
             // Arrange
-            var mockJsonService = new Mock<JsonCommonClass>();
-            var quizService = new QuizService(
-                new Mock<QuestionService>().Object,
-                new Mock<ChoiceService>().Object,
-                new Mock<CorrectAnswerService>().Object,
-                mockJsonService.Object
+            string validFilePath = "validFilePath.json";
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
             );
 
-            string validFilePath = "validFilePath.json"; // Symuluję poprawną ścieżkę
+            // Act
+            var exception = Record.Exception(() => _quizService.InitializeJsonService(_mockJsonCommonClass.Object, validFilePath));
 
-            // Act & Assert
-            var exception = Record.Exception(() => quizService.InitializeJsonService(mockJsonService.Object, validFilePath));
-
-            Assert.Null(exception); // Sprawdzam, czy nie wystąpił żaden wyjątek
+            // Assert
+            Assert.Null(exception);
         }
 
         // 2
         [Fact] // Oblany
-        public void InitializeJsonService_ShouldThrowArgumentNullException_WhenJsonServiceIsNull() // Nie wyrzuca wyjątku, jeśli json jest null
+        public void InitializeJsonService_ShouldThrowArgumentNullException_WhenJsonServiceIsNull() // Inicjalizacja: wyrzuca wyjątek, jeśli JsonService jest null
         {
-            // Arrange
-            var quizService = new QuizService(
-                new Mock<QuestionService>().Object,
-                new Mock<ChoiceService>().Object,
-                new Mock<CorrectAnswerService>().Object,
-                new Mock<JsonCommonClass>().Object
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
             );
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => quizService.InitializeJsonService(null, "validFilePath.json"));
+            var exception = Assert.Throws<ArgumentNullException>(() => _quizService.InitializeJsonService(null, "validFilePath.json"));
+
+            // Sprawdzam, czy wyjątek dotyczy parametru `jsonService`
+            Assert.Equal("jsonService", exception.ParamName);
         }
 
         // 3 
         [Fact] // Oblany
-        public void InitializeJsonService_ShouldThrowFileNotFoundException_WhenFileDoesNotExist() // Nie wyrzuca wyjątku, jesli plik nie istnieje
+        public void InitializeJsonService_ShouldThrowFileNotFoundException_WhenFileDoesNotExist() // Inicjalizacja: wyrzuca, jeśli plik nie istnieje
         {
             // Arrange
-            var mockJsonService = new Mock<JsonCommonClass>();
-            var quizService = new QuizService(
-                new Mock<QuestionService>().Object,
-                new Mock<ChoiceService>().Object,
-                new Mock<CorrectAnswerService>().Object,
-                mockJsonService.Object
+            string noExistingFilePath = "nonExistentFile.json"; // Plik nie istnieje
+
+            // Ustawiam mocka, aby `Exists()` zwracało `false`
+            _mockFileWrapper.Setup(f => f.Exists(noExistingFilePath)).Returns(false);
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
             );
 
-            // Symuluję ścieżkę do nieistniejącego pliku
-            string noExistingFilePath = "nonExistentFile.json";
-
             // Act & Assert
-            var exception = Assert.Throws<FileNotFoundException>(() => quizService.InitializeJsonService(mockJsonService.Object, noExistingFilePath));
+            var exception = Assert.Throws<FileNotFoundException>(() =>
+                _quizService.InitializeJsonService(_mockJsonCommonClass.Object, noExistingFilePath));
+
             Assert.Equal($"Plik {noExistingFilePath} nie istnieje.", exception.Message);
         }
 
         // 4
-        [Fact] // Oblany
-        public void GetAllQuestions_ShouldReturnQuestionsFromJsonAndService() // Zwraca pytania z serwisu i pliku json
+        [Fact] // Zaliczony
+        public void GetAllQuestions_ShouldReturnQuestionsFromJsonAndService() // Zwraca: pytania z serwisu i pliku json
         {
             // Arrange
             var mockQuestionsFromJson = new List<Question>
-        {
-            new Question (1, "Pytanie 1" ),
-            new Question (2, "Pytanie 2")
-        };
+            {
+                new Question (1, "Pytanie 1" ),
+                new Question (2, "Pytanie 2")
+            };
             var mockQuestionsFromService = new List<Question>
-        {
+            {
             new Question (3, "Pytanie 3")
-        };
+            };
 
             _mockJsonCommonClass.Setup(s => s.ReadFromFile<List<Question>>(It.IsAny<string>()))
                 .Returns(mockQuestionsFromJson);
             _mockQuestionService.Setup(s => s.GetAllActive())
                 .Returns(mockQuestionsFromService);
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             // Act
             var result = _quizService.GetAllQuestions().ToList();
@@ -136,7 +148,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 5
         [Fact] // Oblany
-        public void GetAllQuestions_ShouldReturnQuestionsFromServiceWhenJsonIsEmpty() // Zwraca pytania z serwisu, jesli json pusty
+        public void GetAllQuestions_ShouldReturnQuestionsFromServiceWhenJsonIsEmpty() // Zwraca: pytania z serwisu, jeśli json pusty
         {
             // Arrange
             var mockQuestionsFromJson = new List<Question>(); // Puste pytania JSON
@@ -150,6 +162,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _mockQuestionService.Setup(s => s.GetAllActive())
                 .Returns(mockQuestionsFromService);
 
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
+
             // Act
             var result = _quizService.GetAllQuestions().ToList();
 
@@ -160,7 +180,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 6
         [Fact] // Oblany
-        public void GetAllQuestions_ShouldReturnQuestionsFromJsonWhenServiceIsEmpty() // Zwraca pytania z json, jeśli serwis pusty
+        public void GetAllQuestions_ShouldReturnQuestionsFromJsonWhenServiceIsEmpty() // Zwraca: pytania z json, jeśli serwis pusty
         {
             // Arrange
             var mockQuestionsFromJson = new List<Question>
@@ -174,6 +194,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _mockQuestionService.Setup(s => s.GetAllActive())
                 .Returns(mockQuestionsFromService);
 
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
+
             // Act
             var result = _quizService.GetAllQuestions().ToList();
 
@@ -184,7 +212,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 7
         [Fact] // Oblany
-        public void GetChoicesForQuestion_ShouldReturnChoicesFromJson_WhenChoicesExistInJson() // Zwraca wybory z jsona, jeśli wybory te istnieją
+        public void GetChoicesForQuestion_ShouldReturnChoicesFromJson_WhenChoicesExistInJson() // Zwraca: wybory z jsona, jeśli wybory te istnieją
         {
             // Arrange
             int questionId = 1;
@@ -200,6 +228,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Ustawienie: w JSON są już odpowiedzi dla tego pytania
             _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Choice>>(It.Is<string>(s => s.Contains("choices"))))
                             .Returns(expectedChoices);
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             // Act
             var choices = _quizService.GetChoicesForQuestion(questionId).ToList();
@@ -228,6 +264,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _mockChoiceService.Setup(service => service.GetChoicesForQuestion(questionId))
                               .Returns(serviceChoices);
 
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
+
             // Act
             var choices = _quizService.GetChoicesForQuestion(questionId).ToList();
 
@@ -245,6 +289,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             int questionId = 3;
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             // Mockuję brak odpowiedzi w JSON
             _mockJsonCommonClass.Setup(service => service.ReadFromFile<List<Choice>>(It.IsAny<string>()))
@@ -277,6 +329,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             _mockChoiceService.Setup(service => service.GetChoicesForQuestion(questionId))
                               .Returns(originalChoices);
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             // Act
             Dictionary<char, char> letterMapping;
@@ -312,6 +372,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _mockChoiceService.Setup(service => service.GetChoicesForQuestion(questionId))
                               .Returns(originalChoices);
 
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
+
             // Act
             Dictionary<char, char> letterMapping;
             var shuffledChoices = _quizService.GetShuffledChoicesForQuestion(questionId, out letterMapping).ToList();
@@ -335,6 +403,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             _mockChoiceService.Setup(service => service.GetChoicesForQuestion(questionId))
                               .Returns(originalChoices);
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             // Act
             Dictionary<char, char> letterMapping;
@@ -364,6 +440,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 new Choice (2, 'B', "Answer B"),
                 new Choice (3, 'C', "Answer C")
             };
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             _mockChoiceService.Setup(service => service.GetChoicesForQuestion(questionId))
                               .Returns(choices);
@@ -396,6 +479,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 new Choice (2, 'B', "Answer B"),
                 new Choice (3, 'C', "Answer C")
             };
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             _mockChoiceService.Setup(service => service.GetChoicesForQuestion(questionId))
                               .Returns(choices);
@@ -408,8 +498,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 15 
-        [Fact] // 
-        public void CheckAnswer_ShouldReturnFalse_WhenAnswerIsIncorrect() // 
+        [Fact] // Oblany
+        public void CheckAnswer_ShouldReturnFalse_WhenAnswerIsIncorrect() // Sprawdza: błąd, jeśli odpowiedź błędna
         {
             // Arrange
             int questionId = 3;
@@ -425,6 +515,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 new Choice (3, 'C', "Answer C")
             };
 
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
             _mockChoiceService.Setup(service => service.GetChoicesForQuestion(questionId))
                               .Returns(choices);
 
@@ -435,9 +532,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.False(result); 
         }
 
-        // 16
-        [Fact]
-        public void CheckAnswer_ShouldReturnFalse_WhenLetterMappingIsEmpty() // 
+        // 16 
+        [Fact] // Oblany
+        public void CheckAnswer_ShouldReturnFalse_WhenLetterMappingIsEmpty() // Sprawdza: błąd, jeśli mapowanie puste
         {
             // Arrange
             int questionId = 1;
@@ -450,6 +547,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 new Choice (2, 'B', "Answer B")
             };
 
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
             _mockChoiceService.Setup(service => service.GetChoicesForQuestion(questionId))
                               .Returns(choices);
 
@@ -461,8 +565,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 17
-        [Fact] //
-        public void CheckAnswer_ShouldReturnFalse_WhenLetterMappingDoesNotContainUserChoice() // 
+        [Fact] // Oblany
+        public void CheckAnswer_ShouldReturnFalse_WhenLetterMappingDoesNotContainUserChoice() // Sprawdza: podaje błąd, jeśli błędna litera użytkownika
         {
             // Arrange
             int questionId = 1;
@@ -476,6 +580,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 new Choice (2, 'B', "Answer B")
              };
 
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
+
             _mockChoiceService.Setup(service => service.GetChoicesForQuestion(questionId))
                               .Returns(choices);
 
@@ -487,8 +599,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 18
-        [Fact] // 
-        public void CheckAnswer_ShouldReturnFalse_WhenLetterMappingIsIncorrect() // Oblany
+        [Fact] // Oblany
+        public void CheckAnswer_ShouldReturnFalse_WhenLetterMappingIsIncorrect() // Sprawdza: podaje błąd, jesli mapowanie niepoprawne
         {
             // Arrange
             int questionId = 1;
@@ -502,6 +614,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 new Choice (2, 'B', "Answer B" )
             };
 
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
+
             _mockChoiceService.Setup(service => service.GetChoicesForQuestion(questionId))
                               .Returns(choices);
 
@@ -513,8 +633,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 19
-        [Fact]
-        public void CheckAnswer_ShouldReturnFalse_WhenChoicesAreEmpty() // Oblany
+        [Fact] // Oblany
+        public void CheckAnswer_ShouldReturnFalse_WhenChoicesAreEmpty() // Sprawdza: podaje błąd, jeśli brak wyborów
         {
             // Arrange
             int questionId = 1;
@@ -522,6 +642,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             var letterMapping = new Dictionary<char, char> { { 'A', 'B' }, { 'B', 'C' } };
 
             var choices = new List<Choice>(); // Pusta lista odpowiedzi
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             _mockChoiceService.Setup(service => service.GetChoicesForQuestion(questionId))
                               .Returns(choices);
@@ -534,10 +662,18 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 20
-        [Fact]
-        public void CheckAnswer_ShouldReturnFalse_WhenLetterMappingIsMissing() // Oblany
+        [Fact] // Oblany
+        public void CheckAnswer_ShouldReturnFalse_WhenLetterMappingIsMissing() // Sprawdza: podaje błąd, jeśli nie ma litery zmapowanej
         {
             // Arrange
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
+
             var letterMapping = new Dictionary<char, char>
             {
                 {'A', 'X'}, // Mapowanie poprawnej odpowiedzi
@@ -557,8 +693,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 21
-        [Fact]
-        public void GetLetterForAnswer_ShouldReturnCorrectLetterForAnswer() // Oblany
+        [Fact] // Oblany
+        public void GetLetterForAnswer_ShouldReturnCorrectLetterForAnswer() // Podaje: literę dla poprawnej odpowiedzi
         {
             // Arrange
             int questionId = 1;
@@ -574,6 +710,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _mockChoiceService.Setup(service => service.GetChoicesForQuestion(questionId))
                               .Returns(choices);
 
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
+
             // Act
             var result = _quizService.GetLetterForAnswer(answerContent, questionId);
 
@@ -582,8 +726,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 22
-        [Fact]
-        public void GetLetterForAnswer_ShouldReturnDefaultLetter_WhenNoMatchFound() // Oblany
+        [Fact] // Oblany
+        public void GetLetterForAnswer_ShouldReturnDefaultLetter_WhenNoMatchFound() // Podaje: domyślną literę, jeśli powiązania nie znajdzie
         {
             // Arrange
             int questionId = 1;
@@ -599,6 +743,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _mockChoiceService.Setup(service => service.GetChoicesForQuestion(questionId))
                               .Returns(choices);
 
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
+
             // Act
             var result = _quizService.GetLetterForAnswer(answerContent, questionId);
 
@@ -607,12 +759,20 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 23
-        [Fact]
-        public void LoadQuestionsFromJson_ShouldReturn_WhenFileDoesNotExist() // Oblany
+        [Fact] // Oblany
+        public void LoadQuestionsFromJson_ShouldReturn_WhenFileDoesNotExist() // Ładuje: zwraca, jeśli brak pliku z pytaniami
         {
             // Arrange
             string filePath = "nonexistentFile.json";
             _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Question>>(filePath)).Throws(new FileNotFoundException());
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             // Act & Assert
             var exception = Record.Exception(() => _quizService.LoadQuestionsFromJson(filePath));
@@ -620,12 +780,20 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 24
-        [Fact]
-        public void LoadQuestionsFromJson_ShouldThrowJsonException_WhenJsonIsEmpty() // Oblany
+        [Fact] // Oblany
+        public void LoadQuestionsFromJson_ShouldThrowJsonException_WhenJsonIsEmpty() // Ładuje: wyrzuca wyjątek, jeśli json pusty
         {
             // Arrange
             string filePath = "questions.json";
             _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Question>>(filePath)).Returns(new List<Question>());
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             // Act & Assert
             var exception = Assert.Throws<JsonException>(() => _quizService.LoadQuestionsFromJson(filePath));
@@ -633,8 +801,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 25
-        [Fact]
-        public void LoadQuestionsFromJson_ShouldLoadQuestions_WhenJsonIsValid() // Oblany
+        [Fact] // Oblany
+        public void LoadQuestionsFromJson_ShouldLoadQuestions_WhenJsonIsValid() // Ładuje: pytania, jeśli json jest prawidłowy
         {
             // Arrange
             string filePath = "questions.json";
@@ -645,6 +813,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Question>>(filePath)).Returns(questions);
 
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
+
             // Act
             _quizService.LoadQuestionsFromJson(filePath);
 
@@ -653,11 +829,19 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 26
-        [Fact]
-        public void LoadChoicesFromJson_ShouldReturn_WhenChoicesFileDoesNotExist() // Oblany
+        [Fact] // Oblany
+        public void LoadChoicesFromJson_ShouldReturn_WhenChoicesFileDoesNotExist() // Ładuje: wyrzuca, jeśli plik wyborów nie istnieje
         {
             // Arrange
             _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Choice>>(It.IsAny<string>())).Throws(new FileNotFoundException());
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             // Act & Assert
             var exception = Record.Exception(() => _quizService.LoadChoicesFromJson());
@@ -665,8 +849,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 27
-        [Fact]
-        public void LoadChoicesFromJson_ShouldLoadChoices_WhenFileIsValid() // Oblany
+        [Fact] // Oblany
+        public void LoadChoicesFromJson_ShouldLoadChoices_WhenFileIsValid() // Ładuje: wybory, jeśli plik jest prawidłowy
         {
             // Arrange
             var choices = new List<Choice>
@@ -677,6 +861,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Setup mock dla odczytu pliku
             _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Choice>>(It.IsAny<string>())).Returns(choices);
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             // Act
             _quizService.LoadChoicesFromJson();
@@ -693,51 +885,28 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 28
-        [Fact]
-        public void LoadChoicesFromJson_ShouldLoadAndShuffleChoices_WhenFileIsValid() // Oblany
-        {
-            // Arrange
-            var choices = new List<Choice>
-            {
-                new Choice(1, ' ', "Choice 1"),
-                new Choice(2, ' ', "Choice 2"),
-                new Choice(3, ' ', "Choice 3")
-            };
-
-            _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Choice>>(It.IsAny<string>())).Returns(choices);
-
-            // Act
-            _quizService.LoadChoicesFromJson();
-
-            // Assert
-            var shuffledChoices = _quizService.GetChoicesForQuestion(1).ToList();
-
-            // Sprawdzam, czy wybory zostały przetasowane
-            Assert.NotEqual(choices[0].ChoiceLetter, shuffledChoices[0].ChoiceLetter);
-            Assert.NotEqual(choices[1].ChoiceLetter, shuffledChoices[1].ChoiceLetter);
-            Assert.NotEqual(choices[2].ChoiceLetter, shuffledChoices[2].ChoiceLetter);
-
-            // Sprawdzam, czy litery zostały przypisane poprawnie
-            Assert.Equal('A', shuffledChoices[0].ChoiceLetter);
-            Assert.Equal('B', shuffledChoices[1].ChoiceLetter);
-            Assert.Equal('C', shuffledChoices[2].ChoiceLetter);
-        }
-
-        // 29
-        [Fact]
-        public void LoadCorrectSetFromJson_ShouldReturn_WhenCorrectSetFileDoesNotExist() // Oblany
+        [Fact] // Oblany
+        public void LoadCorrectSetFromJson_ShouldReturn_WhenCorrectSetFileDoesNotExist() // Ładuje: podaje wyjątek, jeśli plik nie istnieje
         {
             // Arrange
             _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<JsonHelper>>(It.IsAny<string>())).Throws(new FileNotFoundException());
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             // Act & Assert
             var exception = Record.Exception(() => _quizService.LoadCorrectSetFromJson());
             Assert.Null(exception);  // Sprawdzam, czy nie pojawił się wyjątek
         }
 
-        // 30
-        [Fact]
-        public void LoadCorrectSetFromJson_ShouldLoadCorrectAnswers_WhenFileIsValid() // Oblany
+        // 29
+        [Fact] // Oblany
+        public void LoadCorrectSetFromJson_ShouldLoadCorrectAnswers_WhenFileIsValid() // Ładuje: poprawne odpowiedzi, jeśli plik jest ok 
         {
             // Arrange
             var correctSet = new List<JsonHelper>
@@ -746,6 +915,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             };
 
             _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<JsonHelper>>(It.IsAny<string>())).Returns(correctSet);
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             // Setup mock dla GetCorrectAnswerForQuestion, by zwrócić odpowiedź dla pytania 1
             _mockCorrectAnswerService.Setup(x => x.GetCorrectAnswerForQuestion(1))
@@ -761,94 +938,22 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal("Answer A", correctAnswer.CorrectAnswerContent); // Sprawdzam, czy treść odpowiedzi to "Answer A"
         }
 
-        // 31
-        [Fact]
-        public void LoadCorrectSetFromJson_ShouldHandleInvalidJson() // Oblany
+        // 30
+        [Fact] // Oblany
+        public void AddQuestionToJson_ShouldAddQuestionAndSaveToFile() // Dodaje: pytanie i zapisuje
         {
             // Arrange
-            var incorrectSet = new List<JsonHelper>
-            {
-                new JsonHelper { QuestionNumber = -1, LetterCorrectAnswer = "Z", ContentCorrectAnswer = "" }
-            };
-
-            _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<JsonHelper>>(It.IsAny<string>())).Returns(incorrectSet);
-
-            // Act
-            _quizService.LoadCorrectSetFromJson();
-
-            // Assert
-
-            // Testuję, czy po załadowaniu błędnych danych, metoda GetCorrectAnswerForQuestion nie zwróci odpowiedzi dla pytania o id -1
-            var correctAnswer = _mockCorrectAnswerService.Object.GetCorrectAnswerForQuestion(-1);
-            Assert.Null(correctAnswer); // Oczekuję, że nie będzie poprawnej odpowiedzi dla tego pytania
-        }
-
-        // 32
-        [Fact]
-        public void LoadCorrectSetFromJson_ShouldHandleEmptyCorrectAnswers() // Oblany
-        {
-            // Arrange
-            var emptyCorrectAnswers = new List<JsonHelper> // Pusty zestaw poprawnych odpowiedzi
-            {
-                // Zawiera dane, ale bez odpowiedzi poprawnych
-                new JsonHelper { QuestionNumber = 1, LetterCorrectAnswer = null, ContentCorrectAnswer = null }
-            };
-
-            _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<JsonHelper>>(It.IsAny<string>())).Returns(emptyCorrectAnswers);
-
-            // Setup mock dla GetCorrectAnswerForQuestion, zwracający null
-            _mockCorrectAnswerService.Setup(x => x.GetCorrectAnswerForQuestion(It.IsAny<int>())).Returns((CorrectAnswer)null);
-
-            // Act
-            _quizService.LoadCorrectSetFromJson();
-
-            // Assert
-            var correctAnswer = _mockCorrectAnswerService.Object.GetCorrectAnswerForQuestion(1); // Sprawdzam wywołanie mocka
-            Assert.Null(correctAnswer); // Spodziewam się, że nie będzie poprawnej odpowiedzi
-        }
-
-        // Próba zastosowania refleksji
-        // 33
-        [Fact]
-        public void IsChoiceRelatedToQuestion_ShouldReturnTrue_WhenChoiceIsRelatedToQuestion() // Oblany
-        {
-            // Arrange
-            var choice = new Choice(15, 'A', "próbny wybór");
-            var question = new Question(1, "próbna treść");
-
-            // Używam refleksji, aby uzyskać dostęp do prywatnej metody
-            var methodInfo = typeof(QuizService).GetMethod("IsChoiceRelatedToQuestion", BindingFlags.NonPublic | BindingFlags.Static);
-            var result = (bool)methodInfo.Invoke(null, new object[] { choice, question });
-
-            // Assert
-            Assert.True(result); // Oczekuję, że wynik będzie True
-        }
-
-        // 34
-        [Fact]
-        public void IsChoiceRelatedToQuestion_ShouldReturnFalse_WhenChoiceIsNotRelatedToQuestion() // Oblany
-        {
-            // Arrange
-            var choice = new Choice (25, 'A', "próbny wybór");
-            var question = new Question (1, "próbna treść");
-
-            // Używam refleksji, aby uzyskać dostęp do prywatnej metody
-            var methodInfo = typeof(QuizService).GetMethod("IsChoiceRelatedToQuestion", BindingFlags.NonPublic | BindingFlags.Static);
-            var result = (bool)methodInfo.Invoke(null, new object[] { choice, question });
-
-            // Assert
-            Assert.False(result); // Oczekuję, że wynik będzie False
-        }
-
-        // Za pomocą publicznej metody
-        // 35
-        [Fact]
-        public void AddQuestionToJson_ShouldAddQuestionAndSaveToFile() // Oblany
-        {
-            // Arrange
-            var question = new Question(1, "próbna treść");
+            var question = new Question(1, "Z ilu części składa się powieść Alfreda Szklarskiego?");
 
             _mockJsonCommonClass.Setup(x => x.WriteToFile(It.IsAny<string>(), It.IsAny<List<Question>>()));
+
+            _quizService = new QuizService(
+                        _mockQuestionService.Object,
+                        _mockChoiceService.Object,
+                        _mockCorrectAnswerService.Object,
+                        _mockJsonCommonClass.Object,
+                        _mockFileWrapper.Object
+            );
 
             // Act
             _quizService.AddQuestionToJson(question);
@@ -858,22 +963,53 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Sprawdzam, czy metoda zapisu została wywołana raz i czy zawiera pytanie
         }
 
-        // Test przez mock
-        // 36
-        [Fact]
-        public void SaveQuestionsToJson_ShouldHandleFileWriteException() // Oblany
+        // 31
+        [Fact] // Oblany masakra
+        public void SaveQuestionsToJson_ShouldHandleFileWriteException() // Zachowuje: pytania do pliku json. Tu - wyrzuca wyjątek.
         {
             // Arrange
-            var question = new Question(1, "próbna treść");
+            var question = new Question(1, "Z ilu części składa się powieść Alfreda Szklarskiego?");
 
+            // Nadpisuję mocka odczytu JSON, żeby uniknąć błędu `JSON does not contain any questions`
+            _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Question>>(It.IsAny<string>()))
+                                .Returns(new List<Question>()); // Zapewniam, że JSON nie będzie pusty
+
+            _quizService = new QuizService(
+                _mockQuestionService.Object,
+                _mockChoiceService.Object,
+                _mockCorrectAnswerService.Object,
+                _mockJsonCommonClass.Object,
+                _mockFileWrapper.Object
+                );
+
+            // Symuluję błąd zapisu JSON
             _mockJsonCommonClass.Setup(x => x.WriteToFile(It.IsAny<string>(), It.IsAny<List<Question>>()))
-                            .Throws(new Exception("File write error"));
+                                .Throws(new Exception("Błąd podczas zapisywania pytań do pliku JSON"));
 
             // Act & Assert
-            var exception = Record.Exception(() => _quizService.AddQuestionToJson(question));
+            #if DEBUG
+            Exception exception = null;
+            try
+            {
+                _quizService.AddQuestionToJson(question);
+            }
+            catch (Exception ex)
+            {
+                exception = ex; // Przechwytuję wyjątek do zmiennej, żeby można go było zweryfikować w teście
+            }
 
-            Assert.NotNull(exception); // Oczekuję, że wystąpi wyjątek
-            Assert.IsType<Exception>(exception); // Sprawdzam, czy wyjątek to wyjątek typu Exception
+            // Jeśli wyjątek NIE został rzucony, test powinien nie przejść
+            Assert.NotNull(exception);
+
+            // Sprawdzam dokładną treść wyjątku
+            Assert.Equal("Błąd podczas zapisywania pytań do pliku JSON", exception.Message);
+            #else
+            var exception = Record.Exception(() => _quizService.AddQuestionToJson(question));
+            Assert.Null(exception);
+            #endif
+
+            // Weryfikuję, czy zapis JSON został wywołany raz
+            _mockJsonCommonClass.Verify(x => x.WriteToFile(It.IsAny<string>(), It.Is<List<Question>>(q => q.Contains(question))), Times.Once);
         }
     }
 }

@@ -2,6 +2,7 @@
 using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 
 namespace TomFromAlfred.QuizConsole.MyLearning
 {
@@ -46,13 +47,15 @@ namespace TomFromAlfred.QuizConsole.MyLearning
             var choiceService = new ChoiceService();
             var correctAnswerService = new CorrectAnswerService();
             var jsonService = new JsonCommonClass(); // Serwis JSON
+            var fileWrapper = new FileSupportWrapper(); 
 
             // Instancja QuizService
             var quizService = new QuizService(
                 questionService,
                 choiceService,
                 correctAnswerService,
-                jsonService
+                jsonService,
+                fileWrapper
             );
 
             // Inicjalizacja serwisów pomocniczych

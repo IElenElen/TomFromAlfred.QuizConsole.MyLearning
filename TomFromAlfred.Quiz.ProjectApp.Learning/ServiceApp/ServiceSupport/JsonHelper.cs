@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
+namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport
 {
     public class JsonHelper
     {
