@@ -80,7 +80,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
                    .AsEnumerable();
         }
 
-        public IEnumerable<Choice> GetChoicesForQuestion(int questionId) // Filtrowanie odpowiedzi na podstawie id pytania
+        public virtual IEnumerable<Choice> GetChoicesForQuestion(int questionId) // Filtrowanie odpowiedzi na podstawie id pytania
         {
             return _choices.Where(c => c.ChoiceId == questionId);
         }

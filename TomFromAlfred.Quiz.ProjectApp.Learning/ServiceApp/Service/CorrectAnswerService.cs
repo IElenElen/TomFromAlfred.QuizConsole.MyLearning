@@ -76,7 +76,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             Console.WriteLine($"Zaktualizowano poprawną odpowiedź o Id {entity.CorrectAnswerId}");
         }
 
-        public CorrectAnswer GetCorrectAnswerForQuestion(int questionId)
+        public virtual CorrectAnswer GetCorrectAnswerForQuestion(int questionId)
         {
             return _correctAnswers.TryGetValue(questionId, out var correctAnswer) ? correctAnswer : null;
         }

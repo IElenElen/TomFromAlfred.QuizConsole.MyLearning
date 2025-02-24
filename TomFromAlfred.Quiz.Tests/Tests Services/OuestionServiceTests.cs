@@ -97,8 +97,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal(countBefore, countAfter);  
         }
 
-            // 5
-            [Fact] // Zaliczony
+         // 5
+        [Fact] // Zaliczony
         public void Delete_ShouldDeleteExistingQuestion() // Usuwa: pytanie, które istnieje
         {
             // Arrange

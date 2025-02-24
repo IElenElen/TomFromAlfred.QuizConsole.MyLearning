@@ -8,6 +8,7 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 using Xunit.Abstractions;
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
     // Oblane: 0 / 18
@@ -210,7 +211,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 14
         [Fact] // Zaliczony
-        public void ResetScore_ShouldSetScoreToZero_AfterMultipleIncrements() // Podaje wynik: zwraca 0, po kilku odpowiedziach - przerwanie Quizu
+        public void ResetScore_ShouldSetScoreToZero_AfterMultipleIncrements_QuizBreak() // Podaje wynik: zwraca 0, po kilku odpowiedziach - przerwanie Quizu
         {
             // Arrange
             _output.WriteLine("=== Start test ===");

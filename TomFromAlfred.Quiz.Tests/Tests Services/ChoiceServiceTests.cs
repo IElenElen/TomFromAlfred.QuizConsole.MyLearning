@@ -10,6 +10,7 @@ using Xunit.Abstractions;
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
     // Ilość oblanych: 0 / 12
+    // Nr 8 wykrzaczył się
 
     public class ChoiceServiceTests
     {
@@ -151,7 +152,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 8
-        [Fact] // Zaliczony
+        [Fact] // Zaliczony  - wykrzaczył się
         public void Update_ShouldUpdateChoiceContent_WhenChoiceExists() // Aktualizuje: zmienia treść wyboru, jeśli wybór istnieje
         {
             // Arrange: Tworzę wybór do zaktualizowania 

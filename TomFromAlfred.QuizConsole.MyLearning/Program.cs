@@ -35,7 +35,12 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
      Serwisy: podserwis dla Entity, serwisy dla Quizu, Punktacji i Zakończenia oraz dla pomocnika. 
 
-     Testy w xunit: jednostkowe i integracyjne
+     Testy w xUnit: jednostkowe i integracyjne - otestowanie metod serwisowych. 
+
+     Dodanie [assembly: CollectionBehavior(DisableTestParallelization = true)] przed namespace w klasie testowej: ScoreServiceTests.
+
+     26 testów do analizy / 118 całość
+
      */
 
     public class Program // Zmiana widoczności kolejnych klas
