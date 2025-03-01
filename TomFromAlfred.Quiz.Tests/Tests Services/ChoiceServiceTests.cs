@@ -10,7 +10,6 @@ using Xunit.Abstractions;
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
     // Ilość oblanych: 0 / 12
-    // Nr 8 wykrzaczył się
 
     public class ChoiceServiceTests
     {
@@ -152,19 +151,33 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 8
-        [Fact] // Zaliczony  - wykrzaczył się
+        [Fact] // Zaliczony 
         public void Update_ShouldUpdateChoiceContent_WhenChoiceExists() // Aktualizuje: zmienia treść wyboru, jeśli wybór istnieje
         {
-            // Arrange: Tworzę wybór do zaktualizowania 
+            // Arrange
             var existingChoiceToUpdateContent = new Choice(11, 'A', "Jesień");
 
-            // Act: Aktualizuję wybór (zmiana treści)
+            // Dodaję wybór do kolekcji, jeśli test tego wymaga
+            _choiceService.Add(existingChoiceToUpdateContent);
+
+            // Act
             existingChoiceToUpdateContent.ChoiceContent = "Zmieniona Jesień";
             _choiceService.Update(existingChoiceToUpdateContent);
 
+            // Pobieram wszystkie wybory po aktualizacji
+            var allChoicesAfterUpdate = _choiceService.GetChoicesForQuestion(11);
+
+            Console.WriteLine("Po aktualizacji:");
+            foreach (var choice in allChoicesAfterUpdate)
+            {
+                Console.WriteLine($"ChoiceLetter: {choice.ChoiceLetter}, Content: {choice.ChoiceContent}");
+            }
+
             // Assert: Sprawdzam, czy treść została zaktualizowana
-            var updatedChoiceContent = _choiceService.GetChoicesForQuestion(11).First(c => c.ChoiceLetter == 'A');
-            Assert.Equal("Zmieniona Jesień", updatedChoiceContent.ChoiceContent);
+            var updatedChoiceContent = allChoicesAfterUpdate.FirstOrDefault(c => c.ChoiceLetter == 'A');
+
+            Assert.NotNull(updatedChoiceContent); // Zapewnia, że wybór istnieje
+            Assert.Equal("Zmieniona Jesień", updatedChoiceContent!.ChoiceContent); // Sprawdza, czy treść została zaktualizowana
         }
 
         // 9
@@ -175,11 +188,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             var existingChoice = new Choice(12, 'A', "Kraków") { IsActive = true };
             _choiceService.Add(existingChoice);
 
-            // Tworzę obiekt do aktualizacji
-            var updatedChoice = new Choice(12, 'B', "Kraków z literą B") { IsActive = true };
-
-            // Act - Aktualizuję wybór
-            _choiceService.Update(updatedChoice);
+            // Act - Aktualizuję literę wyboru
+            _choiceService.UpdateChoiceLetter(12, 'B');
 
             // Debugging - Sprawdzam, co zwraca GetChoicesForQuestion
             var updatedChoices = _choiceService.GetChoicesForQuestion(12);
@@ -192,7 +202,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Assert - Sprawdzam, czy zmiana się powiodła
             var updatedChoiceWithNewLetter = updatedChoices.FirstOrDefault(c => c.ChoiceLetter == 'B');
             Assert.NotNull(updatedChoiceWithNewLetter);
-            Assert.Equal("Kraków z literą B", updatedChoiceWithNewLetter.ChoiceContent);
+            Assert.Equal("Kraków", updatedChoiceWithNewLetter.ChoiceContent);
 
             // Sprawdzam, czy stary wybór z literą 'A' został usunięty
             var oldChoice = updatedChoices.FirstOrDefault(c => c.ChoiceLetter == 'A');

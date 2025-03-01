@@ -23,7 +23,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
             }
         }
 
-        // Odczyt danych z pliku JSON
         public virtual T ReadFromFile<T>(string filePath)
         {
             if (!File.Exists(filePath))
@@ -45,7 +44,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
             return data ?? throw new JsonException($"Nie udało się zdeserializować danych z pliku {filePath}. Upewnij się, że plik zawiera poprawny JSON.");
         }
 
-        // Zapis danych do pliku JSON
         public virtual void WriteToFile<T>(string filePath, T data)
         {
             if (data == null)

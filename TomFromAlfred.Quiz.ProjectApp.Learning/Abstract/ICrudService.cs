@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.Abstract
 {
+    // Mam ćwiczyć tworzenie interfejsu zatem tworzę interfejs dla CRUD
     public interface ICrudService<T> where T : class // Interfejs dla operacji Crud
     {
         void Add(T entity);

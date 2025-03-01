@@ -99,16 +99,40 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
                 return;
             }
 
-            var existingChoice = _choices.FirstOrDefault(c => c.ChoiceId == updatedChoice.ChoiceId && c.ChoiceLetter == 'A');
+            var existingChoice = _choices.FirstOrDefault(c => c.ChoiceId == updatedChoice.ChoiceId);
             if (existingChoice == null)
             {
                 Console.WriteLine($"Nie znaleziono wyboru do aktualizacji: Id {updatedChoice.ChoiceId}");
                 return;
             }
 
-            // Aktualizuję wybór
-            existingChoice.ChoiceLetter = updatedChoice.ChoiceLetter;
             existingChoice.ChoiceContent = updatedChoice.ChoiceContent;
+            Console.WriteLine($"Zaktualizowano wybór: Id {existingChoice.ChoiceId}, Treść: {existingChoice.ChoiceContent}");
+        }
+
+        // Aktualizacja litery wyboru
+        public void UpdateChoiceLetter(int choiceId, char newLetter) 
+        {
+            var existingChoice = _choices.FirstOrDefault(c => c.ChoiceId == choiceId);
+
+            if (existingChoice == null)
+            {
+                Console.WriteLine($"Nie znaleziono wyboru do aktualizacji litery: Id {choiceId}");
+                return;
+            }
+
+            // Sprawdzam, czy litera już istnieje w tej samej grupie pytań
+            bool letterExists = _choices.Any(c => c.ChoiceLetter == newLetter && c.ChoiceId != choiceId);
+
+            if (letterExists)
+            {
+                Console.WriteLine($"Błąd: Litera '{newLetter}' już istnieje dla innego wyboru!");
+                return;
+            }
+
+            Console.WriteLine($"Zmieniam literę wyboru: Id {choiceId}, Stara litera: {existingChoice.ChoiceLetter}, Nowa litera: {newLetter}");
+
+            existingChoice.ChoiceLetter = newLetter;
         }
     }
 }

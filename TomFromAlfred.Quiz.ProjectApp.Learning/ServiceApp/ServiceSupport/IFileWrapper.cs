@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport
 {
-    public interface IFileWrapper
+
+    // Interfejs dla testu
+    public interface IFileWrapper 
     {
         bool Exists(string filePath);
     }

@@ -10,6 +10,7 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
      Pytanie to jednostka. Pojedyncze pytanie ma właściwości.
      Właściwości Question to Id - generowane przez system oraz treść. 
      Dodatkowo pytanie ma oznaczoną aktywność.
+
      Na jakiej podstawie łaczę pytanie z jego zestawem wyboru???
      */
     public class Question // Klasa publiczna, bo pytanie to podstawa w budowie Quizu

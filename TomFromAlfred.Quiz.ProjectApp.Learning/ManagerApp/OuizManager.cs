@@ -31,14 +31,26 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             Console.WriteLine();
 
             var questions = ManagerHelper.Shuffle(_quizService.GetAllQuestions().ToList());
-            var managerHelper = new ManagerHelper(questions);
-
+            var managerHelper = new ManagerHelper(questions, _quizService);
             _scoreService.StartNewQuiz(questions.Count);
             int displayNumber = 1;
-            bool completedAllQuestions = false; 
+            bool completedAllQuestions = false;
+
+            int iterationCount = 0;
+            int maxIterations = 50; // Zapobiegam nieskończonej pętli
 
             while (managerHelper.HasNext())
             {
+
+                iterationCount++;
+                if (iterationCount > maxIterations)
+                {
+                    Console.WriteLine("Przekroczono limit iteracji, przerywamy pętlę!");
+                    break;
+                }
+
+                Console.WriteLine("Iteracja {iterationCount}");
+
                 var currentQuestion = managerHelper.GetCurrentQuestion();
 
                 Console.WriteLine($"{displayNumber}, {currentQuestion.QuestionContent}");
@@ -64,8 +76,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                         // Sprawdzenie czy użytkownik chce zakończyć quiz
                         if (_endService.ShouldEnd(userInput))
                         {
-                            // Jeśli nie ma więcej pytań, quiz uznany za ukończony
-                            _endService.EndQuiz(managerHelper.HasNext() == false);
+                            // Jeśli nie ma więcej pytań, Quiz uznany za ukończony
+                            Console.WriteLine(_endService.EndQuiz(managerHelper.HasNext() == false));
+
+                            return; // TERAZ NAPRAWDĘ KOŃCZĘ QUIZ!
                         }
 
                         if (userInput != "1" && userInput != "2")
@@ -132,42 +146,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
             Console.WriteLine("Koniec pytań.");
             _endService.EndQuiz(completedAllQuestions);
-        }
-        
-
-        public void AddQuestion() // Metoda dodawania pytania // Jest mi tu potrzebna???
-        {
-            Console.Write("Podaj treść pytania: ");
-            var content = Console.ReadLine();
-
-            Console.WriteLine("Dodaj odpowiedzi (wpisz po jednej, kończąc ENTER):");
-            var choices = new List<string>();
-            char choiceLetter = 'A';
-
-            while (true)
-            {
-                Console.Write($"{choiceLetter}: ");
-                var choiceContent = Console.ReadLine();
-
-                if (string.IsNullOrWhiteSpace(choiceContent))
-                    break;
-
-                choices.Add(choiceContent);
-                choiceLetter++;
-            }
-
-            Console.Write("Podaj poprawną odpowiedź (literę A, B, itd.): ");
-            var correctAnswerLetter = Console.ReadLine()?.ToUpper();
-
-            if (correctAnswerLetter == null || correctAnswerLetter.Length != 1 || correctAnswerLetter[0] < 'A' || correctAnswerLetter[0] >= 'A' + choices.Count)
-            {
-                Console.WriteLine("Nieprawidłowa odpowiedź. Dodawanie pytania anulowane.");
-                return;
-            }
-
-            var question = new Question(_quizService.GetAllQuestions().Max(q => q.QuestionId) + 1, content);
-            _quizService.AddQuestionToJson(question);
-            Console.WriteLine("Dodano nowe pytanie!");
         }
     }
 }

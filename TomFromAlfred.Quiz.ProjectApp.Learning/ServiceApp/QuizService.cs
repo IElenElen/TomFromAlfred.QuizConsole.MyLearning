@@ -33,9 +33,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         private readonly ChoiceService _choiceService;
         private readonly CorrectAnswerService _correctAnswerService;
 
-        private List<Question> _jsonQuestions = new();
-        private Dictionary<int, List<Choice>> _jsonChoices = new();
-        private readonly Dictionary<int, string> _correctAnswers = new();
+        protected List<Question> _jsonQuestions = new();
+        protected Dictionary<int, List<Choice>> _jsonChoices = new();
+        protected Dictionary<int, string> _correctAnswers = new();
 
         public QuizService(
                 QuestionService questionService,
@@ -109,20 +109,33 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         {
             var choices = GetChoicesForQuestion(questionId).ToList();
             var random = new Random();
-            var shuffledChoices = choices.OrderBy(_ => random.Next()).ToList();
+            List<Choice> shuffledChoices;
+
+            // Upewniam się, że lista się zmieniła (ograniczam liczbę prób do uniknięcia nieskończonej pętli)
+            int maxAttempts = 10;
+            int attempts = 0;
+            do
+            {
+                shuffledChoices = choices.OrderBy(_ => random.Next()).ToList();
+                attempts++;
+            } while (attempts < maxAttempts && shuffledChoices.SequenceEqual(choices));
 
             letterMapping = new Dictionary<char, char>();
             char newLetter = 'A';
 
+            var finalChoices = new List<Choice>();
+
             foreach (var choice in shuffledChoices)
             {
-                letterMapping[newLetter] = choice.ChoiceLetter; // Nowa litera -> Oryginalna litera
+                letterMapping[newLetter] = choice.ChoiceLetter; // Nowa → Oryginalna litera
                 Console.WriteLine($"Mapowanie: {newLetter} → {choice.ChoiceLetter}");
-                choice.ChoiceLetter = newLetter; // Aktualizuj literę do przetasowanej
+
+                // Tworzę nowy obiekt zamiast modyfikować oryginał
+                finalChoices.Add(new Choice(choice.ChoiceId, newLetter, choice.ChoiceContent));
                 newLetter++;
             }
 
-            return shuffledChoices;
+            return finalChoices;
         }
 
         public virtual bool CheckAnswer(int questionId, char userChoiceLetter, Dictionary<char, char> letterMapping)
@@ -132,73 +145,91 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 Console.WriteLine($"Mapowanie liter: Nowa: {mapping.Key}, Oryginalna: {mapping.Value}");
             }
 
-            if (letterMapping != null && letterMapping.TryGetValue(userChoiceLetter, out var originalLetter))
+            // Pobierz zamapowaną literę użytkownika
+            char originalLetter;
+            if (letterMapping != null && letterMapping.TryGetValue(userChoiceLetter, out originalLetter))
             {
-                Console.WriteLine($"Sprawdzanie odpowiedzi: Użytkownik: {userChoiceLetter}, Mapa: {originalLetter}");
+                Console.WriteLine($"Sprawdzanie odpowiedzi: Użytkownik: {userChoiceLetter}, Zamapowana: {originalLetter}");
+            }
+            else
+            {
+                originalLetter = userChoiceLetter;
+                Console.WriteLine($"Brak mapowania dla {userChoiceLetter}, używam oryginalnej litery.");
+            }
 
-                // Sprawdź odpowiedź z JSON
-                if (_correctAnswers.TryGetValue(questionId, out var correctLetter))
-                {
-                    Console.WriteLine($"Z JSON: Użytkownik: {originalLetter}, Poprawna: {correctLetter}");
-                    if (char.ToUpper(originalLetter) == char.ToUpper(correctLetter[0]))
-                    {
-                        Console.WriteLine("Poprawna odpowiedź z JSON.");
-                        return true;
-                    }
-                }
-
-                // Sprawdź odpowiedź z encji
-                var correctAnswerFromService = _correctAnswerService.GetCorrectAnswerForQuestion(questionId);
-                if (correctAnswerFromService != null)
-                {
-                    var correctLetterFromService = GetLetterForAnswer(correctAnswerFromService.CorrectAnswerContent, questionId);
-                    Console.WriteLine($"Z ENCJI: Użytkownik: {originalLetter}, Poprawna: {correctLetterFromService}");
-                    if (char.ToUpper(userChoiceLetter) == char.ToUpper(correctLetterFromService))
-                    {
-                        Console.WriteLine("Poprawna odpowiedź z encji CorrectAnswer.");
-                        return true;
-                    }
-                }
-
-                // Jeśli dotarłam tutaj, wszystkie odpowiedzi były błędne
-                Console.WriteLine("Zła odpowiedź.");
+            // Pobranie treści odpowiedzi użytkownika (po mapowaniu!)
+            var userAnswerContent = GetAnswerContentFromLetter(originalLetter, questionId);
+            if (userAnswerContent == null)
+            {
+                Console.WriteLine("Nie znaleziono treści dla litery użytkownika. Zwracam fałsz.");
                 return false;
             }
 
-            Console.WriteLine($"Brak mapowania dla litery {userChoiceLetter}. Odpowiedź niepoprawna.");
+            // Pobranie treści poprawnej odpowiedzi dla danego pytania
+            if (_correctAnswers.TryGetValue(questionId, out var correctLetter))
+            {
+                // Zamiana poprawnej litery na jej faktyczną treść
+                var correctAnswerContent = GetAnswerContentFromLetter(correctLetter[0], questionId);
+                if (correctAnswerContent == null)
+                {
+                    Console.WriteLine("Nie znaleziono poprawnej odpowiedzi w JSON. Zwracam fałsz.");
+                    return false;
+                }
+
+                Console.WriteLine($"Z JSON: Użytkownik: \"{userAnswerContent}\", Poprawna: \"{correctAnswerContent}\"");
+
+                if (string.Equals(userAnswerContent, correctAnswerContent, StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("Poprawna odpowiedź z JSON.");
+                    return true;
+                }
+            }
+
+            // Pobranie poprawnej odpowiedzi z serwisu, jeśli nie ma jej w JSON
+            var correctAnswerFromService = _correctAnswerService.GetCorrectAnswerForQuestion(questionId);
+            if (correctAnswerFromService != null)
+            {
+                Console.WriteLine($"Z ENCJI: Użytkownik: \"{userAnswerContent}\", Poprawna: \"{correctAnswerFromService.CorrectAnswerContent}\"");
+
+                if (string.Equals(userAnswerContent, correctAnswerFromService.CorrectAnswerContent, StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("Poprawna odpowiedź z encji CorrectAnswer.");
+                    return true;
+                }
+            }
+
+            // Jeśli dotarłam tutaj, odpowiedź jest błędna
+            Console.WriteLine("Zła odpowiedź.");
             return false;
         }
 
-        public virtual char GetLetterForAnswer(string answerContent, int questionId)
+        public virtual string? GetAnswerContentFromLetter(char answerLetter, int questionId)
         {
-            Console.WriteLine($"Szukam litery dla odpowiedzi: {answerContent} w pytaniu Id {questionId}");
+            Console.WriteLine($"Szukam treści odpowiedzi dla litery: {answerLetter} w pytaniu Id {questionId}");
 
-            // Pobierz wszystkie odpowiedzi dla danego pytania
             var choices = GetChoicesForQuestion(questionId).ToList();
 
-            // Spróbuj znaleźć pasującą odpowiedź (ignorując wielkość liter, jeśli to istotne)
-            var match = choices.FirstOrDefault(c =>
-                string.Equals(c.ChoiceContent, answerContent, StringComparison.OrdinalIgnoreCase));
+            if (!choices.Any())
+            {
+                Console.WriteLine($"Brak odpowiedzi dla pytania {questionId}.");
+                return null;
+            }
 
+            var match = choices.FirstOrDefault(c => c.ChoiceLetter == answerLetter);
             if (match != null)
             {
-                Console.WriteLine($"Znaleziono odpowiedź: {match.ChoiceContent} → Litera: {match.ChoiceLetter}");
-                return match.ChoiceLetter;
+                Console.WriteLine($"Znaleziono treść odpowiedzi: \"{match.ChoiceContent}\" dla litery {answerLetter}");
+                return match.ChoiceContent;
             }
 
-            // Wyświetl wszystkie dostępne odpowiedzi, jeśli brak dopasowania
-            Console.WriteLine($"Dane wejściowe do wyszukiwania: answerContent = '{answerContent}'");
-            foreach (var choice in choices)
-            {
-                Console.WriteLine($"Dostępne odpowiedzi: ChoiceContent = '{choice.ChoiceContent}', ChoiceLetter = '{choice.ChoiceLetter}'");
-            }
-
-            Console.WriteLine("Zwracam '?' jako domyślną wartość.");
-            return '?';
+            Console.WriteLine("Nie znaleziono dopasowania dla litery.");
+            return null;
         }
 
         public virtual void LoadQuestionsFromJson(string filePath)
         {
+            Console.WriteLine("Wywołano LoadQuestionsFromJson");
+
             if (!File.Exists(filePath)) // Zmieniam z QuestionsFilePath na parametr filePath
             {
                 Console.WriteLine($"Plik {filePath} nie istnieje.");
@@ -211,8 +242,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 _jsonQuestions = _jsonService.ReadFromFile<List<Question>>(filePath) ?? new List<Question>();
 
                 // Jeżeli lista jest pusta, rzucam wyjątek
-                if (_jsonQuestions.Count == 0)
+                if (_jsonQuestions == null)
                 {
+                    Console.WriteLine("JsonQuestions jest NULL!");
+                }
+
+                else if (_jsonQuestions.Count == 0)
+                {
+                    Console.WriteLine("JSON pytania są puste - rzucam wyjątek!");
                     throw new JsonException("JSON does not contain any questions");
                 }
 

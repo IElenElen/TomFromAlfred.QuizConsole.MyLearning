@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport
 {
-    public class FileSupportWrapper : IFileWrapper
+    public class FileSupportWrapper : IFileWrapper // Na potrzeby testu
     {
         public bool Exists(string filePath)
         {

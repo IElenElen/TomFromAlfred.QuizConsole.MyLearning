@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport
 {
+    // Wsparcie dla Correct Answer, bo entity różne od pliku jsona
     public class JsonHelper
     {
         public int QuestionNumber { get; set; } // Id pytania
