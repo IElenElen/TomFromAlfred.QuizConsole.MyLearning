@@ -39,7 +39,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
      Dodanie [assembly: CollectionBehavior(DisableTestParallelization = true)] przed namespace w klasie testowej: ScoreServiceTests.
 
-     17 testów do analizy / 117 całość
+     10 testów do analizy / 109 całość
      */
 
     public class Program // Zmiana widoczności kolejnych klas

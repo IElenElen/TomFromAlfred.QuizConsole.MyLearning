@@ -22,14 +22,16 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             _currentIndex = 0;
         }
 
-        public bool HasNext()
+        public int GetCurrentIndex() => _currentIndex; // Na potrzeby testu
+
+        public bool HasNext() // Czy to mi jest potrzebne???
         {
-            return _currentIndex < _questions.Count;
+            return _currentIndex < _questions.Count - 1;
         }
 
         public Question GetCurrentQuestion()
         {
-            if (!HasNext())
+            if (_currentIndex >= _questions.Count) // Sprawdzam, czy indeks nie jest za duży
                 throw new InvalidOperationException("Brak kolejnych pytań.");
 
             return _questions[_currentIndex];
@@ -37,9 +39,13 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
         public void NextQuestion()
         {
-            if (HasNext())
+            if (_currentIndex < _questions.Count - 1) // Zabezpieczenie przed przekroczeniem listy
             {
                 _currentIndex++;
+            }
+            else
+            {
+                throw new InvalidOperationException("Nie można przejść dalej, brak kolejnych pytań.");
             }
         }
 

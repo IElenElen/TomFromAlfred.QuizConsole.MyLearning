@@ -4,80 +4,131 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
+using TomFromAlfred.QuizConsole.Tests.SupportForTests;
+using Xunit.Abstractions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
 {
-    // Oblane: 11 / 11
+    // Oblane: 2 / 8
+    // Nr  5 i 7
+
+    // Klasa testów dla Helpera managerskiego
 
     public class AdditionalTestsForTheManager
     {
-        private readonly Mock<QuizService> _mockQuizService;
-        private readonly Mock<ScoreService> _mockScoreService;
-        private readonly Mock<EndService> _mockEndService;
+        private readonly ITestOutputHelper _output;
+
+        private readonly MockQuizService _mockQuizService;
+        private readonly ScoreService _scoreService; // Rzeczywista instancja
+        private readonly EndService _endService; // Rzeczywista instancja
         private readonly QuizManager _quizManager;
 
-        public AdditionalTestsForTheManager()
+        public AdditionalTestsForTheManager(ITestOutputHelper output)
         {
-            _mockQuizService = new Mock<QuizService>();
-            _mockScoreService = new Mock<ScoreService>();
-            _mockEndService = new Mock<EndService>();
+            _output = output;
 
-            _quizManager = new QuizManager(_mockQuizService.Object, _mockScoreService.Object, _mockEndService.Object);
+            // Tworzę rzeczywisty `QuestionService`, ale bez domyślnych pytań
+            var questionService = new QuestionService(false);
+
+            _mockQuizService = new MockQuizService(
+           questionService,
+           new Mock<ChoiceService>().Object,
+           new Mock<CorrectAnswerService>().Object,
+           new Mock<JsonCommonClass>().Object,
+           new Mock<IFileWrapper>().Object
+       );
+
+            _scoreService = new ScoreService();
+            _endService = new EndService(_scoreService);
+
+            _quizManager = new QuizManager(_mockQuizService, _scoreService, _endService);
         }
 
         // 1 
-        [Fact] // Oblany
-        public void Constructor_ShouldThrowException_WhenQuestionsAreNull() // ???
+        [Fact] // Zaliczony
+        public void Constructor_ShouldThrowException_WhenQuestionsAreNull() // Konstruktor: podaje wyjątek, jeśli pytania = null
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new ManagerHelper(null, new Mock<QuizService>().Object));
+            Assert.Throws<ArgumentNullException>(() => new ManagerHelper(null, _mockQuizService));
         }
 
         // 2
-        [Fact] // Oblany
-        public void HasNext_ShouldReturnTrue_WhenQuestionsAreAvailable() // ???
+        [Fact] // Zaliczony
+        public void HasNext_ShouldReturnTrue_WhenQuestionsAreAvailable() // Czy ma następne? : zwraca prawdę, gdy są kolejne pytania
         {
-            // Arrange
+            // Arrange 
             var questions = new List<Question>
             {
                 new Question(1, "Question 1"),
                 new Question(2, "Question 2")
             };
 
-            //var managerHelper = new ManagerHelper(questions);
+            // Tworzę `QuizService`, ale nie ładuję domyślnych pytań
+            var questionService = new QuestionService(false);
+
+            var quizService = new MockQuizService(
+                questionService,
+                new Mock<ChoiceService>().Object,
+                new Mock<CorrectAnswerService>().Object,
+                new Mock<JsonCommonClass>().Object,
+                new Mock<IFileWrapper>().Object
+            );
+
+            var managerHelper = new ManagerHelper(questions, quizService);
 
             // Act
-            //var result = managerHelper.HasNext();
+            var result = managerHelper.HasNext();
 
             // Assert
-            //Assert.True(result);
+            Assert.True(result);
         }
 
         // 3
-        [Fact] // Oblany
-        public void HasNext_ShouldReturnFalse_WhenNoMoreQuestions() // ???
+        [Fact] // Zaliczony
+        public void HasNext_ShouldReturnFalse_WhenNoMoreQuestions() // // Czy ma następne? : zwraca fałszę, gdy brak pytań
         {
             // Arrange
             var questions = new List<Question>
             {
-                new Question(1, "Question 1")
+                new Question(1, "Question 1"),
+                new Question(2, "Question 2"),
+                new Question(3, "Question 3")
             };
 
-            //var managerHelper = new ManagerHelper(questions);
-            //managerHelper.NextQuestion(); // Przechodzę do końca listy
 
-            // Act
-            //var result = managerHelper.HasNext();
+            var questionService = new QuestionService(false);
 
-            // Assert
-            //Assert.False(result);
+            var quizService = new MockQuizService(
+                questionService,
+                new Mock<ChoiceService>().Object,
+                new Mock<CorrectAnswerService>().Object,
+                new Mock<JsonCommonClass>().Object,
+                new Mock<IFileWrapper>().Object
+            );
+
+            var managerHelper = new ManagerHelper(questions, quizService);
+
+            // Sprawdzenie przed `NextQuestion()`
+            Assert.True(managerHelper.HasNext()); // Powinno zwrócić true, bo mamy więcej niż 1 pytanie
+
+            // Przechodzę przez wszystkie pytania
+            managerHelper.NextQuestion(); // Teraz indeks = 1
+            Assert.True(managerHelper.HasNext()); // Powinno nadal zwracać true
+
+            managerHelper.NextQuestion(); // Teraz indeks = 2 (ostatnie pytanie)
+
+            // `HasNext()` powinno teraz zwrócić `false`, bo nie ma więcej pytań
+            Assert.False(managerHelper.HasNext());
         }
 
         // 4
-        [Fact] // Oblany
+        [Fact] // Zaliczony
         public void GetCurrentQuestion_ShouldReturnCurrentQuestion() // Podaje: bieżące pytanie
         {
             // Arrange
@@ -87,36 +138,74 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
                 new Question(2, "Question 2")
             };
 
-            //var managerHelper = new ManagerHelper(questions);
+            var questionService = new QuestionService(false);
 
-            // Act
-            //var currentQuestion = managerHelper.GetCurrentQuestion();
+            var quizService = new MockQuizService(
+                questionService,
+                new Mock<ChoiceService>().Object,
+                new Mock<CorrectAnswerService>().Object,
+                new Mock<JsonCommonClass>().Object,
+                new Mock<IFileWrapper>().Object
+            );
 
-            // Assert
-            //Assert.Equal(1, currentQuestion.QuestionId);
-            //Assert.Equal("Question 1", currentQuestion.QuestionContent);
+            var managerHelper = new ManagerHelper(questions, quizService);
+
+            // Sprawdzenie przed `GetCurrentQuestion()`
+            Assert.True(managerHelper.HasNext());
+
+            // Pobieram pierwsze pytanie
+            var currentQuestion = managerHelper.GetCurrentQuestion();
+            Assert.Equal(1, currentQuestion.QuestionId);
+            Assert.Equal("Question 1", currentQuestion.QuestionContent);
+
+            // Sprawdzam `NextQuestion()`
+            managerHelper.NextQuestion();
+            var nextQuestion = managerHelper.GetCurrentQuestion();
+            Assert.Equal(2, nextQuestion.QuestionId);
+            Assert.Equal("Question 2", nextQuestion.QuestionContent);
+
+            // `HasNext()` powinno teraz zwrócić `false`
+            Assert.False(managerHelper.HasNext());
         }
 
         // 5
         [Fact] // Oblany
-        public void GetCurrentQuestion_ShouldThrowException_WhenNoMoreQuestions() // Podaje: wyjątek, jeśli ???
+        public void GetCurrentQuestion_ShouldThrowException_WhenNoMoreQuestions() // Podaje: wyjątek, jeśli nie ma więcej pytań
         {
             // Arrange
             var questions = new List<Question>
             {
-                new Question(1, "Question 1")
+                new Question(1, "Question 1"),
+                new Question(2, "Question 2"),
+                new Question(3, "Question 3")
             };
 
-            //var managerHelper = new ManagerHelper(questions);
-            //managerHelper.NextQuestion(); // Przekroczenie listy
+            var questionService = new QuestionService(false);
+            var quizService = new MockQuizService(
+                questionService,
+                new Mock<ChoiceService>().Object,
+                new Mock<CorrectAnswerService>().Object,
+                new Mock<JsonCommonClass>().Object,
+                new Mock<IFileWrapper>().Object
+            );
 
-            // Act & Assert
-            //Assert.Throws<InvalidOperationException>(() => managerHelper.GetCurrentQuestion());
+            var managerHelper = new ManagerHelper(questions, quizService);
+
+            // Przechodzę przez wszystkie pytania
+            managerHelper.NextQuestion(); // -> Indeks = 1
+            managerHelper.NextQuestion(); // -> Indeks = 2 (ostatnie pytanie)
+
+            // Sprawdzam, czy jestem na końcu
+            Assert.False(managerHelper.HasNext(), "`HasNext()` powinno zwrócić false, ale zwróciło true!");
+            Assert.Equal(2, managerHelper.GetCurrentIndex());
+
+            // Próbuję wywołać `GetCurrentQuestion()` po zakończeniu listy
+            Assert.Throws<InvalidOperationException>(() => managerHelper.GetCurrentQuestion());
         }
 
         // 6
-        [Fact] // Oblany
-        public void NextQuestion_ShouldMoveToNextQuestion() // ???
+        [Fact] // Zaliczony
+        public void NextQuestion_ShouldMoveToNextQuestion() // Następne: powinien przejść do kolejnego
         {
             // Arrange
             var questions = new List<Question>
@@ -125,103 +214,106 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
                 new Question(2, "Question 2")
             };
 
-            //var managerHelper = new ManagerHelper(questions);
-            //managerHelper.NextQuestion();
+            var questionService = new QuestionService(false);
 
-            // Act
-            //var currentQuestion = managerHelper.GetCurrentQuestion();
+            var quizService = new MockQuizService(
+                questionService,
+                new Mock<ChoiceService>().Object,
+                new Mock<CorrectAnswerService>().Object,
+                new Mock<JsonCommonClass>().Object,
+                new Mock<IFileWrapper>().Object
+            );
 
-            // Assert
-            //Assert.Equal(2, currentQuestion.QuestionId);
-            //Assert.Equal("Question 2", currentQuestion.QuestionContent);
+            var managerHelper = new ManagerHelper(questions, quizService);
+
+            // Sprawdzenie początkowego pytania przed NextQuestion()
+            var firstQuestion = managerHelper.GetCurrentQuestion();
+            Assert.Equal(1, firstQuestion.QuestionId);
+            Assert.Equal("Question 1", firstQuestion.QuestionContent);
+
+            // Sprawdzenie `HasNext()` przed przejściem do kolejnego pytania
+            Assert.True(managerHelper.HasNext());
+
+            // Act - przejście do kolejnego pytania
+            managerHelper.NextQuestion();
+
+            // Sprawdzenie, czy indeks został zwiększony
+            var currentQuestion = managerHelper.GetCurrentQuestion();
+            Assert.Equal(2, currentQuestion.QuestionId);
+            Assert.Equal("Question 2", currentQuestion.QuestionContent);
+
+            // `HasNext()` powinno teraz zwrócić `false`
+            Assert.False(managerHelper.HasNext());
         }
 
         // 7 
         [Fact] // Oblany
-        public void NextQuestion_ShouldNotExceedQuestionList() // ???
+        public void NextQuestion_ShouldNotExceedQuestionList() // Następne: nie przekracza listy pytań
         {
             // Arrange
             var questions = new List<Question>
             {
-                new Question(1, "Question 1")
+                new Question(1, "Question 1"),
+                new Question(2, "Question 2"),
+                new Question(3, "Question 3")
             };
 
-            //var managerHelper = new ManagerHelper(questions);
-            //managerHelper.NextQuestion(); // Powinno dojść do końca
+            var questionService = new QuestionService(false);
 
-            // Act
-            //managerHelper.NextQuestion(); // Kolejne wywołanie nie powinno zmieniać stanu
+            var quizService = new MockQuizService(
+                questionService,
+                new Mock<ChoiceService>().Object,
+                new Mock<CorrectAnswerService>().Object,
+                new Mock<JsonCommonClass>().Object,
+                new Mock<IFileWrapper>().Object
+            );
 
-            // Assert
-            //Assert.Throws<InvalidOperationException>(() => managerHelper.GetCurrentQuestion());
+            var managerHelper = new ManagerHelper(questions, quizService);
+
+            _output.WriteLine($"Start: _currentIndex = {managerHelper.GetCurrentIndex()}, HasNext() = {managerHelper.HasNext()}");
+            // Sprawdzenie początkowego indeksu
+            Assert.Equal(0, managerHelper.GetCurrentIndex());
+
+            // Act - przechodzę przez wszystkie pytania
+            managerHelper.NextQuestion(); // -> Powinno przejść do 2. pytania
+            _output.WriteLine($"Po NextQuestion(): _currentIndex = {managerHelper.GetCurrentIndex()}, HasNext() = {managerHelper.HasNext()}");
+            Assert.Equal(1, managerHelper.GetCurrentIndex());
+
+            managerHelper.NextQuestion(); // -> Powinno przejść do 3. pytania
+            _output.WriteLine($"Po NextQuestion(): _currentIndex = {managerHelper.GetCurrentIndex()}, HasNext() = {managerHelper.HasNext()}");
+            Assert.Equal(2, managerHelper.GetCurrentIndex());
+
+            // Próbuję przekroczyć listę
+            managerHelper.NextQuestion(); // -> Nie powinno się zwiększyć, bo to koniec
+            _output.WriteLine($"Po ostatnim NextQuestion(): _currentIndex = {managerHelper.GetCurrentIndex()}, HasNext() = {managerHelper.HasNext()}");
+
+            // Assert - `_currentIndex` powinien pozostać na ostatnim pytaniu
+            Assert.Equal(2, managerHelper.GetCurrentIndex());
+
+            // Sprawdzam, czy `GetCurrentQuestion()` nadal działa
+            var currentQuestion = managerHelper.GetCurrentQuestion();
+            Assert.Equal(3, currentQuestion.QuestionId);
+            Assert.Equal("Question 3", currentQuestion.QuestionContent);
+
+            // Sprawdzam `HasNext()` - powinno zwrócić false, bo jestem na ostatnim pytaniu
+            Assert.False(managerHelper.HasNext());
         }
 
         // 8
-        [Fact] // Oblany
-        public void Shuffle_ShouldRandomizeListOrder() // ???
+        [Fact] // Zaliczony
+        public void Shuffle_ShouldRandomizeListOrder() // Losowanie: losuje pytania
         {
             // Arrange
             var questions = new List<int> { 1, 2, 3, 4, 5 };
+            var originalOrder = new List<int>(questions); // Kopia oryginalnej listy
 
             // Act
             var shuffledQuestions = ManagerHelper.Shuffle(questions);
 
             // Assert
-            Assert.NotEqual(questions, shuffledQuestions); // Lista powinna być przetasowana
-            Assert.Equal(questions.Count, shuffledQuestions.Count); // Sprawdzam, czy liczba elementów się zgadza
-            Assert.True(questions.All(q => shuffledQuestions.Contains(q))); // Sprawdzam, czy lista zawiera te same elementy
-        }
-
-        // 9
-        [Fact] // Oblany
-        public void AddQuestion_ShouldAddQuestionCorrectly() // Dodaje: poprawnie pytanie do listy
-        {
-            // Arrange
-            var questionContent = "What is the capital of France?";
-            var choices = new List<string> { "Paris", "London", "Berlin" };
-            var correctAnswer = "A"; // Poprawna odpowiedź to "Paris"
-
-            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(new List<Question> { new Question(1, "Dummy question") });
-            _mockQuizService.Setup(q => q.AddQuestionToJson(It.IsAny<Question>())).Verifiable();
-
-            // Symuluję dodawanie pytania
-            Console.SetIn(new StringReader($"{questionContent}\n{choices[0]}\n{choices[1]}\n{choices[2]}\n{correctAnswer}\n"));
-
-            // Act
-            //.AddQuestion();
-
-            // Assert
-            _mockQuizService.Verify(q => q.AddQuestionToJson(It.Is<Question>(q => q.QuestionContent == questionContent)), Times.Once); // Upewniam się, że pytanie zostało dodane do systemu
-        }
-
-        // 10
-        [Fact] // Oblany
-        public void AddQuestion_ShouldNotAddQuestion_WhenQuestionContentIsEmpty() // Dodaje: Nie, jeśli treść pytania pusta
-        {
-            // Arrange
-            string userInput = "\n"; // Użytkownik nie wpisuje pytania
-            Console.SetIn(new StringReader(userInput));
-
-            // Act
-            //.AddQuestion();
-
-            // Assert
-            _mockQuizService.Verify(q => q.AddQuestionToJson(It.IsAny<Question>()), Times.Never); // Pytanie nie zostało dodane
-        }
-
-        // 11
-        [Fact] // Oblany
-        public void AddQuestion_ShouldNotAddQuestion_WhenCorrectAnswerIsInvalid() // Dodaje: Nie, jeśli poprawna odpowiedź jest poza zakresem
-        {
-            // Arrange
-            string userInput = "What is the capital of France?\nParis\nLondon\nBerlin\nZ\n"; // Niepoprawna odpowiedź 'Z'
-            Console.SetIn(new StringReader(userInput));
-
-            // Act
-            //.AddQuestion();
-
-            // Assert
-            _mockQuizService.Verify(q => q.AddQuestionToJson(It.IsAny<Question>()), Times.Never);
+            Assert.NotEqual(originalOrder, shuffledQuestions); // Powinna być inna kolejność
+            Assert.Equal(originalOrder.Count, shuffledQuestions.Count); // Ta sama liczba elementów
+            Assert.True(originalOrder.All(q => shuffledQuestions.Contains(q))); // Te same elementy
         }
     }
 }

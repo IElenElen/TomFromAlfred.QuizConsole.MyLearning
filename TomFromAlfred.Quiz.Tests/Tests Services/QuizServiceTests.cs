@@ -16,8 +16,8 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Oblane: 8 / 29
-    // nr 10 i 22 do poprawy
+    // Oblane: 1 / 29
+    // Nr 14 do poprawy
     // Wybieram zamianę metod w klasach na wirtualne
 
     public class QuizServiceTests
