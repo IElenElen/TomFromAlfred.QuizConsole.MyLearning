@@ -61,13 +61,16 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 jsonService,
                 fileWrapper
             );
-
+            
             // Inicjalizacja serwisów pomocniczych
             var scoreService = new ScoreService();
             var endService = new EndService(scoreService);
 
+            // Nowa instancja - obsługa interfejsu użytkownika
+            var userInterface = new ConsoleUserInterface();
+
             // Utworzenie i uruchomienie QuizManager
-            var quizManager = new QuizManager(quizService, scoreService, endService);
+            var quizManager = new QuizManager(quizService, scoreService, endService, userInterface);
             quizManager.ConductQuiz();
         }
     }

@@ -24,7 +24,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
         public int GetCurrentIndex() => _currentIndex; // Na potrzeby testu
 
-        public bool HasNext() // Czy to mi jest potrzebne???
+        public virtual bool HasNext() // Czy to mi jest potrzebne???
         {
             return _currentIndex < _questions.Count - 1;
         }
@@ -37,7 +37,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             return _questions[_currentIndex];
         }
 
-        public void NextQuestion()
+        public virtual void NextQuestion()
         {
             if (_currentIndex < _questions.Count - 1) // Zabezpieczenie przed przekroczeniem listy
             {

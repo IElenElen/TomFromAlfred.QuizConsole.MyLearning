@@ -15,12 +15,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             _scoreService = scoreService ?? throw new ArgumentNullException(nameof(scoreService));
         }
 
-        public bool ShouldEnd(string? userInput)
+        public virtual bool ShouldEnd(string? userInput)
         {
             return userInput == "k" || userInput == "K"; 
         }
 
-        public string EndQuiz(bool quizCompleted)
+        public virtual string EndQuiz(bool quizCompleted)
         {
             if (quizCompleted)
             {

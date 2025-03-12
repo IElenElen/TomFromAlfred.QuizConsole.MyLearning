@@ -12,12 +12,12 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
 using System.Reflection;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
+using Xunit.Abstractions;
 
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Oblane: 1 / 29
-    // Nr 14 do poprawy
+    // Oblane: 0 / 29
     // Wybieram zamianę metod w klasach na wirtualne
 
     public class QuizServiceTests
@@ -29,9 +29,12 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         private readonly Mock<IFileWrapper> _mockFileWrapper;
         private QuizService _quizService;
 
+        private readonly ITestOutputHelper _output;
 
-        public QuizServiceTests()
+        public QuizServiceTests(ITestOutputHelper output)
         {
+            _output = output;
+
             // Tworzę mocki dla klas serwisowych
             _mockQuestionService = new Mock<QuestionService>(); 
             _mockChoiceService = new Mock<ChoiceService>();
@@ -634,13 +637,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 14
         [Fact] // Zaliczony
-        public void CheckAnswer_ShouldReturnTrue_WhenAnswerIsCorrectFromEntity() // Zwraca prawdę, jesli odpowiedź ok z entity ???
+        public void CheckAnswer_ShouldReturnTrue_WhenAnswerIsCorrectFromEntity() // Zwraca prawdę, jesli odpowiedź ok z entity 
         {
             // Arrange
             int questionId = 2;
             _mockQuestionService = new Mock<QuestionService>(false);
 
-            char userChoiceLetter = 'B';
+            char userChoiceLetter = 'C'; // To powinno pasować do Answer B
             var letterMapping = new Dictionary<char, char> { { 'A', 'C' }, { 'B', 'A' }, { 'C', 'B' } };
 
             // Mockowanie pustych odpowiedzi z JSON, aby test przechodził do serwisu

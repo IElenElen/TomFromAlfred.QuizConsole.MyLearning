@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
@@ -20,8 +21,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         private readonly Mock<IFileWrapper> _mockFileWrapper;
         private readonly Mock<JsonCommonClass> _mockJsonService;
         private readonly Mock<ScoreService> _mockScoreService;
-        private readonly EndService _endService;
-        private readonly MockQuizService _quizService; // Używam MockQuizService zamiast QuizService
+        private readonly Mock<EndService> _mockEndService;
+        private readonly Mock<IUserInterface> _mockUserInterface; // Dodane mockowanie IUserInterface
+        private readonly Mock<QuizService> _mockQuizService;
         private readonly QuizManager _quizManager;
 
         public QuizManagerTests()
@@ -30,8 +32,12 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             _mockFileWrapper = new Mock<IFileWrapper>();
             _mockJsonService = new Mock<JsonCommonClass>();
             _mockScoreService = new Mock<ScoreService>();
+            _mockEndService = new Mock<EndService>(_mockScoreService.Object);
 
-            _endService = new EndService(_mockScoreService.Object);
+            _mockUserInterface = new Mock<IUserInterface>(); // Inicjalizacja mocka IUserInterface
+
+            _mockEndService.Setup(e => e.ShouldEnd("K")).Returns(true);
+            _mockEndService.Setup(e => e.EndQuiz(It.IsAny<bool>())).Verifiable();
 
             // Symuluję, że pliki istnieją, aby uniknąć błędów dostępu do plików w testach
             _mockFileWrapper.Setup(f => f.Exists(It.IsAny<string>())).Returns(true);
@@ -42,87 +48,97 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             var correctAnswerService = new CorrectAnswerService();
 
             // Tworzę `MockQuizService` zamiast `QuizService`, żeby nie ładował JSON
-            _quizService = new MockQuizService(
-                questionService,
-                choiceService,
-                correctAnswerService,
-                _mockJsonService.Object,
-                _mockFileWrapper.Object
+            _mockQuizService = new Mock<QuizService>(
+                new Mock<QuestionService>().Object,
+                new Mock<ChoiceService>().Object,
+                new Mock<CorrectAnswerService>().Object,
+                new Mock<JsonCommonClass>().Object,
+                new Mock<IFileWrapper>().Object
             );
 
             // Ustawiam testowe pytania i odpowiedzi
-            _quizService.SetTestData(
-                new List<Question>
-                {
-                    new Question(1, "Jak nazywał się główny bohater książki?")
-                },
-                new Dictionary<int, List<Choice>>
-                {
-                    { 1, new List<Choice>
-                        {
-                            new Choice(1, 'A', "Tomek Wilmowski"),
-                            new Choice(1, 'B', "Staś Tarkowski"),
-                            new Choice(1, 'C', "Michał Wołodyjowski")
-                        }
-                    }
-                },
-                new Dictionary<int, string>
-                {
-                    { 1, "A" }
-                }
-            );
+            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(new List<Question>
+            {
+                new Question(1, "Jak nazywał się główny bohater książki?")
+            });
 
-            _quizManager = new QuizManager(_quizService, _mockScoreService.Object, _endService);
+            // Tworzę mapping literowy na zewnątrz, aby poprawnie ustawić go w `out` parameter
+            var letterMapping = new Dictionary<char, char> { { 'A', 'A' }, { 'B', 'B' }, { 'C', 'C' } };
+
+            _mockQuizService.Setup(q => q.GetShuffledChoicesForQuestion(It.IsAny<int>(), out letterMapping))
+                .Returns(new List<Choice>
+                {
+                    new Choice(1, 'A', "Tomek Wilmowski"),
+                    new Choice(1, 'B', "Staś Tarkowski"),
+                    new Choice(1, 'C', "Michał Wołodyjowski")
+                });
+
+            // Mockowanie poprawnej odpowiedzi dla pytania o ID 1
+            _mockQuizService.Setup(q => q.CheckAnswer(It.IsAny<int>(), 'A', It.IsAny<Dictionary<char, char>>()))
+                .Returns(true);
+
+            _quizManager = new QuizManager(_mockQuizService.Object, _mockScoreService.Object, _mockEndService.Object, _mockUserInterface.Object);
         }
-        /*
+        
         // 1
         [Fact] // Oblany
         public void ConductQuiz_ShouldHandleUserAnsweringCorrectly() // Wyświetla: przyjmuje poprawnie odpowiedź użytkownika
         {
             // Arrange
-            var input = new StringReader("1\nA\n\n"); // Ostatni `\n` kończy input
-            Console.SetIn(input);
+            var fakeQuizService = new FakeQuizService();
 
-            // Zamiast `StringWriter`, przekierowuję `Console.Out` do pustego strumienia (nie gromadzę danych w pamięci)
-            Console.SetOut(TextWriter.Null);
-
-            // Ograniczam liczbę iteracji w `ConductQuiz()`, żeby test się nie zapętlił
-            int maxIterations = 3;
-            int iterationCount = 0;
-
-            // Act: Sprawdzam tylko jedno pytanie
-            while (iterationCount < maxIterations)
+            // Tworzenie pytań bezpośrednio w teście
+            var testQuestions = new List<Question>
             {
-                _quizManager.ConductQuiz();
-                iterationCount++;
+                new Question(1, "Jak nazywał się główny bohater książki?")
+            };
 
-                // Jeśli za dużo iteracji – przerywam test
-                if (iterationCount >= maxIterations)
-                {
-                    throw new Exception("Test zapętlił się i przekroczył limit iteracji!");
+            var testChoices = new Dictionary<int, List<Choice>>
+            {
+                { 1, new List<Choice>
+                    {
+                        new Choice(1, 'A', "Tomek Wilmowski"),
+                        new Choice(1, 'B', "Staś Tarkowski"),
+                        new Choice(1, 'C', "Michał Wołodyjowski")
+                    }
                 }
-            }
+            };
+
+            var testCorrectAnswers = new Dictionary<int, string>
+            {
+                { 1, "A" } // Poprawna odpowiedź
+            };
+
+            // Ustawienie testowych danych na fakeQuizService
+            fakeQuizService.SetTestData(testQuestions, testChoices, testCorrectAnswers);
+
+            var quizManager = new QuizManager(fakeQuizService, _mockScoreService.Object, _mockEndService.Object, _mockUserInterface.Object);
+
+            _mockUserInterface.Setup(ui => ui.WriteLine(It.IsAny<string>()));
+            _mockUserInterface.SetupSequence(ui => ui.ReadLine())
+                .Returns("1")  // Wybór odpowiedzi
+                .Returns("A")  // Odpowiedź użytkownika
+                .Returns("K"); // Wyjście z quizu
+
+            // Act
+            quizManager.ConductQuiz();
 
             // Assert
             _mockScoreService.Verify(s => s.IncrementScore(), Times.Once);
-        } */
-
-
+        } 
         /*
         // 2
         [Fact] // Oblany
         public void ConductQuiz_ShouldHandleNoQuestionsAvailable() // Wyświetla: brak pytań
         {
             // Arrange
-            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(new List<Question>()); // Brak pytań
+           _mockQuizService.SetTestData(new List<Question>(), new Dictionary<int, List<Choice>>(), new Dictionary<int, string>());
 
             // Act
             _quizManager.ConductQuiz();
 
             // Assert
-            // Sprawdzam, czy wyświetlono komunikat o braku pytań
-            _mockQuizService.Verify(q => q.GetAllQuestions(), Times.Once);
-            // Mogę również zweryfikować, czy użytkownik otrzymał odpowiedni komunikat
+            _mockUserInterface.Verify(ui => ui.WriteLine(It.IsAny<string>()), Times.AtLeastOnce);
         }
 
         // 3
@@ -130,23 +146,21 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         public void ConductQuiz_ShouldNotIncrementScore_WhenAnswerIsIncorrect() // Wyświetla: nie daje punktu, jęśli odpowiedź błędna
         {
             // Arrange
-            var question = new Question(1, "Sample question");
-            var choices = new List<Choice>
-            {
-                new Choice (1, 'A', "Choice A"),
-                new Choice (1, 'B', "Choice B"),
-                new Choice (1, 'C', "Choice C")
-            };
+            var input = new StringReader("1\nB\n\n");
+            Console.SetIn(input);
 
-            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(new List<Question> { question });
-            _mockQuizService.Setup(q => q.GetShuffledChoicesForQuestion(It.IsAny<int>(), out It.Ref<Dictionary<char, char>>.IsAny)).Returns(choices);
-            _mockQuizService.Setup(q => q.CheckAnswer(It.IsAny<int>(), 'B', It.IsAny<Dictionary<char, char>>())).Returns(false); // Ustawiam złą odpowiedź
+            _mockUserInterface.Setup(ui => ui.WriteLine(It.IsAny<string>()));
+            _mockQuizService.SetTestData(
+                new List<Question> { new Question(1, "Pytanie") },
+                new Dictionary<int, List<Choice>> { { 1, new List<Choice> { new Choice(1, 'A', "Poprawna") } } },
+                new Dictionary<int, string> { { 1, "A" } }
+            );
 
             // Act
             _quizManager.ConductQuiz();
 
             // Assert
-            _mockScoreService.Verify(s => s.IncrementScore(), Times.Never); // Sprawdzam, czy punkty nie zostały inkrementowane
+            _mockScoreService.Verify(s => s.IncrementScore(), Times.Never);
         }
 
         // 4
@@ -154,26 +168,16 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         public void ConductQuiz_ShouldSkipQuestion_WhenUserSelectsOption2() // Wyświetla: pomija pytanie na żądanie użytkownika
         {
             // Arrange
-            var question = new Question(1, "Sample question");
-            var choices = new List<Choice>
-            {
-                new Choice (1, 'A', "Choice A"),
-                new Choice (1, 'B', "Choice B"),
-                new Choice (1, 'C', "Choice C")
-            };
+            var input = new StringReader("2\n\n");
+            Console.SetIn(input);
 
-            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(new List<Question> { question });
-            _mockQuizService.Setup(q => q.GetShuffledChoicesForQuestion(It.IsAny<int>(), out It.Ref<Dictionary<char, char>>.IsAny)).Returns(choices);
-
-            // Symulujemy użytkownika wybierającego akcję "2" (pominięcie pytania)
-            _mockEndService.Setup(e => e.ShouldEnd(It.IsAny<string>())).Returns(false); // Zwracam false, żeby nie kończyć quizu
+            _mockUserInterface.Setup(ui => ui.WriteLine(It.IsAny<string>()));
 
             // Act
             _quizManager.ConductQuiz();
 
             // Assert
-            _mockQuizService.Verify(q => q.GetAllQuestions(), Times.Once); // Upewniam się, że pytanie zostało odczytane
-            _mockScoreService.Verify(s => s.IncrementScore(), Times.Never); // Upewniam się, że punkty nie zostały inkrementowane
+            _mockUserInterface.Verify(ui => ui.WriteLine("Pytanie pominięte."), Times.Once);
         }
 
         // 5
@@ -181,26 +185,19 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         public void ConductQuiz_ShouldEndQuiz_WhenUserInputsK() // Wyświetla: przerywa Quzi na żądanie użytkownika
         {
             // Arrange
-            var question = new Question(1, "Sample question");
-            var choices = new List<Choice>
-            {
-                new Choice (1, 'A', "Choice A"),
-                new Choice (1, 'B', "Choice B"),
-                new Choice (1, 'C', "Choice C")
-            };
+            var input = new StringReader("K\n\n");
+            Console.SetIn(input);
 
-            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(new List<Question> { question });
-            _mockQuizService.Setup(q => q.GetShuffledChoicesForQuestion(It.IsAny<int>(), out It.Ref<Dictionary<char, char>>.IsAny)).Returns(choices);
-            _mockQuizService.Setup(q => q.CheckAnswer(It.IsAny<int>(), 'A', It.IsAny<Dictionary<char, char>>())).Returns(true);
+            _mockUserInterface.Setup(ui => ui.WriteLine(It.IsAny<string>()));
 
-            // Symuluję wejście użytkownika "K" aby zakończyć quiz
+            // Zamockowanie _mockEndService i jego metody ShouldEnd
             _mockEndService.Setup(e => e.ShouldEnd(It.IsAny<string>())).Returns(true);
 
             // Act
             _quizManager.ConductQuiz();
 
             // Assert
-            _mockEndService.Verify(e => e.EndQuiz(true), Times.Once); // Sprawdzam, czy metoda EndQuiz została wywołana, gdy użytkownik zakończył quiz
+            _mockEndService.Verify(e => e.EndQuiz(It.IsAny<bool>()), Times.Once);
         } */
     }
 }
