@@ -1,30 +1,19 @@
-﻿using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.SupportForTests
 {
-    public class FakeQuizService : QuizService
+    public class FakeQuizService : IQuizService
     {
         private List<Question> _testQuestions = new();
         private Dictionary<int, List<Choice>> _testChoices = new();
         private Dictionary<int, string> _testCorrectAnswers = new();
-
-        public FakeQuizService()
-            : base(new Mock<QuestionService>().Object,
-                   new Mock<ChoiceService>().Object,
-                   new Mock<CorrectAnswerService>().Object,
-                   new Mock<JsonCommonClass>().Object,
-                   new Mock<IFileWrapper>().Object)
-        { }
 
         public void SetTestData(List<Question> questions, Dictionary<int, List<Choice>> choices, Dictionary<int, string> correctAnswers)
         {
@@ -33,27 +22,64 @@ namespace TomFromAlfred.QuizConsole.Tests.SupportForTests
             _testCorrectAnswers = correctAnswers;
         }
 
-        // Nadpisanie GetAllQuestions() w QuizService
-        public override List<Question> GetAllQuestions()
+        public void AddQuestionToJson(Question question)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CheckAnswer(int questionId, char userChoiceLetter, Dictionary<char, char> letterMapping)
+        {
+            if (!_testCorrectAnswers.TryGetValue(questionId, out var correctLetter))
+                return false; // Brak poprawnej odpowiedzi
+
+            return letterMapping.TryGetValue(userChoiceLetter, out char mappedLetter) && mappedLetter.ToString() == correctLetter;
+
+        }
+
+        public IEnumerable<Question> GetAllQuestions()
         {
             return _testQuestions;
         }
 
-        public override List<Choice> GetShuffledChoicesForQuestion(int questionId, out Dictionary<char, char> letterMapping)
+        public string? GetAnswerContentFromLetter(char answerLetter, int questionId)
         {
-            letterMapping = new Dictionary<char, char> { { 'A', 'A' }, { 'B', 'B' }, { 'C', 'C' } };
-
-            return new List<Choice>
-            {
-                new Choice(1, 'A', "Tomek Wilmowski"),
-                new Choice(1, 'B', "Staś Tarkowski"),
-                new Choice(1, 'C', "Michał Wołodyjowski")
-            };
+            throw new NotImplementedException();
         }
 
-        public override bool CheckAnswer(int questionId, char userChoiceLetter, Dictionary<char, char> letterMapping)
+        public IEnumerable<Choice> GetChoicesForQuestion(int questionId)
         {
-            return userChoiceLetter == 'A';
+            return _testChoices.TryGetValue(questionId, out var choices) ? choices : new List<Choice>();
+        }
+
+        public IEnumerable<Choice> GetShuffledChoicesForQuestion(int questionId, out Dictionary<char, char> letterMapping)
+        {
+            letterMapping = new Dictionary<char, char> { { 'A', 'A' }, { 'B', 'B' }, { 'C', 'C' } };
+            return GetChoicesForQuestion(questionId);
+        }
+
+        public void InitializeJsonService(JsonCommonClass jsonService, string jsonFilePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadChoicesFromJson()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadCorrectSetFromJson()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadQuestionsFromJson(string filePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveQuestionsToJson()
+        {
+            throw new NotImplementedException();
         }
     }
 }

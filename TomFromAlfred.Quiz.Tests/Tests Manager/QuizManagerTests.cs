@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForManager;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
@@ -20,10 +21,10 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
     {
         private readonly Mock<IFileWrapper> _mockFileWrapper;
         private readonly Mock<JsonCommonClass> _mockJsonService;
-        private readonly Mock<ScoreService> _mockScoreService;
-        private readonly Mock<EndService> _mockEndService;
-        private readonly Mock<IUserInterface> _mockUserInterface; // Dodane mockowanie IUserInterface
-        private readonly Mock<QuizService> _mockQuizService;
+        private readonly Mock<IScoreService> _mockIScoreService;
+        private readonly Mock<IEndService> _mockIEndService;
+        private readonly Mock<IUserInterface> _mockUserInterface; 
+        private readonly Mock<IQuizService> _mockQuizService;
         private readonly QuizManager _quizManager;
 
         public QuizManagerTests()
@@ -31,13 +32,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             // Mockuję pliki i JSON, żeby testy nie czytały rzeczywistych plików
             _mockFileWrapper = new Mock<IFileWrapper>();
             _mockJsonService = new Mock<JsonCommonClass>();
-            _mockScoreService = new Mock<ScoreService>();
-            _mockEndService = new Mock<EndService>(_mockScoreService.Object);
+            _mockIScoreService = new Mock<IScoreService>();
+            _mockIEndService = new Mock<IEndService>();
 
             _mockUserInterface = new Mock<IUserInterface>(); // Inicjalizacja mocka IUserInterface
 
-            _mockEndService.Setup(e => e.ShouldEnd("K")).Returns(true);
-            _mockEndService.Setup(e => e.EndQuiz(It.IsAny<bool>())).Verifiable();
+            _mockIEndService.Setup(e => e.ShouldEnd("K")).Returns(true);
+            _mockIEndService.Setup(e => e.EndQuiz(It.IsAny<bool>())).Verifiable();
 
             // Symuluję, że pliki istnieją, aby uniknąć błędów dostępu do plików w testach
             _mockFileWrapper.Setup(f => f.Exists(It.IsAny<string>())).Returns(true);
@@ -47,22 +48,16 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             var choiceService = new ChoiceService();
             var correctAnswerService = new CorrectAnswerService();
 
-            // Tworzę `MockQuizService` zamiast `QuizService`, żeby nie ładował JSON
-            _mockQuizService = new Mock<QuizService>(
-                new Mock<QuestionService>().Object,
-                new Mock<ChoiceService>().Object,
-                new Mock<CorrectAnswerService>().Object,
-                new Mock<JsonCommonClass>().Object,
-                new Mock<IFileWrapper>().Object
-            );
+           // Tworzę mock `IQuizService` bez argumentów
+                _mockQuizService = new Mock<IQuizService>(); // ✅ Poprawiony zapis
 
-            // Ustawiam testowe pytania i odpowiedzi
+            // Setup mockowanych metod
             _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(new List<Question>
             {
                 new Question(1, "Jak nazywał się główny bohater książki?")
             });
 
-            // Tworzę mapping literowy na zewnątrz, aby poprawnie ustawić go w `out` parameter
+            // Tworzę mapping literowy dla `out` parameter
             var letterMapping = new Dictionary<char, char> { { 'A', 'A' }, { 'B', 'B' }, { 'C', 'C' } };
 
             _mockQuizService.Setup(q => q.GetShuffledChoicesForQuestion(It.IsAny<int>(), out letterMapping))
@@ -73,11 +68,10 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
                     new Choice(1, 'C', "Michał Wołodyjowski")
                 });
 
-            // Mockowanie poprawnej odpowiedzi dla pytania o ID 1
             _mockQuizService.Setup(q => q.CheckAnswer(It.IsAny<int>(), 'A', It.IsAny<Dictionary<char, char>>()))
                 .Returns(true);
 
-            _quizManager = new QuizManager(_mockQuizService.Object, _mockScoreService.Object, _mockEndService.Object, _mockUserInterface.Object);
+            _quizManager = new QuizManager(_mockQuizService.Object, _mockIScoreService.Object, _mockIEndService.Object, _mockUserInterface.Object);
         }
         
         // 1
@@ -112,9 +106,10 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             // Ustawienie testowych danych na fakeQuizService
             fakeQuizService.SetTestData(testQuestions, testChoices, testCorrectAnswers);
 
-            var quizManager = new QuizManager(fakeQuizService, _mockScoreService.Object, _mockEndService.Object, _mockUserInterface.Object);
+            var quizManager = new QuizManager(fakeQuizService, _mockIScoreService.Object, _mockIEndService.Object, _mockUserInterface.Object);
 
             _mockUserInterface.Setup(ui => ui.WriteLine(It.IsAny<string>()));
+
             _mockUserInterface.SetupSequence(ui => ui.ReadLine())
                 .Returns("1")  // Wybór odpowiedzi
                 .Returns("A")  // Odpowiedź użytkownika
@@ -124,7 +119,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             quizManager.ConductQuiz();
 
             // Assert
-            _mockScoreService.Verify(s => s.IncrementScore(), Times.Once);
+            _mockIScoreService.Verify(s => s.IncrementScore(), Times.Once);
         } 
         /*
         // 2

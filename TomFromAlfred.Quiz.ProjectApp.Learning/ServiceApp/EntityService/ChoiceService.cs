@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 {
     public class ChoiceService : ICrudService<Choice>
     {
-        private readonly List<Choice> _choices; // Lista danych zakodowanych twardo
+        private List<Choice> _choices; // Lista danych zakodowanych twardo
 
         public ChoiceService()
         {

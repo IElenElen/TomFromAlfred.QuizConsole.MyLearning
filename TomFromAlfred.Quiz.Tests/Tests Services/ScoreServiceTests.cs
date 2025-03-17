@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 using Xunit.Abstractions;
@@ -15,7 +16,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
     public class ScoreServiceTests 
     {
         private readonly ITestOutputHelper _output;
-        private ScoreService _scoreService; // Testuję tę klasę
+        private IScoreService _scoreService; // Testuję tę klasę
 
         public ScoreServiceTests(ITestOutputHelper output) 
         {

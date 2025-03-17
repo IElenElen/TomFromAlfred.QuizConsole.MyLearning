@@ -13,6 +13,7 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
 using System.Reflection;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 using Xunit.Abstractions;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
@@ -27,7 +28,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         private readonly Mock<CorrectAnswerService> _mockCorrectAnswerService;
         private readonly Mock<JsonCommonClass> _mockJsonCommonClass;
         private readonly Mock<IFileWrapper> _mockFileWrapper;
-        private QuizService _quizService;
+        private IQuizService _quizService;
 
         private readonly ITestOutputHelper _output;
 

@@ -3,21 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 {
-    public class EndService // Klasa dla zakończenia Quizu w każdym momencie
+    public class EndService : IEndService
     {
-        private readonly ScoreService _scoreService;
+        private readonly IScoreService _scoreService;
 
-        public EndService(ScoreService scoreService)
+        public EndService(IScoreService scoreService)
         {
             _scoreService = scoreService ?? throw new ArgumentNullException(nameof(scoreService));
-        }
-
-        public virtual bool ShouldEnd(string? userInput)
-        {
-            return userInput == "k" || userInput == "K"; 
         }
 
         public virtual string EndQuiz(bool quizCompleted)
@@ -32,6 +28,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 _scoreService.ResetScore();
                 return "Quiz został przerwany. Brak punktów.";
             }
+        }
+
+        public virtual bool ShouldEnd(string? userInput)
+        {
+            return userInput == "k" || userInput == "K";
         }
     }
 }

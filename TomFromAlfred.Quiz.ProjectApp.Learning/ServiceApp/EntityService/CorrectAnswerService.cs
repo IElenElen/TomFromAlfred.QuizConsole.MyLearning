@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
@@ -14,7 +14,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
     public class CorrectAnswerService : ICrudService<CorrectAnswer>
 
     {
-        private readonly ChoiceService _choiceService;
+        private ChoiceService _choiceService;
 
         private readonly Dictionary<int, CorrectAnswer> _correctAnswers = new Dictionary<int, CorrectAnswer>
         {

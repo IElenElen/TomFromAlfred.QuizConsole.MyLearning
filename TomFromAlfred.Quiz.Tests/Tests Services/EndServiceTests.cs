@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
@@ -11,7 +12,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
      
     public class EndServiceTests
     {
-        private readonly EndService _endService;
+        private readonly IEndService _endService;
 
         public EndServiceTests()
         {

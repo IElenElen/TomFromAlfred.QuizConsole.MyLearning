@@ -27,7 +27,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
      Budowa:
     
-     Interfejs jaki? dla serwisu Crud 
+     Interfejs jaki? dla serwisu Crud, aby lepiej się tesrowało - też dla główniejszych serwisów i dla managera
      
      Klasa wspólna: dla pracy na plikach json - klasa serwisowa
      

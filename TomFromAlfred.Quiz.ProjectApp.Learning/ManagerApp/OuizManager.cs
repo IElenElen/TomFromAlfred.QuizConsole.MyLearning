@@ -1,4 +1,5 @@
-﻿using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
+﻿using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForManager;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
@@ -8,12 +9,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
     public class QuizManager // Komunikacja z użytkownikiem
     {
-        private readonly QuizService _quizService;
-        private readonly ScoreService _scoreService;
-        private readonly EndService _endService;
+        private readonly IQuizService _quizService; // Używam interfejsu
+        private readonly IScoreService _scoreService;
+        private readonly IEndService _endService;
         public readonly IUserInterface _userInterface;
 
-        public QuizManager(QuizService quizService, ScoreService scoreService, EndService endService, IUserInterface userInterface)
+        public QuizManager(IQuizService quizService, IScoreService scoreService, IEndService endService, IUserInterface userInterface)
         {
             _quizService = quizService ?? throw new ArgumentNullException(nameof(quizService));
             _scoreService = scoreService ?? throw new ArgumentNullException(nameof(scoreService));

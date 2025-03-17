@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
@@ -20,13 +21,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
 
     // Próba zmapowania danych json JsonHelper i entity CorrectAnswer
-    public class QuizService
+
+    public class QuizService : IQuizService
     {
         public const string QuestionsFilePath = @"C:\Users\Ilka\Desktop\.net\Quiz Tomek Konsola\questions.Tomek.json";
         public const string ChoicesFilePath = @"C:\Users\Ilka\Desktop\.net\Quiz Tomek Konsola\choices.Tomek.json";
         public const string CorrectSetFilePath = @"C:\Users\Ilka\Desktop\.net\Quiz Tomek Konsola\correctSet.Tomek.json";
 
-        private readonly IFileWrapper _fileWrapper; 
+        private readonly IFileWrapper _fileWrapper;
 
         private JsonCommonClass _jsonService;
         private readonly QuestionService _questionService;
@@ -54,88 +56,13 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             LoadChoicesFromJson();
             LoadCorrectSetFromJson();
         }
-
-        public void InitializeJsonService(JsonCommonClass jsonService, string jsonFilePath)
+        public virtual void AddQuestionToJson(Question question)
         {
-            if (jsonService == null)
-                throw new ArgumentNullException(nameof(jsonService));
+            if (question == null)
+                throw new ArgumentNullException(nameof(question));
 
-            if (!_fileWrapper.Exists(jsonFilePath)) // Używam mockowalnej wersji File.Exists
-                throw new FileNotFoundException($"Plik {jsonFilePath} nie istnieje.");
-
-            _jsonService = jsonService;
-        }
-
-        public virtual IEnumerable<Question> GetAllQuestions()
-        {
-            if (_jsonQuestions.Any())
-            {
-                Console.WriteLine($"Priorytet JSON: {_jsonQuestions.Count} pytań wczytano z JSON.");
-                Console.WriteLine("Łączenie pytań z JSON i serwisu. Priorytet: JSON.");
-
-                // Łącz dane, ale unikaj duplikatów
-                var jsonQuestionIds = _jsonQuestions.Select(q => q.QuestionId).ToHashSet();
-                var remainingServiceQuestions = _questionService.GetAllActive().Where(q => !jsonQuestionIds.Contains(q.QuestionId));
-                Console.WriteLine($"Liczba pytań z serwisu dodanych do JSON: {remainingServiceQuestions.Count()}");
-                return _jsonQuestions.Concat(remainingServiceQuestions);
-            }
-
-            Console.WriteLine("Zwracane pytania z serwisu.");
-            return _questionService.GetAllActive();
-        }
-
-        public virtual IEnumerable<Choice> GetChoicesForQuestion(int questionId)
-        {
-            // Najpierw sprawdź dane z JSON
-            if (_jsonChoices.ContainsKey(questionId))
-            {
-                Console.WriteLine($"Pobrano wybory z JSON dla pytania {questionId}");
-                return _jsonChoices[questionId];
-            }
-
-            // Jeśli brak danych w JSON, sprawdź dane twardo zakodowane
-            var choicesFromService = _choiceService.GetChoicesForQuestion(questionId);
-            if (choicesFromService.Any())
-            {
-                Console.WriteLine($"Pobrano wybory z serwisu dla pytania {questionId}");
-                return choicesFromService;
-            }
-
-            Console.WriteLine($"Brak wyborów dla pytania o Id {questionId}.");
-            return Enumerable.Empty<Choice>();
-        }
-
-        public virtual IEnumerable<Choice> GetShuffledChoicesForQuestion(int questionId, out Dictionary<char, char> letterMapping)
-        {
-            var choices = GetChoicesForQuestion(questionId).ToList();
-            var random = new Random();
-            List<Choice> shuffledChoices;
-
-            // Upewniam się, że lista się zmieniła (ograniczam liczbę prób do uniknięcia nieskończonej pętli)
-            int maxAttempts = 10;
-            int attempts = 0;
-            do
-            {
-                shuffledChoices = choices.OrderBy(_ => random.Next()).ToList();
-                attempts++;
-            } while (attempts < maxAttempts && shuffledChoices.SequenceEqual(choices));
-
-            letterMapping = new Dictionary<char, char>();
-            char newLetter = 'A';
-
-            var finalChoices = new List<Choice>();
-
-            foreach (var choice in shuffledChoices)
-            {
-                letterMapping[newLetter] = choice.ChoiceLetter; // Nowa → Oryginalna litera
-                Console.WriteLine($"Mapowanie: {newLetter} → {choice.ChoiceLetter}");
-
-                // Tworzę nowy obiekt zamiast modyfikować oryginał
-                finalChoices.Add(new Choice(choice.ChoiceId, newLetter, choice.ChoiceContent));
-                newLetter++;
-            }
-
-            return finalChoices;
+            _jsonQuestions.Add(question);
+            SaveQuestionsToJson();
         }
 
         public virtual bool CheckAnswer(int questionId, char userChoiceLetter, Dictionary<char, char> letterMapping)
@@ -226,45 +153,108 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             return null;
         }
 
-        public virtual void LoadQuestionsFromJson(string filePath)
+        public virtual IEnumerable<Question> GetAllQuestions()
         {
-            Console.WriteLine("Wywołano LoadQuestionsFromJson");
-
-            if (!File.Exists(filePath)) // Zmieniam z QuestionsFilePath na parametr filePath
+            if (_jsonQuestions.Any())
             {
-                Console.WriteLine($"Plik {filePath} nie istnieje.");
-                return;
+                Console.WriteLine($"Priorytet JSON: {_jsonQuestions.Count} pytań wczytano z JSON.");
+                Console.WriteLine("Łączenie pytań z JSON i serwisu. Priorytet: JSON.");
+
+                // Łącz dane, ale unikaj duplikatów
+                var jsonQuestionIds = _jsonQuestions.Select(q => q.QuestionId).ToHashSet();
+                var remainingServiceQuestions = _questionService.GetAllActive().Where(q => !jsonQuestionIds.Contains(q.QuestionId));
+                Console.WriteLine($"Liczba pytań z serwisu dodanych do JSON: {remainingServiceQuestions.Count()}");
+                return _jsonQuestions.Concat(remainingServiceQuestions);
             }
 
-            try
-            {
-                // Wczytanie JSON
-                _jsonQuestions = _jsonService.ReadFromFile<List<Question>>(filePath) ?? new List<Question>();
-
-                // Jeżeli lista jest pusta, rzucam wyjątek
-                if (_jsonQuestions == null)
-                {
-                    Console.WriteLine("JsonQuestions jest NULL!");
-                }
-
-                else if (_jsonQuestions.Count == 0)
-                {
-                    Console.WriteLine("JSON pytania są puste - rzucam wyjątek!");
-                    throw new JsonException("JSON does not contain any questions");
-                }
-
-                Console.WriteLine($"Wczytano {_jsonQuestions.Count} pytań z JSON.");
-            }
-            catch (JsonException ex)  // Chwytam tylko wyjątek JsonException
-            {
-                // Ponownie rzucam wyjątek, aby test mógł go przechwycić
-                throw new JsonException("JSON does not contain any questions", ex);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Błąd podczas ładowania pytań z JSON: {ex.Message}");
-            }
+            Console.WriteLine("Zwracane pytania z serwisu.");
+            return _questionService.GetAllActive();
         }
+
+        public virtual IEnumerable<Choice> GetChoicesForQuestion(int questionId)
+        {
+            // Najpierw sprawdź dane z JSON
+            if (_jsonChoices.ContainsKey(questionId))
+            {
+                Console.WriteLine($"Pobrano wybory z JSON dla pytania {questionId}");
+                return _jsonChoices[questionId];
+            }
+
+            // Jeśli brak danych w JSON, sprawdź dane twardo zakodowane
+            var choicesFromService = _choiceService.GetChoicesForQuestion(questionId);
+            if (choicesFromService.Any())
+            {
+                Console.WriteLine($"Pobrano wybory z serwisu dla pytania {questionId}");
+                return choicesFromService;
+            }
+
+            Console.WriteLine($"Brak wyborów dla pytania o Id {questionId}.");
+            return Enumerable.Empty<Choice>();
+        }
+
+        public IEnumerable<Choice> GetShuffledChoicesForQuestion(int questionId, out Dictionary<char, char> letterMapping)
+        {
+            var choices = GetChoicesForQuestion(questionId).ToList();
+            var random = new Random();
+            List<Choice> shuffledChoices;
+
+            // Upewniam się, że lista się zmieniła (ograniczam liczbę prób do uniknięcia nieskończonej pętli)
+            int maxAttempts = 10;
+            int attempts = 0;
+            do
+            {
+                shuffledChoices = choices.OrderBy(_ => random.Next()).ToList();
+                attempts++;
+            } while (attempts < maxAttempts && shuffledChoices.SequenceEqual(choices));
+
+            letterMapping = new Dictionary<char, char>();
+            char newLetter = 'A';
+
+            var finalChoices = new List<Choice>();
+
+            foreach (var choice in shuffledChoices)
+            {
+                letterMapping[newLetter] = choice.ChoiceLetter; // Nowa → Oryginalna litera
+                Console.WriteLine($"Mapowanie: {newLetter} → {choice.ChoiceLetter}");
+
+                // Tworzę nowy obiekt zamiast modyfikować oryginał
+                finalChoices.Add(new Choice(choice.ChoiceId, newLetter, choice.ChoiceContent));
+                newLetter++;
+            }
+
+            return finalChoices;
+        }
+
+        private IEnumerable<Choice> ShuffleChoices(IEnumerable<Choice> choices)
+        {
+            var random = new Random();
+            var shuffledChoices = choices.OrderBy(_ => random.Next()).ToList();
+
+            char letter = 'A';
+            foreach (var choice in shuffledChoices)
+            {
+                choice.ChoiceLetter = letter++;
+            }
+
+            return shuffledChoices;
+        }
+
+        private static bool IsChoiceRelatedToQuestion(Choice choice, Question question)
+        {
+            return choice.ChoiceId >= question.QuestionId * 10 && choice.ChoiceId < (question.QuestionId + 1) * 10;
+        }
+
+        public void InitializeJsonService(JsonCommonClass jsonService, string jsonFilePath)
+        {
+            if (jsonService == null)
+                throw new ArgumentNullException(nameof(jsonService));
+
+            if (!_fileWrapper.Exists(jsonFilePath))
+                throw new FileNotFoundException($"Plik {jsonFilePath} nie istnieje.");
+
+            _jsonService = jsonService;
+        }
+
 
         public virtual void LoadChoicesFromJson()
         {
@@ -326,35 +316,47 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             }
         }
 
-        private IEnumerable<Choice> ShuffleChoices(IEnumerable<Choice> choices) 
+        public virtual void LoadQuestionsFromJson(string filePath)
         {
-            var random = new Random();
-            var shuffledChoices = choices.OrderBy(_ => random.Next()).ToList();
+            Console.WriteLine("Wywołano LoadQuestionsFromJson");
 
-            char letter = 'A';
-            foreach (var choice in shuffledChoices)
+            if (!File.Exists(filePath)) // Zmieniam z QuestionsFilePath na parametr filePath
             {
-                choice.ChoiceLetter = letter++;
+                Console.WriteLine($"Plik {filePath} nie istnieje.");
+                return;
             }
 
-            return shuffledChoices;
+            try
+            {
+                // Wczytanie JSON
+                _jsonQuestions = _jsonService.ReadFromFile<List<Question>>(filePath) ?? new List<Question>();
+
+                // Jeżeli lista jest pusta, rzucam wyjątek
+                if (_jsonQuestions == null)
+                {
+                    Console.WriteLine("JsonQuestions jest NULL!");
+                }
+
+                else if (_jsonQuestions.Count == 0)
+                {
+                    Console.WriteLine("JSON pytania są puste - rzucam wyjątek!");
+                    throw new JsonException("JSON does not contain any questions");
+                }
+
+                Console.WriteLine($"Wczytano {_jsonQuestions.Count} pytań z JSON.");
+            }
+            catch (JsonException ex)  // Chwytam tylko wyjątek JsonException
+            {
+                // Ponownie rzucam wyjątek, aby test mógł go przechwycić
+                throw new JsonException("JSON does not contain any questions", ex);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd podczas ładowania pytań z JSON: {ex.Message}");
+            }
         }
 
-        private static bool IsChoiceRelatedToQuestion(Choice choice, Question question)
-        {
-            return choice.ChoiceId >= question.QuestionId * 10 && choice.ChoiceId < (question.QuestionId + 1) * 10;
-        }
-
-        public void AddQuestionToJson(Question question)
-        {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
-
-            _jsonQuestions.Add(question);
-            SaveQuestionsToJson();
-        }
-
-        private void SaveQuestionsToJson()
+        public virtual void SaveQuestionsToJson()
         {
             try
             {
@@ -369,8 +371,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 throw; // W trybie debug/testów propaguję wyjątek
                 #endif
             }
-        }
+        }  
     }
 }
-
-

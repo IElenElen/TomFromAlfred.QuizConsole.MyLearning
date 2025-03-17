@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForManager;
+using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
@@ -24,31 +25,24 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
     {
         private readonly ITestOutputHelper _output;
 
-        private readonly Mock<IUserInterface> _mockUserInterface; 
-        private readonly MockQuizService _mockQuizService;
-        private readonly ScoreService _scoreService; // Rzeczywista instancja
-        private readonly EndService _endService; // Rzeczywista instancja
+        private readonly Mock<IUserInterface> _mockUserInterface;
+        private readonly Mock<IQuizService> _mockIQuizService;
+        private readonly IScoreService _scoreService;
+        private readonly IEndService _endService;
         private readonly QuizManager _quizManager;
 
         public AdditionalTestsForTheManager(ITestOutputHelper output)
         {
             _output = output;
 
-            // Tworzę rzeczywisty `QuestionService`, ale bez domyślnych pytań
-            var questionService = new QuestionService(false);
+            _mockUserInterface = new Mock<IUserInterface>(); // Upewnij się, że mock jest inicjalizowany
 
-            _mockQuizService = new MockQuizService(
-           questionService,
-           new Mock<ChoiceService>().Object,
-           new Mock<CorrectAnswerService>().Object,
-           new Mock<JsonCommonClass>().Object,
-           new Mock<IFileWrapper>().Object
-            );
+            _mockIQuizService = new Mock<IQuizService>(); // ✅ Prawidłowa inicjalizacja mocka
 
             _scoreService = new ScoreService();
             _endService = new EndService(_scoreService);
 
-            _quizManager = new QuizManager(_mockQuizService, _scoreService, _endService, _mockUserInterface.Object);
+            _quizManager = new QuizManager(_mockIQuizService.Object, _scoreService, _endService, _mockUserInterface.Object);
         }
 
         // 1 
@@ -56,7 +50,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         public void Constructor_ShouldThrowException_WhenQuestionsAreNull() // Konstruktor: podaje wyjątek, jeśli pytania = null
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new ManagerHelper(null, _mockQuizService));
+            Assert.Throws<ArgumentNullException>(() => new ManagerHelper(null, _mockIQuizService.Object));
         }
 
         // 2
