@@ -41,8 +41,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
      10 testów do analizy / 109 całość
 
-    //Test zapisu gita
-
+    //Test dla GitHuba
      */
 
     public class Program // Zmiana widoczności kolejnych klas
