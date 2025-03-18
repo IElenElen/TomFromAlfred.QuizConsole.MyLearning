@@ -56,13 +56,16 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
                 return;
             }
 
-            if (!_choices.Contains(choice))
+            var choiceToRemove = _choices.FirstOrDefault(c => c.ChoiceId == choice.ChoiceId);
+
+            if (choiceToRemove == null)
             {
                 Console.WriteLine($"Opcja {choice.ChoiceLetter} dla Id {choice.ChoiceId} nie istnieje.");
                 return;
             }
 
-            _choices.Remove(choice);
+            _choices.Remove(choiceToRemove);
+            Console.WriteLine($"Usunięto opcję {choiceToRemove.ChoiceLetter} dla Id {choiceToRemove.ChoiceId}.");
         }
 
         // Pobranie wszystkich wyborów
@@ -100,9 +103,16 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             }
 
             var existingChoice = _choices.FirstOrDefault(c => c.ChoiceId == updatedChoice.ChoiceId);
+
             if (existingChoice == null)
             {
                 Console.WriteLine($"Nie znaleziono wyboru do aktualizacji: Id {updatedChoice.ChoiceId}");
+                return;
+            }
+
+            if (existingChoice.ChoiceContent == updatedChoice.ChoiceContent)
+            {
+                Console.WriteLine($"Brak zmian: treść dla Id {updatedChoice.ChoiceId} jest już taka sama.");
                 return;
             }
 
@@ -118,6 +128,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             if (existingChoice == null)
             {
                 Console.WriteLine($"Nie znaleziono wyboru do aktualizacji litery: Id {choiceId}");
+                return;
+            }
+
+            if (!"ABC".Contains(newLetter))
+            {
+                Console.WriteLine($"Błąd: Niepoprawna litera '{newLetter}'. Dozwolone: A, B, C.");
                 return;
             }
 

@@ -8,7 +8,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Oblane: 0 / 9
+    // Oblane: 0 / 11
 
     public class CorrectAnswerServiceTests
     {
@@ -52,17 +52,21 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 3 
         [Fact] //Zaliczony
-        public void Delete_ShouldRemoveCorrectAnswer_WhenValidEntityIsGiven() // Usuwa: poprawną odpowiedź, jeśli poprawnie podane jest entity
+        public void Delete_ShouldRemoveCorrectAnswerById_WhenValidEntityIsGiven() // Usuwa: poprawną odpowiedź, jeśli poprawnie podane jest entity
         {
             // Arrange
-            var existingCorrectAnswerToDelete = new CorrectAnswer(11, "Jesień", true);
+            var correctAnswerService = new CorrectAnswerService();
+            var correctAnswerToDelete = new CorrectAnswer(12, "Warszawa", true);
+
+            // Nowa instancja z tym samym CorrectAnswerId
+            var sameIdCorrectAnswer = new CorrectAnswer(12, "Zamość", true);
 
             // Act
-            _correctAnswerService.Delete(existingCorrectAnswerToDelete);
-            var result = _correctAnswerService.GetAllActive();
+            correctAnswerService.Delete(sameIdCorrectAnswer);
 
             // Assert
-            Assert.DoesNotContain(existingCorrectAnswerToDelete, result);
+            var result = correctAnswerService.GetCorrectAnswerForQuestion(12);
+            Assert.Null(result);
         }
 
         // 4 
@@ -81,7 +85,21 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal(initialCount, result);
         }
 
-        // 5 
+        // 5
+        [Fact] // Zaliczony
+        public void FindCorrectAnswerContent_ShouldReturnErrorMessage_WhenChoiceServiceIsNull() // Znajduje: Jeśli serwis dla poprawności jest null - daje komunikat
+        {
+            // Arrange
+            var correctAnswerService = new CorrectAnswerService();
+
+            // Act
+            var result = correctAnswerService.FindCorrectAnswerContent(11, 'A');
+
+            // Assert
+            Assert.Equal("Przykładowa odpowiedź", result);
+        }
+
+        // 6
         [Fact] // Zaliczony
         public void GetAll_ShouldReturnAllCorrectActiveAnswers() // Podaje: wszystkie poprawne aktywne odpowiedzi
         {
@@ -103,7 +121,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal(initialActiveCount, result.Count());
         }
 
-        // 6 
+        // 7 
         [Fact] // Zaliczony
         public void Update_ShouldUpdateCorrectAnswer_WhenValidEntityIsGiven() // Aktualizuje: poprawną odpowiedź jeśli entity jest poprawnie podane
         {
@@ -118,7 +136,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal("Zmieniona zima", result.CorrectAnswerContent);
         }
 
-        // 7 
+        // 8
         [Fact] // Zaliczony
         public void Update_ShouldNotUpdateCorrectAnswer_WhenEntityDoesNotExist() // Aktualizuje: nic nie robi, jeśli entity nie istnieje
         {
@@ -133,7 +151,30 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Null(result);
         }
 
-        // 8 
+        // 9
+        [Fact] // Zaliczony
+        public void Update_ShouldNotChangeCorrectAnswerById_WhenContentIsSame() // Aktualizuje: pomija aktualizację, jeśli treść ta sama dla tego samego Id
+        {
+            // Arrange
+            var correctAnswerService = new CorrectAnswerService();
+            var existingAnswer = new CorrectAnswer(11, "Jesień", true);
+
+            // Act
+            using (var sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                correctAnswerService.Update(existingAnswer);
+
+                // Pobieram komunikaty z konsoli
+                var logOutput = sw.ToString();
+                Assert.Contains("Brak zmian: treść dla Id 11 jest już taka sama.", logOutput);
+            }
+            // Assert
+            var result = correctAnswerService.GetCorrectAnswerForQuestion(11);
+            Assert.Equal("Jesień", result.CorrectAnswerContent);
+        }
+
+        // 10
         [Fact] // Zaliczony
         public void GetCorrectAnswerForQuestion_ShouldReturnCorrectAnswer_WhenValidQuestionIdIsGiven() // Daje: poprawną odpowiedź, jeśli Id pytania jest poprawne
         {
@@ -144,7 +185,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal("Warszawa", result.CorrectAnswerContent);
         }
 
-        // 9 
+        // 11
         [Fact] // Zaliczony
         public void GetCorrectAnswerForQuestion_ShouldReturnNull_WhenInvalidQuestionIdIsGiven() // Daje: zwrot nulla, jeśli Id pytania jest niepoprawne
         {

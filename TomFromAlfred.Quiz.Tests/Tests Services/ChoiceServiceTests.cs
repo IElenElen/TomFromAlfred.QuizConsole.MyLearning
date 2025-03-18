@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ using Xunit.Abstractions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Ilość oblanych: 0 / 12
+    // Ilość oblanych: 0 / 13
 
     public class ChoiceServiceTests
     {
@@ -68,18 +69,21 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 3
         [Fact] // Zaliczony
-        public void Delete_ShouldRemoveExistingChoice() // Usuwa: istniejący wybóru, Id
+        public void Delete_ShouldRemoveExistingChoiceById() // Usuwa: istniejący wybóru, Id
         {
-            //Arrange
-            var existingChoiceToDelete = new Choice(22, 'A', "Opcja A");
+            // Arrange
+            var choiceService = new ChoiceService();
+            var choiceToDelete = new Choice(22, 'A', "Opcja A");
+            choiceService.Add(choiceToDelete);
 
-            //Act
-            _choiceService.Delete(existingChoiceToDelete);
-            var allChoices = _choiceService.GetAllActive();
+            // Nowa instancja o tym samym ChoiceId
+            var sameChoiceId = new Choice(22, 'C', "Nieistotna treść");
 
+            // Act
+            choiceService.Delete(sameChoiceId);
 
-            //Assert
-            Assert.DoesNotContain(existingChoiceToDelete, allChoices);
+            // Assert
+            Assert.DoesNotContain(choiceToDelete, choiceService.GetAllActive());
         }
 
         // 4
@@ -237,8 +241,25 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 _output.WriteLine($"All Choices - Id: {choice.ChoiceId}, Letter: {choice.ChoiceLetter}, Content: {choice.ChoiceContent}.");
             }
         }
-
         // 11
+        [Fact] // Zaliczony
+        public void Update_ShouldNotChangeChoice_WhenContentIsSame() // Aktualizuje: nic nie robi, jeśli treść wyboru pozostaje ta sama
+        {
+            // Arrange
+            var choiceService = new ChoiceService();
+            var existingChoice = new Choice(15, 'C', "Wąż z Afryki");
+            choiceService.Add(existingChoice);
+
+            var sameContentChoice = new Choice(15, 'C', "Wąż z Afryki");
+
+            // Act
+            choiceService.Update(sameContentChoice);
+
+            // Assert
+            Assert.Equal("Wąż z Afryki", choiceService.GetChoicesForQuestion(15).First().ChoiceContent);
+        }
+
+        // 12
         [Fact] // Zaliczony
         public void Update_ShouldThrowArgumentException_WhenChoiceHasInvalidSign() // Aktualizuje: wyrzuca wyjątek, jeśli użytkownik poda niepoprawny znak
         {
@@ -255,7 +276,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             }
         }
 
-        // 12
+        // 13
         [Fact] // Zaliczony
         public void Update_ShouldNotThrow_WhenChoiceHasValidLetter() // Aktualizuje: przyjmuje wybór, jeśli system otrzymuje prawidłową literę z zakresu A-C
         {

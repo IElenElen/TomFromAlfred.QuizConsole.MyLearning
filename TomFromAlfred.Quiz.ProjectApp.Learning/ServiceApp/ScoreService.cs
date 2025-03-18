@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         public virtual void DisplayScoreSummary()
         {
             Console.WriteLine($"Zdobyte punkty: {_score}/{_allActiveQuizSets}");
-            Console.WriteLine($"Procent poprawnych odpowiedzi: {GetPercentage():F2}%");
+            Console.WriteLine($"Procent poprawnych odpowiedzi: {GetPercentage().ToString("F2", CultureInfo.InvariantCulture)}%");
         }
 
         public virtual double GetPercentage()

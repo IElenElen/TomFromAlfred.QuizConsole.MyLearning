@@ -99,19 +99,19 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
          // 5
         [Fact] // Zaliczony
-        public void Delete_ShouldDeleteExistingQuestion() // Usuwa: pytanie, które istnieje
+        public void Delete_ShouldDeleteExistingQuestionById() // Usuwa: pytanie, które istnieje (po Id)
         {
             // Arrange
             var questionService = new QuestionService();
-            var questionToDelete = new Question(15, "Pytanie do usuwania.");
+            var questionToDelete = new Question(20, "Czy Tomek jest chłopcem?");
 
             questionService.Add(questionToDelete);
 
-            // Sprawdzam, czy pytanie faktycznie zostało dodane przed usunięciem
-            Assert.Contains(questionToDelete, questionService.GetAllActive());
+            // Tworzę nową instancję o tym samym ID (ale inny obiekt)
+            var questionWithSameId = new Question(20, "Czy Tomek to podróżnik?");
 
             // Act
-            questionService.Delete(questionToDelete);
+            questionService.Delete(questionWithSameId);
 
             // Assert
             Assert.DoesNotContain(questionToDelete, questionService.GetAllActive());
@@ -205,7 +205,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 11
         [Fact] // Zaliczony
-        public void Update_ShouldNotUpdateNonExistingQuestion() // Aktualizuje: nic nie zmienia, jeśli pytanie nie istnieje
+        public void Update_ShouldNotUpdateNonExistingQuestion_AndShouldLogMessage() // Aktualizuje: nic nie zmienia, jeśli pytanie nie istnieje
         {
             // Arrange
             int initialCount = _questionService.GetAllActive().Count(); // Zapisuję początkową liczbę pytań

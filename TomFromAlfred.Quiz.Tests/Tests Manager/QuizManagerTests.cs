@@ -16,124 +16,109 @@ using TomFromAlfred.QuizConsole.Tests.SupportForTests;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
 {
-    // Oblane: 5 / 5
+    // Oblane: 3 / 5
     public class QuizManagerTests
     {
-        private readonly Mock<IFileWrapper> _mockFileWrapper;
-        private readonly Mock<JsonCommonClass> _mockJsonService;
-        private readonly Mock<IScoreService> _mockIScoreService;
-        private readonly Mock<IEndService> _mockIEndService;
-        private readonly Mock<IUserInterface> _mockUserInterface; 
         private readonly Mock<IQuizService> _mockQuizService;
+        private readonly Mock<IScoreService> _mockScoreService;
+        private readonly Mock<IEndService> _mockEndService;
+        private readonly Mock<IUserInterface> _mockUserInterface;
         private readonly QuizManager _quizManager;
 
         public QuizManagerTests()
         {
-            // Mockuję pliki i JSON, żeby testy nie czytały rzeczywistych plików
-            _mockFileWrapper = new Mock<IFileWrapper>();
-            _mockJsonService = new Mock<JsonCommonClass>();
-            _mockIScoreService = new Mock<IScoreService>();
-            _mockIEndService = new Mock<IEndService>();
+            _mockQuizService = new Mock<IQuizService>();
+            _mockScoreService = new Mock<IScoreService>();
+            _mockEndService = new Mock<IEndService>();
+            _mockUserInterface = new Mock<IUserInterface>();
 
-            _mockUserInterface = new Mock<IUserInterface>(); // Inicjalizacja mocka IUserInterface
+            // Setup mocka `IEndService`
+            _mockEndService.Setup(e => e.ShouldEnd(It.IsAny<string>())).Returns(false);
+            _mockEndService.Setup(e => e.EndQuiz(It.IsAny<bool>())).Verifiable();
 
-            _mockIEndService.Setup(e => e.ShouldEnd("K")).Returns(true);
-            _mockIEndService.Setup(e => e.EndQuiz(It.IsAny<bool>())).Verifiable();
-
-            // Symuluję, że pliki istnieją, aby uniknąć błędów dostępu do plików w testach
-            _mockFileWrapper.Setup(f => f.Exists(It.IsAny<string>())).Returns(true);
-
-            // Prawdziwe instancje serwisów
-            var questionService = new QuestionService();
-            var choiceService = new ChoiceService();
-            var correctAnswerService = new CorrectAnswerService();
-
-           // Tworzę mock `IQuizService` bez argumentów
-                _mockQuizService = new Mock<IQuizService>(); // ✅ Poprawiony zapis
-
-            // Setup mockowanych metod
-            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(new List<Question>
-            {
-                new Question(1, "Jak nazywał się główny bohater książki?")
-            });
-
-            // Tworzę mapping literowy dla `out` parameter
-            var letterMapping = new Dictionary<char, char> { { 'A', 'A' }, { 'B', 'B' }, { 'C', 'C' } };
-
-            _mockQuizService.Setup(q => q.GetShuffledChoicesForQuestion(It.IsAny<int>(), out letterMapping))
-                .Returns(new List<Choice>
-                {
-                    new Choice(1, 'A', "Tomek Wilmowski"),
-                    new Choice(1, 'B', "Staś Tarkowski"),
-                    new Choice(1, 'C', "Michał Wołodyjowski")
-                });
-
-            _mockQuizService.Setup(q => q.CheckAnswer(It.IsAny<int>(), 'A', It.IsAny<Dictionary<char, char>>()))
-                .Returns(true);
-
-            _quizManager = new QuizManager(_mockQuizService.Object, _mockIScoreService.Object, _mockIEndService.Object, _mockUserInterface.Object);
-        }
-        
-        // 1
-        [Fact] // Oblany
-        public void ConductQuiz_ShouldHandleUserAnsweringCorrectly() // Wyświetla: przyjmuje poprawnie odpowiedź użytkownika
-        {
-            // Arrange
-            var fakeQuizService = new FakeQuizService();
-
-            // Tworzenie pytań bezpośrednio w teście
+            // Setup testowych pytań
             var testQuestions = new List<Question>
             {
                 new Question(1, "Jak nazywał się główny bohater książki?")
             };
 
-            var testChoices = new Dictionary<int, List<Choice>>
+            var testChoices = new List<Choice>
             {
-                { 1, new List<Choice>
-                    {
-                        new Choice(1, 'A', "Tomek Wilmowski"),
-                        new Choice(1, 'B', "Staś Tarkowski"),
-                        new Choice(1, 'C', "Michał Wołodyjowski")
-                    }
-                }
+                new Choice(1, 'A', "Tomek Wilmowski"),
+                new Choice(1, 'B', "Staś Tarkowski"),
+                new Choice(1, 'C', "Michał Wołodyjowski")
             };
 
-            var testCorrectAnswers = new Dictionary<int, string>
-            {
-                { 1, "A" } // Poprawna odpowiedź
-            };
+            var letterMapping = new Dictionary<char, char> { { 'A', 'A' }, { 'B', 'B' }, { 'C', 'C' } };
 
-            // Ustawienie testowych danych na fakeQuizService
-            fakeQuizService.SetTestData(testQuestions, testChoices, testCorrectAnswers);
+            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(testQuestions);
+            _mockQuizService.Setup(q => q.GetShuffledChoicesForQuestion(1, out letterMapping)).Returns(testChoices);
+            _mockQuizService.Setup(q => q.CheckAnswer(1, 'A', letterMapping)).Returns(true);
 
-            var quizManager = new QuizManager(fakeQuizService, _mockIScoreService.Object, _mockIEndService.Object, _mockUserInterface.Object);
-
-            _mockUserInterface.Setup(ui => ui.WriteLine(It.IsAny<string>()));
-
+            // Symulacja wejścia użytkownika
             _mockUserInterface.SetupSequence(ui => ui.ReadLine())
                 .Returns("1")  // Wybór odpowiedzi
                 .Returns("A")  // Odpowiedź użytkownika
                 .Returns("K"); // Wyjście z quizu
 
-            // Act
-            quizManager.ConductQuiz();
+            _quizManager = new QuizManager(_mockQuizService.Object, _mockScoreService.Object, _mockEndService.Object, _mockUserInterface.Object);
+        }
 
-            // Assert
-            _mockIScoreService.Verify(s => s.IncrementScore(), Times.Once);
-        } 
-        /*
-        // 2
+        // 1
         [Fact] // Oblany
-        public void ConductQuiz_ShouldHandleNoQuestionsAvailable() // Wyświetla: brak pytań
+        public void ConductQuiz_ShouldHandleUserAnsweringCorrectly() // Wyświetla: przyjmuje poprawnie odpowiedź użytkownika i dodaje punkt
         {
             // Arrange
-           _mockQuizService.SetTestData(new List<Question>(), new Dictionary<int, List<Choice>>(), new Dictionary<int, string>());
+            var testQuestions = new List<Question>
+    {
+        new Question(1, "Jak nazywał się główny bohater książki?")
+    };
+
+            var letterMapping = new Dictionary<char, char> { { 'A', 'A' }, { 'B', 'B' }, { 'C', 'C' } };
+
+            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(testQuestions);
+            _mockQuizService.Setup(q => q.GetShuffledChoicesForQuestion(1, out letterMapping))
+                .Returns(new List<Choice>
+                {
+            new Choice(1, 'A', "Tomek Wilmowski"),
+            new Choice(1, 'B', "Staś Tarkowski"),
+            new Choice(1, 'C', "Michał Wołodyjowski")
+                });
+
+            // Upewniamy się, że CheckAnswer zwraca true dla A
+            _mockQuizService.Setup(q => q.CheckAnswer(1, 'A', letterMapping))
+                .Returns(true)
+                .Callback(() => Console.WriteLine("CheckAnswer został wywołany!"));
+
+            // Logowanie, aby sprawdzić, jakie wartości zwraca ReadLine()
+            _mockUserInterface.SetupSequence(ui => ui.ReadLine())
+                .Returns(() => { Console.WriteLine("User Input: 1"); return "1"; })  // Użytkownik wybiera odpowiedź
+                .Returns(() => { Console.WriteLine("User Input: A"); return "A"; })  // Odpowiedź użytkownika
+                .Returns(() => { Console.WriteLine("User Input: K"); return "K"; }); // Wyjście
 
             // Act
             _quizManager.ConductQuiz();
 
             // Assert
-            _mockUserInterface.Verify(ui => ui.WriteLine(It.IsAny<string>()), Times.AtLeastOnce);
+            _mockQuizService.Verify(q => q.CheckAnswer(1, 'A', letterMapping), Times.Once, "CheckAnswer() nie został wywołany!");
+
+            _mockScoreService.Verify(s => s.IncrementScore(), Times.Once, "IncrementScore() nie zostało wywołane!");
+
+            _mockUserInterface.Verify(ui => ui.WriteLine("Poprawna odpowiedź!"), Times.Once, "Nie wyświetlono komunikatu o poprawnej odpowiedzi!");
+        } 
+        
+        // 2
+        [Fact] // Zaliczony
+        public void ConductQuiz_ShouldHandleNoQuestionsAvailable() // Wyświetla: brak pytań
+        {
+            // Arrange
+            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(new List<Question>());
+
+            // Act
+            _quizManager.ConductQuiz();
+
+            // Assert
+            _mockUserInterface.Verify(ui => ui.WriteLine("Koniec pytań."), Times.Once);
         }
 
         // 3
@@ -141,21 +126,35 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         public void ConductQuiz_ShouldNotIncrementScore_WhenAnswerIsIncorrect() // Wyświetla: nie daje punktu, jęśli odpowiedź błędna
         {
             // Arrange
-            var input = new StringReader("1\nB\n\n");
-            Console.SetIn(input);
+            var testQuestions = new List<Question>
+            {
+                new Question(1, "Jak nazywał się główny bohater książki?")
+            };
 
-            _mockUserInterface.Setup(ui => ui.WriteLine(It.IsAny<string>()));
-            _mockQuizService.SetTestData(
-                new List<Question> { new Question(1, "Pytanie") },
-                new Dictionary<int, List<Choice>> { { 1, new List<Choice> { new Choice(1, 'A', "Poprawna") } } },
-                new Dictionary<int, string> { { 1, "A" } }
-            );
+            var letterMapping = new Dictionary<char, char> { { 'A', 'A' }, { 'B', 'B' }, { 'C', 'C' } };
+
+            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(testQuestions);
+            _mockQuizService.Setup(q => q.GetShuffledChoicesForQuestion(1, out letterMapping))
+                .Returns(new List<Choice>
+                {
+                    new Choice(1, 'A', "Tomek Wilmowski"),
+                    new Choice(1, 'B', "Staś Tarkowski"),
+                    new Choice(1, 'C', "Michał Wołodyjowski")
+                });
+
+            _mockQuizService.Setup(q => q.CheckAnswer(1, 'B', letterMapping)).Returns(false);
+
+            _mockUserInterface.SetupSequence(ui => ui.ReadLine())
+                .Returns("1")  // Użytkownik wybiera odpowiedź
+                .Returns("B")  // Zła odpowiedź
+                .Returns("K"); // Wyjście
 
             // Act
             _quizManager.ConductQuiz();
 
             // Assert
             _mockScoreService.Verify(s => s.IncrementScore(), Times.Never);
+            _mockUserInterface.Verify(ui => ui.WriteLine("Zła odpowiedź."), Times.Once);
         }
 
         // 4
@@ -163,10 +162,16 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         public void ConductQuiz_ShouldSkipQuestion_WhenUserSelectsOption2() // Wyświetla: pomija pytanie na żądanie użytkownika
         {
             // Arrange
-            var input = new StringReader("2\n\n");
-            Console.SetIn(input);
+            var testQuestions = new List<Question>
+            {
+                new Question(1, "Jak nazywał się główny bohater książki?")
+            };
 
-            _mockUserInterface.Setup(ui => ui.WriteLine(It.IsAny<string>()));
+            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(testQuestions);
+
+            _mockUserInterface.SetupSequence(ui => ui.ReadLine())
+                .Returns("2")  // Pominięcie pytania
+                .Returns("K"); // Wyjście
 
             // Act
             _quizManager.ConductQuiz();
@@ -176,23 +181,20 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 5
-        [Fact] // Oblany
-        public void ConductQuiz_ShouldEndQuiz_WhenUserInputsK() // Wyświetla: przerywa Quzi na żądanie użytkownika
+        [Fact] // Zaliczony
+        public void ConductQuiz_ShouldEndQuiz_WhenUserInputsK() // Wyświetla: przerywa Quiz na żądanie użytkownika
         {
             // Arrange
-            var input = new StringReader("K\n\n");
-            Console.SetIn(input);
+            _mockEndService.Setup(e => e.ShouldEnd("K")).Returns(true);
 
-            _mockUserInterface.Setup(ui => ui.WriteLine(It.IsAny<string>()));
-
-            // Zamockowanie _mockEndService i jego metody ShouldEnd
-            _mockEndService.Setup(e => e.ShouldEnd(It.IsAny<string>())).Returns(true);
+            _mockUserInterface.SetupSequence(ui => ui.ReadLine())
+                .Returns("K"); // Wyjście
 
             // Act
             _quizManager.ConductQuiz();
 
             // Assert
             _mockEndService.Verify(e => e.EndQuiz(It.IsAny<bool>()), Times.Once);
-        } */
+        } 
     }
 }

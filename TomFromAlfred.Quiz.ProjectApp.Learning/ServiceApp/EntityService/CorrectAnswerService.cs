@@ -42,20 +42,34 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
         public void Delete(CorrectAnswer entity)
         {
-            if (entity == null || !_correctAnswers.ContainsKey(entity.CorrectAnswerId))
+            if (entity == null)
             {
-                Console.WriteLine($"Nie można usunąć odpowiedzi, bo nie istnieje.");
+                Console.WriteLine("Nie można usunąć pustej odpowiedzi.");
                 return;
             }
 
-            _correctAnswers.Remove(entity.CorrectAnswerId);
-            Console.WriteLine($"Usunięto poprawną odpowiedź: {entity.CorrectAnswerId}");
+            else if (_correctAnswers.Remove(entity.CorrectAnswerId))
+            {
+                Console.WriteLine($"Usunięto poprawną odpowiedź: {entity.CorrectAnswerId}");
+            }
+
+            else
+            {
+                Console.WriteLine($"Nie znaleziono odpowiedzi o Id: {entity.CorrectAnswerId}, nie można usunąć.");
+            }
         }
 
         public string FindCorrectAnswerContent(int questionId, char letter)
         {
+            if (_choiceService == null)
+            {
+                Console.WriteLine("Błąd: ChoiceService nie jest dostępny.");
+                return "Nieznana odpowiedź";
+            }
+
             var choice = _choiceService.GetChoicesForQuestion(questionId)
                                        .FirstOrDefault(c => c.ChoiceLetter == letter);
+
             return choice?.ChoiceContent ?? "Nieznana odpowiedź";
         }
 
@@ -66,9 +80,21 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
         public void Update(CorrectAnswer entity)
         {
-            if (entity == null || !_correctAnswers.ContainsKey(entity.CorrectAnswerId))
+            if (entity == null)
             {
-                Console.WriteLine($"Nie można zaktualizować odpowiedzi {entity?.CorrectAnswerId ?? 0}, bo nie istnieje.");
+                Console.WriteLine("Nie można zaktualizować pustej odpowiedzi.");
+                return;
+            }
+
+            if (!_correctAnswers.TryGetValue(entity.CorrectAnswerId, out var existingAnswer))
+            {
+                Console.WriteLine($"Nie znaleziono odpowiedzi o Id: {entity.CorrectAnswerId}, aktualizacja nie powiodła się.");
+                return;
+            }
+
+            if (existingAnswer.CorrectAnswerContent == entity.CorrectAnswerContent)
+            {
+                Console.WriteLine($"Brak zmian: treść dla Id {entity.CorrectAnswerId} jest już taka sama.");
                 return;
             }
 

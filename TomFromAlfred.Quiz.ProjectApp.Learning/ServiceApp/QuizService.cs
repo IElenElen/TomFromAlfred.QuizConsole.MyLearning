@@ -74,6 +74,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
             // Pobierz zamapowaną literę użytkownika
             char originalLetter;
+
             if (letterMapping != null && letterMapping.TryGetValue(userChoiceLetter, out originalLetter))
             {
                 Console.WriteLine($"Sprawdzanie odpowiedzi: Użytkownik: {userChoiceLetter}, Zamapowana: {originalLetter}");

@@ -35,7 +35,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 
             if (string.IsNullOrWhiteSpace(json))
             {
-                throw new InvalidDataException($"Plik {filePath} jest pusty lub zawiera nieprawidłowe dane.");
+                throw new JsonReaderException($"Plik {filePath} jest pusty lub zawiera nieprawidłowe dane.");
             }
 
             var data = JsonConvert.DeserializeObject<T>(json);

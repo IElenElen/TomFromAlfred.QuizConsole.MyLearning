@@ -1,4 +1,5 @@
 ﻿using System;
+using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,12 +13,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
      
     public class EndServiceTests
     {
-        private readonly IEndService _endService;
+        private readonly EndService _endService;
+        private readonly Mock<IScoreService> _mockScoreService; // Mockowanie ScoreService
 
         public EndServiceTests()
         {
-            var ScoreService = new ScoreService(); // Tworzę instancję ScoreService jako zależność
-            _endService = new EndService(ScoreService);
+            _mockScoreService = new Mock<IScoreService>(); // Tworzenie mocka
+            _endService = new EndService(_mockScoreService.Object); // Przekazanie mocka do EndService
         }
 
         // 1 
@@ -50,13 +52,16 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 3
         [Fact] // Zaliczony
-        public void EndQuiz_ShouldReturnCompletionMessage_WhenQuizIsCompleted() // Kończy: zwraca info o uzyskanej punktacji, jeśli Quiz ukończony
+        public void EndQuiz_ShouldReturnCompletionMessageAndDisplayScore_WhenQuizIsCompleted() // Kończy: zwraca info o uzyskanej punktacji, jeśli Quiz ukończony
         {
             // Act
             string result = _endService.EndQuiz(true);
 
             // Assert
             Assert.Equal("Ukończyłeś / aś Quiz. Dziękujemy za udział!", result);
+
+            // Sprawdzenie, czy metoda `DisplayScoreSummary()` została wywołana raz
+            _mockScoreService.Verify(s => s.DisplayScoreSummary(), Times.Once);
         }
 
         // 4
@@ -68,6 +73,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Assert
             Assert.Equal("Quiz został przerwany. Brak punktów.", result);
+
+            // Sprawdzenie, czy `ResetScore()` zostało wywołane
+            _mockScoreService.Verify(s => s.ResetScore(), Times.Once);
         }
     }
 }

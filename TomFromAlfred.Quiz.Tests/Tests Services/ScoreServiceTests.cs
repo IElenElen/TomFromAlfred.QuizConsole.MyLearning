@@ -12,11 +12,11 @@ using Xunit.Abstractions;
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Oblane: 0 / 18
+    // Oblane: 1 / 19
     public class ScoreServiceTests 
     {
         private readonly ITestOutputHelper _output;
-        private IScoreService _scoreService; // Testuję tę klasę
+        private ScoreService _scoreService; // Testuję tę klasę
 
         public ScoreServiceTests(ITestOutputHelper output) 
         {
@@ -51,14 +51,16 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void StartNewQuiz_ShouldThrowException_WhenSetInQuizIsZero() // Uruchamia nowy Quiz: wyrzuca wyjątek, jeśli brak zestawu w Quizie
         {
             // Act & Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => _scoreService.StartNewQuiz(0));
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => _scoreService.StartNewQuiz(0));
+            Assert.Contains("Liczba pytań musi być większa niż 0.", exception.Message);
         }
 
         // 3
         [Fact] // Zaliczony
         public void StartNewQuiz_ShouldThrowException_WhenQuizContainsNegativeQuestionCount() // Uruchamia nowy Quiz: wyrzuca wyjątek, jesli liczba zestawu minusowa
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => _scoreService.StartNewQuiz(-5));
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => _scoreService.StartNewQuiz(-5));
+            Assert.Contains("Liczba pytań musi być większa niż 0.", exception.Message);
         }
 
         // 4
@@ -78,10 +80,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 5 
         [Fact] // Zaliczony
-        public void StartNewQuiz_ShouldHandleMaxQuizSets() // Uruchamia Quiz: zachowanie przy max ilości zestawów Quizu
+        public void StartNewQuiz_ShouldHandleMaxIntQuestionsWithoutOverflow() // Uruchamia Quiz: zachowanie przy max ilości zestawów Quizu
         {
+            // Act
             _scoreService.StartNewQuiz(int.MaxValue);
+
+            // Assert
             Assert.Equal(int.MaxValue, _scoreService.GetTotalActiveSets());
+            Assert.Equal(0, _scoreService.GetScore()); // Sprawdzam, czy wynik pozostaje 0
         }
 
         // 6
@@ -301,15 +307,41 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _scoreService.StartNewQuiz(10); // Powinno ustawić AllActiveQuizSets = 10
             _scoreService.IncrementScore(); // Powinno zwiększyć Score o 1
 
-            // Debugowanie
-            Assert.Equal(10, _scoreService.AllActiveQuizSets); // Sprawdzenie liczby pytań
-            Assert.Equal(1, _scoreService.Score); // Sprawdzenie, czy wynik się zwiększył
+            _output.WriteLine($"Total Questions: {_scoreService.AllActiveQuizSets}");
+            _output.WriteLine($"Current Score: {_scoreService.Score}");
 
             // Act
             var percentage = _scoreService.GetPercentage();
 
             // Assert
             Assert.Equal(10, percentage); // Powinno zwrócić 10%
+        }
+
+        // 19
+        [Fact] // Zaliczony
+        public void DisplayScoreSummary_ShouldPrintCorrectSummary() // Wyświetla: podaje poprawny wynik użytkownika
+        {
+            // Arrange
+            _scoreService.StartNewQuiz(10);
+            _scoreService.IncrementScore(); // Poprawna odpowiedź
+
+            using (var sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+
+                // Act
+                _scoreService.DisplayScoreSummary();
+
+                // Debugging - wyświetlenie outputu testu
+                string output = sw.ToString();
+                Console.WriteLine("=== OUTPUT TESTU ===");
+                Console.WriteLine(output);
+                Console.WriteLine("=====================");
+
+                // Assert
+                Assert.Contains("Zdobyte punkty: 1/10", output);
+                Assert.Contains("Procent poprawnych odpowiedzi: 10.00%", output);
+            }
         }
     }
 }

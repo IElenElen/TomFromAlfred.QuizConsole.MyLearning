@@ -29,7 +29,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             }
         }
 
-
         private void InitializeQuestions() // Tej metody nie testuję
         {
             _questions.Add(new Question(11, "Co następuje po lecie?"));
@@ -54,7 +53,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             Console.WriteLine($"Added question: {newQuestion.QuestionId} - {newQuestion.QuestionContent}");
         }
 
-
         public void Delete(Question entity)
         {
             if (entity == null)
@@ -63,8 +61,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
                 return;
             }
 
-            if (_questions.Remove(entity))
+            var questionToRemove = _questions.FirstOrDefault(q => q.QuestionId == entity.QuestionId);
+
+            if (questionToRemove != null)
             {
+                _questions.Remove(questionToRemove);
                 Console.WriteLine($"Usunięto pytanie: {entity.QuestionId}");
             }
             else
@@ -85,6 +86,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             {
                 question.QuestionContent = entity.QuestionContent;
                 Console.WriteLine($"Zaktualizowano pytanie o Id {entity.QuestionId}");
+            }
+
+            else
+            {
+                Console.WriteLine($"Nie znaleziono pytania o Id {entity.QuestionId}, aktualizacja nie powiodła się.");
             }
         }
     }
