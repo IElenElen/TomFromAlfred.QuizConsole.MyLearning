@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
     // Oblane: 0 / 13
-    // Nr: ? 
+    // Nr: 
     // Czy tu już mam testy integracyjne na poziomie klasy???
 
     public class QuestionServiceTests

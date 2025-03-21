@@ -56,16 +56,35 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
                 return;
             }
 
-            var choiceToRemove = _choices.FirstOrDefault(c => c.ChoiceId == choice.ChoiceId);
+            var toRemove = _choices.FirstOrDefault(c =>
+                c.ChoiceId == choice.ChoiceId &&
+                c.ChoiceLetter == choice.ChoiceLetter);
 
-            if (choiceToRemove == null)
+            if (toRemove == null)
             {
-                Console.WriteLine($"Opcja {choice.ChoiceLetter} dla Id {choice.ChoiceId} nie istnieje.");
+                Console.WriteLine($"Nie znaleziono pasującego wyboru do usunięcia: Id {choice.ChoiceId}, Litera {choice.ChoiceLetter}");
                 return;
             }
 
-            _choices.Remove(choiceToRemove);
-            Console.WriteLine($"Usunięto opcję {choiceToRemove.ChoiceLetter} dla Id {choiceToRemove.ChoiceId}.");
+            _choices.Remove(toRemove);
+            Console.WriteLine($"Usunięto wybór: Id {toRemove.ChoiceId}, Litera {toRemove.ChoiceLetter}");
+        }
+
+        public void DeleteChoiceById(int choiceId)
+        {
+            var toRemove = _choices.Where(c => c.ChoiceId == choiceId).ToList();
+
+            if (!toRemove.Any())
+            {
+                Console.WriteLine($"Nie znaleziono żadnych wyborów z Id = {choiceId}");
+                return;
+            }
+
+            foreach (var choice in toRemove)
+            {
+                _choices.Remove(choice);
+                Console.WriteLine($"Usunięto wybór: Id {choice.ChoiceId}, Litera {choice.ChoiceLetter}");
+            }
         }
 
         // Pobranie wszystkich wyborów
