@@ -81,7 +81,13 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
         public void Update(Question entity)
         {
+            if (entity == null)
+            {
+                Console.WriteLine("Nie można zaktualizować pustego pytania.");
+                return;
+            }
             var question = _questions.FirstOrDefault(q => q.QuestionId == entity.QuestionId);
+
             if (question != null)
             {
                 question.QuestionContent = entity.QuestionContent;

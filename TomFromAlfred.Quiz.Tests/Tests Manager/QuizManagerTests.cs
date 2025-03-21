@@ -16,7 +16,7 @@ using TomFromAlfred.QuizConsole.Tests.SupportForTests;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
 {
-    // Oblane: 3 / 5
+    // Oblane: 5 / 5
     public class QuizManagerTests
     {
         private readonly Mock<IQuizService> _mockQuizService;
@@ -108,7 +108,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         } 
         
         // 2
-        [Fact] // Zaliczony
+        [Fact] // 
         public void ConductQuiz_ShouldHandleNoQuestionsAvailable() // Wyświetla: brak pytań
         {
             // Arrange
@@ -181,7 +181,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         }
 
         // 5
-        [Fact] // Zaliczony
+        [Fact] // 
         public void ConductQuiz_ShouldEndQuiz_WhenUserInputsK() // Wyświetla: przerywa Quiz na żądanie użytkownika
         {
             // Arrange

@@ -11,7 +11,8 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Oblane: 0 / 11
+    // Oblane: 4 / 11
+    // Nr 1 2 10 11
 
     public class JsonCommonClassTests
     {
@@ -23,7 +24,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 1
-        [Fact] // Zaliczony
+        [Fact] // 
         public void CreateDefaultFile_ShouldCreateFile_WhenFileDoesNotExist() // Tworzy plik: jeśli ten nie istnieje
         {
             // Arrange
@@ -44,7 +45,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 2
-        [Fact] // Zaliczony
+        [Fact] // 
         public void CreateDefaultFile_ShouldNotCreateFileAndShouldLogMessage_WhenFileAlreadyExists() // Nie tworzy: jeśli plik już istnieje i daje info
         {
             // Arrange
@@ -197,7 +198,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 10
-        [Fact] // Zaliczony
+        [Fact] // 
         public void ReadFromFile_ShouldThrowInvalidDataException_WhenFileIsEmpty() // Odczytuje: wyrzuca wyjątek, jeśli plik jest pusty
         {
             // Arrange
@@ -213,7 +214,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 11
-        [Fact] // Zaliczony
+        [Fact] // 
         public void ReadFromFile_ShouldThrowJsonReaderException_WhenFileContainsInvalidJson() //Odczytuje: wyrzuca wyjatek, jeśli json ma błędny format
         {
             // Arrange

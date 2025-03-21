@@ -12,7 +12,8 @@ using Xunit.Abstractions;
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Oblane: 1 / 19
+    // Oblane: 13 / 19
+    // Nr 1, 5 - 10, 12 - 17
     public class ScoreServiceTests 
     {
         private readonly ITestOutputHelper _output;
@@ -25,7 +26,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 1
-        [Theory] // Zaliczony
+        [Theory] // Oblany
         [InlineData(5)]
         [InlineData(10)]
         [InlineData(62)]
@@ -79,7 +80,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 5 
-        [Fact] // Zaliczony
+        [Fact] // Oblany
         public void StartNewQuiz_ShouldHandleMaxIntQuestionsWithoutOverflow() // Uruchamia Quiz: zachowanie przy max ilości zestawów Quizu
         {
             // Act
@@ -91,7 +92,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 6
-        [Fact] // Zaliczony
+        [Fact] // Oblany
         public void StartNewQuiz_ShouldResetScoreAndUpdateQuiz_WithEachCall() // Uruchamia Quiz: resetuje punkty i ustawia nowy Quiz przy każdym nowym wywołaniu
         {
             // Arrange
@@ -110,7 +111,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 7
-        [Fact] // Zaliczony
+        [Fact] // Oblany
         public void IncrementScore_ShouldIncreaseScoreByOne() // Zlicza punktację o 1
         {
             // Arrange
@@ -125,7 +126,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 8
-        [Fact] // Zaliczony
+        [Fact] // Oblany
         public void IncrementScore_ShouldWorkMultipleTimes() // Zlicza punktację po każdym zestawie
         {
             // Arrange
@@ -142,7 +143,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 9
-        [Fact] // Zaliczony
+        [Fact] // Oblany
         public void IncrementScore_ShouldNotAffectTotalQuestions() // Zlicza punkty, liczba pytań pozostaje ta sama
         {
             // Arrange
@@ -158,7 +159,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 10
-        [Fact] // Zaliczony
+        [Fact] // Oblany
         public void GetScore_ShouldReturnZero_WhenQuizNotStarted() // Podaje 0, jeśli Quiz nie został uruchomiony
         {
             // Act
@@ -188,7 +189,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 12
-        [Fact] // Zaliczony
+        [Fact] // Oblany
         public void GetScore_ShouldReturnZero_AfterReset() // Podaje wynik: zwraca zero po resecie
         {
             // Arrange
@@ -203,7 +204,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 13
-        [Fact] // Zaliczony
+        [Fact] // Oblany
         public void GetScore_ShouldReturnZero_AfterQuizStartedAndNoIncrement() // Podaje punktację: podaje 0, jeśli nie było inkrementacji
         {
             // Arrange
@@ -217,7 +218,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         } 
 
         // 14
-        [Fact] // Zaliczony
+        [Fact] // Oblany
         public void ResetScore_ShouldSetScoreToZero_AfterMultipleIncrements_QuizBreak() // Podaje wynik: zwraca 0, po kilku odpowiedziach - przerwanie Quizu
         {
             // Arrange
@@ -252,7 +253,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 15
-        [Fact] // Zaliczony
+        [Fact] // Oblany
         public void GetPercentage_ShouldReturn100_WhenAllAnswersAreCorrect() // Podaje procenty: zwraca 100, jeśli wszystkie odpowiedzi użytkownika są dobre
         {
             // Arrange
@@ -270,7 +271,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 16
-        [Fact] // Zaliczony
+        [Fact] // Oblany
         public void GetPercentage_ShouldReturn0_WhenNoAnswersAreCorrect() // Podaje procenty: zwraca 0, bo nie było poprawnej odpowiedzi od użytkownika lub nastąpił reset
         {
             // Arrange
@@ -284,7 +285,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 17
-        [Fact] // Zaliczony
+        [Fact] // Oblany
         public void GetPercentage_ShouldReturnZero_AfterScoreReset() // Podaje procenty: zwraca 0, jeśli nastąpiło przerwanie Quizu
         {
             // Arrange

@@ -10,7 +10,8 @@ using Xunit.Abstractions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Ilość oblanych: 0 / 13
+    // Ilość oblanych: 10 / 13
+    // Nr 1 2 3 4 5 6 8 9 10 11
 
     public class ChoiceServiceTests
     {
@@ -26,7 +27,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 1 
-        [Fact] // Zaliczony
+        [Fact] // 
 
         public void Add_ShouldAddNewChoiceSet_WhenChoiceSetDoesNotExist() // Dodaje: ma dodać nowy zestaw wyboru, jeśli taki zestaw nie istnieje
         {
@@ -47,7 +48,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 2
-        [Fact] // Zaliczony
+        [Fact] // 
         public void Add_ShouldNotAdd_WhenChoiceExist() // Dodaje: nic nie dodaje, jeśli wybór istnieje
         {
             // Arrange
@@ -68,7 +69,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 3
-        [Fact] // Zaliczony
+        [Fact] // 
         public void Delete_ShouldRemoveExistingChoiceById() // Usuwa: istniejący wybóru, Id
         {
             // Arrange
@@ -87,7 +88,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 4
-        [Fact] // Zaliczony
+        [Fact] // 
         public void Delete_ShouldNotRemoveChoice_WhenChoiceDoesNotExist() // Usuwa: nic nie usuwa, jeśli wybór nie istnieje
         {
             // Arrange
@@ -105,7 +106,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
 
         // 5
-        [Fact] // Zaliczony
+        [Fact] // 
         public void GetAll_ShouldReturnAllActiveChoices() // Pobiera: wszystkie aktywne wybory
         {
             // Arrange - Wypełniam listę aktywnymi wyborami
@@ -128,7 +129,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 6
-        [Fact] // Zaliczony
+        [Fact] // 
         public void GetChoicesForQuestion_ShouldReturnFilteredChoiceSet_WhenQuestionIdExists() // Podaje: wybory dla pytania o istniejacym Id
         {
             // Arrange - dodanie testowych danych
@@ -155,7 +156,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 8
-        [Fact] // Zaliczony 
+        [Fact] // 
         public void Update_ShouldUpdateChoiceContent_WhenChoiceExists() // Aktualizuje: zmienia treść wyboru, jeśli wybór istnieje
         {
             // Arrange
@@ -185,7 +186,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 9
-        [Fact] // Zaliczony
+        [Fact] // 
         public void Update_ShouldUpdateChoiceLetter_WhenChoiceExists() // Aktualizuje: aktualizuje literę wyboru, jeśli wybór istnieje
         {
             // Arrange - Dodaję wybór do kolekcji przed testem
@@ -214,7 +215,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 10
-        [Fact] // Zaliczony :-) nareszcie
+        [Fact] // 
         public void Update_ShouldNotUpdate_WhenChoiceDoesNotExist() // Aktualizacja: brak zmiany, jeśli dany wybór nie istnieje. Sprawdzam po Id wyboru.
         {
             // Arrange
@@ -242,7 +243,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             }
         }
         // 11
-        [Fact] // Zaliczony
+        [Fact] // 
         public void Update_ShouldNotChangeChoice_WhenContentIsSame() // Aktualizuje: nic nie robi, jeśli treść wyboru pozostaje ta sama
         {
             // Arrange
