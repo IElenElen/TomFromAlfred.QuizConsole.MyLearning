@@ -56,17 +56,16 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Delete_ShouldRemoveCorrectAnswerById_WhenValidEntityIsGiven() // Usuwa: poprawną odpowiedź, jeśli poprawnie podane jest entity
         {
             // Arrange
-            var correctAnswerService = new CorrectAnswerService();
             var correctAnswerToDelete = new CorrectAnswer(12, "Warszawa", true);
 
             // Nowa instancja z tym samym CorrectAnswerId
             var sameIdCorrectAnswer = new CorrectAnswer(12, "Zamość", true);
 
             // Act
-            correctAnswerService.Delete(sameIdCorrectAnswer);
+            _correctAnswerService.Delete(sameIdCorrectAnswer);
 
             // Assert
-            var result = correctAnswerService.GetCorrectAnswerForQuestion(12);
+            var result = _correctAnswerService.GetCorrectAnswerForQuestion(12);
             Assert.Null(result);
         }
 
@@ -90,11 +89,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         [Fact] // 
         public void FindCorrectAnswerContent_ShouldReturnErrorMessage_WhenChoiceServiceIsNull() // Znajduje: Jeśli serwis dla poprawności jest null - daje komunikat
         {
-            // Arrange
-            var correctAnswerService = new CorrectAnswerService();
-
             // Act
-            var result = correctAnswerService.FindCorrectAnswerContent(11, 'A');
+            var result = _correctAnswerService.FindCorrectAnswerContent(11, 'A');
 
             // Assert
             Assert.Equal("Przykładowa odpowiedź", result);
@@ -157,21 +153,20 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Update_ShouldNotChangeCorrectAnswerById_WhenContentIsSame() // Aktualizuje: pomija aktualizację, jeśli treść ta sama dla tego samego Id
         {
             // Arrange
-            var correctAnswerService = new CorrectAnswerService();
             var existingAnswer = new CorrectAnswer(11, "Jesień", true);
 
             // Act
             using (var sw = new StringWriter())
             {
                 Console.SetOut(sw);
-                correctAnswerService.Update(existingAnswer);
+                _correctAnswerService.Update(existingAnswer);
 
                 // Pobieram komunikaty z konsoli
                 var logOutput = sw.ToString();
                 Assert.Contains("Brak zmian: treść dla Id 11 jest już taka sama.", logOutput);
             }
             // Assert
-            var result = correctAnswerService.GetCorrectAnswerForQuestion(11);
+            var result = _correctAnswerService.GetCorrectAnswerForQuestion(11);
             Assert.Equal("Jesień", result.CorrectAnswerContent);
         }
 
