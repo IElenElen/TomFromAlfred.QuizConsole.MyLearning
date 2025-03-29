@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Ilość oblanych: 0 / ?
+    // Ilość oblanych: 0 / 22
 
     public class ChoiceServiceTests
     {
@@ -28,7 +28,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 1 
-        [Theory] // 
+        [Theory] // Zaliczony
         [InlineData('A', "Opcja A")]
         [InlineData('B', "Opcja B")]
         [InlineData('C', "Opcja C")]
@@ -46,7 +46,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 2
-        [Fact] // 
+        [Fact] // Zaliczony
         public void Add_ShouldNotAdd_WhenChoiceExists_AndKeepChoiceCountUnchanged() // Dodaje: nic nie dodaje, jeśli wybór istnieje, nie zmienia liczby wyborów
         {
             // Arrange
@@ -65,8 +65,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal(countBefore, countAfter); 
         }
 
-        //
-        [Fact] // 
+        // 3
+        [Fact] // Zaliczony
         public void Add_ShouldNotDuplicateChoice_WhenSameIdAndLetterUsed() // Dodaje: nie duplikuje wyboru 
         {
             // Arrange
@@ -86,8 +86,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Single(duplicates); // Tylko jedna taka opcja
         }
 
-        // 3
-        [Fact] // 
+        // 4
+        [Fact] // Zaliczony
         public void DeleteChoiceById_ShouldRemoveAllChoicesWithGivenId() // Usuwa: istniejący wybór, po Id
         {
             // Arrange
@@ -105,8 +105,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Empty(remaining);
         }
 
-        //
-        [Fact] //
+        // 5
+        [Fact] // Zaliczony
         public void Delete_ShouldRemoveChoice_OnlyWhenIdAndLetterMatch() // Usuwa: wybór po id i literze
         {
             // Arrange
@@ -124,8 +124,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Contains(remaining, c => c.ChoiceLetter == 'B');
         }
 
-        //
-        [Fact] //
+        // 6
+        [Fact] // Zaliczony
         public void Delete_ShouldNotRemoveChoice_WhenLetterDoesNotMatch() // Usuwa: nie usuwa, jeśli litera błędna
         {
             // Arrange
@@ -143,8 +143,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Contains(remaining, c => c.ChoiceLetter == 'A');
         }
 
-        // 4
-        [Fact] // 
+        // 7
+        [Fact] // Zaliczony
         public void Delete_ShouldDoNothing_WhenChoiceDoesNotExist() // Usuwa: nic nie usuwa, jeśli wybór nie istnieje
         {
             // Arrange
@@ -160,8 +160,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal(initialCount, allChoices.Count()); // Liczba elementów powinna się nie zmienić
         }
 
-        //
-        [Fact] //
+        // 8
+        [Fact] // Zaliczony
         public void Delete_ShouldNotThrow_WhenChoiceIsNull() // Usuwa: nic nie robi, jeśli choice to null
         {
             // Act
@@ -171,8 +171,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Null(exception); // Nie powinien rzucać wyjątku
         }
 
-        // 5
-        [Fact] // 
+        // 9
+        [Fact] // Zaliczony
         public void GetAllActive_ShouldReturnOnlyChoicesWithIsActiveTrue() // Pobiera: wszystkie aktywne wybory
         {
             // Arrange - Wypełniam listę aktywnymi wyborami
@@ -194,8 +194,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal(8, activeChoices.Count());
         }
 
-        // 
-        [Fact] //
+        // 10
+        [Fact] // Zaliczony
         public void GetAllActive_ShouldNotReturnInactiveChoices() // Pobiera: nie pobiera wyborów, które są nieaktywne
         {
             // Arrange
@@ -213,8 +213,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.DoesNotContain(activeChoices, c => c.IsActive == false);
         }
 
-        // 6
-        [Fact] // 
+        // 11
+        [Fact] // Zaliczony
         public void GetChoicesForQuestion_ShouldReturnThreeChoicesInSet_WhenQuestionIdExists() // Podaje: 3 wybory w zestawie dla pytania o istniejacym Id
         {
             // Arrange
@@ -231,8 +231,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal(3, result.Count());
         }
 
-        //
-        [Fact] //
+        // 12
+        [Fact] // Zaliczony
         public void GetChoicesForQuestion_ShouldReturnOnlyChoices_Set_WithGivenQuestionId() // Podaje: zestaw dla pytania o danym Id
         {
             var result = _choiceService.GetChoicesForQuestion(11);
@@ -240,8 +240,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.All(result, c => Assert.Equal(11, c.ChoiceId));
         }
 
-        // 
-        [Theory] // 
+        // 13
+        [Theory] // Zaliczony
         [InlineData('A', "Testowe A")]
         [InlineData('B', "Testowe B")]
         [InlineData('C', "Testowe C")]
@@ -258,7 +258,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Contains(result, c => c.ChoiceLetter == letter && c.ChoiceContent == content);
         }
 
-        // 7
+        // 14
         [Fact] // Zaliczony
         public void GetChoicesForQuestion_ShouldReturnNothing_WhenQuestionIdNotFound() // Podaje: nie podaje wyborów, bo pytanie o danym Id nie istnieje
         {
@@ -272,8 +272,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.NotNull(choicesForQuestion);
         }
 
-        // 8
-        [Fact] // 
+        // 15
+        [Fact] // Zaliczony
         public void Update_ShouldUpdateChoiceContent_WhenChoiceExists() // Aktualizuje: zmienia treść wyboru, jeśli wybór istnieje
         {
             // Arrange
@@ -295,8 +295,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal("Zmieniona Jesień.", result!.ChoiceContent);
         }
 
-        // 9
-        [Fact] // 
+        // 16
+        [Fact] // Zaliczony
         public void Update_ShouldReplaceLetterAndKeepContent_WhenChoiceExists() // Aktualizuje: aktualizuje literę wyboru, jeśli wybór istnieje
         {
             // Arrange
@@ -319,8 +319,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.DoesNotContain(choices, c => c.ChoiceLetter == 'A');
         }
 
-        // 10
-        [Fact] // 
+        // 17
+        [Fact] // Zaliczony
         public void Update_ShouldNotModifyChoices_WhenChoiceDoesNotExist() // Aktualizacja: brak zmiany, jeśli dany wybór nie istnieje. Sprawdzam po Id wyboru.
         {
             // Arrange
@@ -343,8 +343,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.DoesNotContain(allChoices, c => c.ChoiceId == 99 && c.ChoiceLetter == 'A');
         }
 
-        // 11
-        [Fact] // 
+        // 18
+        [Fact] // Zaliczony
         public void Update_ShouldNotChangeChoice_WhenContentIsSame() // Aktualizuje: nic nie robi, jeśli treść wyboru pozostaje ta sama
         {
             // Arrange
@@ -364,8 +364,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Single(_choiceService.GetChoicesForQuestion(15)); // Upewniam się, że nie utworzono duplikatu
         }
 
-        //
-        [Fact] //
+        // 19
+        [Fact] // Zaliczony
         public void UpdateChoiceLetter_ShouldDoNothing_WhenNewLetterIsTheSame() // Aktualizuje: nic nie robi - litera ta sama
         {
             // Arrange
@@ -389,8 +389,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Single(choicesAfterUpdate, c => c.ChoiceLetter == 'B' && c.ChoiceContent == "Afryka");
         }
 
-        //
-        [Fact] //
+        // 20
+        [Fact] // Zaliczony
         public void Update_ShouldNotThrow_WhenChoiceIsNull() // Aktualizuje: nic się nie dzieje - jeśli choice = null
         {
             // Act
@@ -400,8 +400,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Null(exception); 
         }
 
-        // 12
-        [Theory] // 
+        // 21
+        [Theory] // Zaliczony
         [InlineData('Z')]
         [InlineData('1')]
         [InlineData('$')] 
@@ -412,8 +412,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Equal("Niepoprawny znak. Litera odpowiedzi musi być w zakresie A-C.", ex.Message);
         }
 
-        // 13
-        [Theory] // 
+        // 22
+        [Theory] // Zaliczony
         [InlineData(99, 'A', "Opcja A", true)]
         [InlineData(100, 'B', "Opcja B", true)]
         [InlineData(101, 'C', "Opcja C", true)]

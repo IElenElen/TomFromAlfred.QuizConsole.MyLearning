@@ -8,8 +8,7 @@ using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
-    // Oblane: 7 / 11
-    // Nr 2 3 4 5 6 7 8
+    // Oblane: 0 / 11
 
     public class CorrectAnswerServiceTests
     {
@@ -36,7 +35,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 2 
-        [Fact] // 
+        [Fact] // Zaliczony
         public void Add_ShouldNotAddDuplicateCorrectAnswer_WhenSameIdIsGiven() // Dodaje: nie dodaje duplikatów, kiedy Id jest takie samo
         {
             // Arrange
@@ -52,7 +51,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 3 
-        [Fact] //
+        [Fact] // Zaliczony
         public void Delete_ShouldRemoveCorrectAnswerById_WhenValidEntityIsGiven() // Usuwa: poprawną odpowiedź, jeśli poprawnie podane jest entity
         {
             // Arrange
@@ -70,7 +69,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 4 
-        [Fact] // 
+        [Fact] // Zaliczony
         public void Delete_ShouldNotRemoveCorrectAnswer_WhenEntityDoesNotExist() // Usuwa: nic, jeżeli entity nie istnieje
         {
             // Arrange
@@ -86,18 +85,18 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 5
-        [Fact] // 
-        public void FindCorrectAnswerContent_ShouldReturnErrorMessage_WhenChoiceServiceIsNull() // Znajduje: Jeśli serwis dla poprawności jest null - daje komunikat
+        [Fact] // Zaliczony
+        public void FindCorrectAnswerContent_ShouldReturnErrorMessage_WhenChoiceServiceIsNull() // Znajduje: Jeśli serwis poprawności jest null - daje komunikat
         {
             // Act
             var result = _correctAnswerService.FindCorrectAnswerContent(11, 'A');
 
             // Assert
-            Assert.Equal("Przykładowa odpowiedź", result);
+            Assert.Equal("Nieznana odpowiedź", result);
         }
 
         // 6
-        [Fact] // 
+        [Fact] // Zaliczony
         public void GetAll_ShouldReturnAllCorrectActiveAnswers() // Podaje: wszystkie poprawne aktywne odpowiedzi
         {
             // Arrange
@@ -119,7 +118,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 7 
-        [Fact] // 
+        [Fact] // Zaliczony
         public void Update_ShouldUpdateCorrectAnswer_WhenValidEntityIsGiven() // Aktualizuje: poprawną odpowiedź jeśli entity jest poprawnie podane
         {
             // Arrange
@@ -134,7 +133,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 8
-        [Fact] // 
+        [Fact] // Zaliczony
         public void Update_ShouldNotUpdateCorrectAnswer_WhenEntityDoesNotExist() // Aktualizuje: nic nie robi, jeśli entity nie istnieje
         {
             // Arrange

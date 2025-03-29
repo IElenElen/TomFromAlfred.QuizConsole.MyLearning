@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
 {
-    // Oblane: 0 / 7
+    // Oblane: 0 / 8
 
     // Klasa testów dla Helpera managerskiego
 
@@ -243,6 +243,31 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             Assert.NotEqual(originalOrder, shuffledQuestions); // Powinna być inna kolejność
             Assert.Equal(originalOrder.Count, shuffledQuestions.Count); // Ta sama liczba elementów
             Assert.True(originalOrder.All(q => shuffledQuestions.Contains(q))); // Te same elementy
+        }
+
+        // 8
+        [Fact] // Zaliczony
+        public void ShuffleQuestions_ShouldChangeOrderOfQuestions() // Losowanie: (powinien) zmienia kolejność
+        {
+            var questions = new List<Question>
+            {
+                new Question(1, "Q1"),
+                new Question(2, "Q2"),
+                new Question(3, "Q3"),
+                new Question(4, "Q4"),
+            };
+
+            var helper = new ManagerHelper(questions, new Mock<IQuizService>().Object);
+
+            var originalOrder = questions.Select(q => q.QuestionId).ToList();
+
+            // Act
+            helper.ShuffleQuestions();
+
+            // _questions w klasie helpera to ten sam obiekt, co questions
+            var newOrder = questions.Select(q => q.QuestionId).ToList();
+
+            Assert.NotEqual(originalOrder, newOrder);
         }
     }
 }

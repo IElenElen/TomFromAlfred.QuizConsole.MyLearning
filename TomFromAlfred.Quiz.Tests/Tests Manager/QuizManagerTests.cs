@@ -70,9 +70,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         {
             // Arrange
             var testQuestions = new List<Question>
-    {
-        new Question(1, "Jak nazywał się główny bohater książki?")
-    };
+            {
+                new Question(1, "Jak nazywał się główny bohater książki?")
+            };
 
             var letterMapping = new Dictionary<char, char> { { 'A', 'A' }, { 'B', 'B' }, { 'C', 'C' } };
 
@@ -80,9 +80,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
             _mockQuizService.Setup(q => q.GetShuffledChoicesForQuestion(1, out letterMapping))
                 .Returns(new List<Choice>
                 {
-            new Choice(1, 'A', "Tomek Wilmowski"),
-            new Choice(1, 'B', "Staś Tarkowski"),
-            new Choice(1, 'C', "Michał Wołodyjowski")
+                    new Choice(1, 'A', "Tomek Wilmowski"),
+                    new Choice(1, 'B', "Staś Tarkowski"),
+                    new Choice(1, 'C', "Michał Wołodyjowski")
                 });
 
             // Upewniamy się, że CheckAnswer zwraca true dla A
