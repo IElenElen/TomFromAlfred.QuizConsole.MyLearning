@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using FluentAssertions;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
@@ -16,17 +17,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
     public class ChoiceServiceTests
     {
-        public required ChoiceService _choiceService;
-        private readonly ITestOutputHelper _output;
-
-        public ChoiceServiceTests(ITestOutputHelper output)
-        {
-            _choiceService = new ChoiceService();
-            _output = output; 
-
-            _choiceService.Clear(); // Metoda do czyszczenia listy
-        }
-
+        #region Add ChoiceServiceTests
         // 1 
         [Theory] // Zaliczony
         [InlineData('A', "Opcja A")]
@@ -36,13 +27,18 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Add_ShouldAddNewChoiceSet_WhenChoiceSetDoesNotExist(char letter, string content) // Dodaje: ma dodać nowy zestaw wyboru, jeśli taki zestaw nie istnieje
         {
             // Arrange
-            var choice = new Choice(22, letter, content);
+            var choiceService = new ChoiceService();
+
+            var newChoice = new Choice(22, letter, content);
 
             // Act
-            _choiceService.Add(choice);
+            choiceService.Add(newChoice);
 
             // Assert
-            Assert.Contains(_choiceService.GetAllActive(), c => c.ChoiceId == 22 && c.ChoiceLetter == letter);
+            var allChoices = choiceService.GetAllActive();
+            allChoices.Should()
+                .ContainSingle(c => c.ChoiceId == 22 && c.ChoiceLetter == letter)
+                .Which.ChoiceContent.Should().Be(content);
         }
 
         // 2
@@ -50,19 +46,22 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Add_ShouldNotAdd_WhenChoiceExists_AndKeepChoiceCountUnchanged() // Dodaje: nic nie dodaje, jeśli wybór istnieje, nie zmienia liczby wyborów
         {
             // Arrange
-            _choiceService.Clear();
+            var choiceService = new ChoiceService();
 
             var existingChoice = new Choice(25, 'A', "Opcja A");
 
-            _choiceService.Add(existingChoice);
-            var countBefore = _choiceService.GetAllActive().Count();
+            choiceService.Add(existingChoice);
+
+            var countChoicesBefore = choiceService.GetAllActive().Count();
 
             // Act
-            _choiceService.Add(existingChoice);
-            var countAfter = _choiceService.GetAllActive().Count();
+            choiceService.Add(existingChoice);
+
+            var countChoicesAfter = choiceService.GetAllActive().Count();
 
             // Assert
-            Assert.Equal(countBefore, countAfter); 
+            countChoicesAfter.Should().Be(countChoicesBefore,
+                $"Ponieważ ponowne dodanie istniejącego wyboru nie powinno zmieniać liczby aktywnych wyborów (Id = {existingChoice.ChoiceId}, Litera = {existingChoice.ChoiceLetter}.)");
         }
 
         // 3
@@ -70,39 +69,48 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Add_ShouldNotDuplicateChoice_WhenSameIdAndLetterUsed() // Dodaje: nie duplikuje wyboru 
         {
             // Arrange
-            _choiceService.Clear();
+            var choiceService = new ChoiceService();
 
             var existingChoice = new Choice(25, 'A', "Opcja A");
-            _choiceService.Add(existingChoice);
+
+            choiceService.Add(existingChoice);
 
             // Act
-            _choiceService.Add(existingChoice); // Próba duplikatu
+            choiceService.Add(existingChoice); // Próba duplikatu
 
             // Assert
-            var duplicates = _choiceService.GetAllActive()
+            var duplicates = choiceService.GetAllActive() // Pobranie aktywnych
                 .Where(c => c.ChoiceId == 25 && c.ChoiceLetter == 'A')
                 .ToList();
 
-            Assert.Single(duplicates); // Tylko jedna taka opcja
+            duplicates.Should() // Sprawdzenie, czy jest tylko 1 raz
+                .ContainSingle(c => c.ChoiceId == 25 && c.ChoiceLetter == 'A')
+                .Which.ChoiceContent.Should().Be("Opcja A");
         }
+        #endregion Add ChoiceServiceTests
 
+        #region Delete ChoiceServiceTests
         // 4
         [Fact] // Zaliczony
         public void DeleteChoiceById_ShouldRemoveAllChoicesWithGivenId() // Usuwa: istniejący wybór, po Id
         {
             // Arrange
-            _choiceService.Clear();
+            var choiceService = new ChoiceService();
 
-            _choiceService.Add(new Choice(50, 'A', "Opcja A"));
-            _choiceService.Add(new Choice(50, 'B', "Opcja B"));
-            _choiceService.Add(new Choice(50, 'C', "Opcja C"));
+            choiceService.Add(new Choice(50, 'A', "Opcja A"));
+
+            choiceService.Add(new Choice(50, 'B', "Opcja B"));
+
+            choiceService.Add(new Choice(50, 'C', "Opcja C"));
 
             // Act
-            _choiceService.DeleteChoiceById(50);
+            choiceService.DeleteChoiceById(50);
 
             // Assert
-            var remaining = _choiceService.GetAllActive().Where(c => c.ChoiceId == 50);
-            Assert.Empty(remaining);
+            var remainingChoices = choiceService.GetAllActive()
+                .Where(c => c.ChoiceId == 50);
+
+            remainingChoices.Should().BeEmpty("Wszystkie wybory z ChoiceId = 50 powinny zostać usunięte.");
         }
 
         // 5
@@ -110,18 +118,23 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Delete_ShouldRemoveChoice_OnlyWhenIdAndLetterMatch() // Usuwa: wybór po id i literze
         {
             // Arrange
-            _choiceService.Clear();
-            _choiceService.Add(new Choice(60, 'A', "Opcja A"));
-            _choiceService.Add(new Choice(60, 'B', "Opcja B"));
+            var choiceService = new ChoiceService();
+
+            choiceService.Add(new Choice(60, 'A', "Opcja A"));
+
+            choiceService.Add(new Choice(60, 'B', "Opcja B"));
 
             // Act
-            _choiceService.Delete(new Choice(60, 'A', "Nieistotne."));
+            choiceService.Delete(new Choice(60, 'A', "Nieistotne."));
 
             // Assert
-            var remaining = _choiceService.GetChoicesForQuestion(60).ToList();
+            var remainingChoices = choiceService.GetChoicesForQuestion(60).ToList();
 
-            Assert.DoesNotContain(remaining, c => c.ChoiceLetter == 'A');
-            Assert.Contains(remaining, c => c.ChoiceLetter == 'B');
+            remainingChoices.Should()
+                .NotContain(c => c.ChoiceLetter == 'A', "Wybór z literą 'A' powinien zostać usunięty.");
+
+            remainingChoices.Should()
+                .Contain(c => c.ChoiceLetter == 'B', "Wybór z literą 'B' powinien pozostać.");
         }
 
         // 6
@@ -129,18 +142,21 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Delete_ShouldNotRemoveChoice_WhenLetterDoesNotMatch() // Usuwa: nie usuwa, jeśli litera błędna
         {
             // Arrange
-            _choiceService.Clear();
+            var choiceService = new ChoiceService();
 
-            _choiceService.Add(new Choice(70, 'A', "Opcja A."));
+            choiceService.Add(new Choice(70, 'A', "Opcja A."));
 
             // Act
-            _choiceService.Delete(new Choice(70, 'B', "Nieistotna."));
+            choiceService.Delete(new Choice(70, 'B', "Zbędna."));
 
             // Assert
-            var remaining = _choiceService.GetChoicesForQuestion(70);
+            var remainingChoices = choiceService.GetChoicesForQuestion(70).ToList();
 
-            Assert.Single(remaining);
-            Assert.Contains(remaining, c => c.ChoiceLetter == 'A');
+            remainingChoices.Should()
+                .ContainSingle(c => c.ChoiceLetter == 'A', "Tylko wybór z literą 'A' powinien pozostać.");
+
+            remainingChoices.Should()
+                .NotContain(c => c.ChoiceLetter == 'B', "Nie powinno być wyboru z literą 'B', bo nie był dodany.");
         }
 
         // 7
@@ -148,29 +164,38 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Delete_ShouldDoNothing_WhenChoiceDoesNotExist() // Usuwa: nic nie usuwa, jeśli wybór nie istnieje
         {
             // Arrange
-            var initialCount = _choiceService.GetAllActive().Count(); // Zapisuję liczbę aktywnych elementów przed testem
+            var choiceService = new ChoiceService();
 
-            var noExistingChoiceToDelete = new Choice(89, 'A', "Opcja nieistniejąca.");
+            var initialChoicesCount = choiceService.GetAllActive().Count();
+
+            var nonExistingChoice = new Choice(89, 'A', "Opcja nieistniejąca.");
 
             // Act
-            _choiceService.Delete(noExistingChoiceToDelete);
-            var allChoices = _choiceService.GetAllActive();
+            choiceService.Delete(nonExistingChoice);
 
             // Assert
-            Assert.Equal(initialCount, allChoices.Count()); // Liczba elementów powinna się nie zmienić
+            var allActiveChoices = choiceService.GetAllActive();
+
+            allActiveChoices.Count().Should().Be(initialChoicesCount,
+                "Ponieważ usuwanie nieistniejącego wyboru nie powinno wpływać na liczbę aktywnych wyborów.");
         }
 
         // 8
         [Fact] // Zaliczony
         public void Delete_ShouldNotThrow_WhenChoiceIsNull() // Usuwa: nic nie robi, jeśli choice to null
         {
+            // Arrange
+            var choiceService = new ChoiceService();
+
             // Act
-            var exception = Record.Exception(() => _choiceService.Delete(null));
+            var exception = Record.Exception(() => choiceService.Delete(null));
 
             // Assert
-            Assert.Null(exception); // Nie powinien rzucać wyjątku
+            exception.Should().BeNull("Usunięcie `null` nie powinno rzucać wyjątku.");
         }
+        #endregion Delete ChoiceServiceTests
 
+        #region GetAllActive ChoiceServiceTests
         // 9
         [Fact] // Zaliczony
         public void GetAllActive_ShouldReturnOnlyChoicesWithIsActiveTrue() // Pobiera: wszystkie aktywne wybory
@@ -212,7 +237,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.All(activeChoices, c => Assert.True(c.IsActive));
             Assert.DoesNotContain(activeChoices, c => c.IsActive == false);
         }
+        #endregion GetAllActive ChoiceServiceTests
 
+        #region GetChoicesForQuestion ChoiceServiceTests
         // 11
         [Fact] // Zaliczony
         public void GetChoicesForQuestion_ShouldReturnThreeChoicesInSet_WhenQuestionIdExists() // Podaje: 3 wybory w zestawie dla pytania o istniejacym Id
@@ -271,7 +298,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             Assert.Empty(choicesForQuestion); // Nie ma wyboru dla pytania 100
             Assert.NotNull(choicesForQuestion);
         }
+        #endregion GetChoicesForQuestion ChoiceServiceTests
 
+        #region Update ChoiceServiceTests
         // 15
         [Fact] // Zaliczony
         public void Update_ShouldUpdateChoiceContent_WhenChoiceExists() // Aktualizuje: zmienia treść wyboru, jeśli wybór istnieje
@@ -425,5 +454,6 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Assert
             Assert.Null(exception); // Konstruktor nie powinien rzucać wyjątku dla prawidłowych danych
         }
+        #endregion Update ChoiceServiceTests
     }
 }

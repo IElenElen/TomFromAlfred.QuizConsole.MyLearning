@@ -12,13 +12,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
     public class CorrectAnswerServiceTests
     {
-        private readonly CorrectAnswerService _correctAnswerService;
-
-        public CorrectAnswerServiceTests()
-        {
-            _correctAnswerService = new CorrectAnswerService();
-        }
-
+        #region Add CorrectA.ServiceTests
         // 1 
         [Fact] // Zaliczony
         public void Add_ShouldAddCorrectAnswer_WhenValidEntityIsGiven() // Dodaje: poprawną odpowiedź, jeśli entity jest poprawnie podane
@@ -49,7 +43,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Assert - Liczba elementów powinna być taka sama
             Assert.Equal(initialCount, result.Count());
         }
+        #endregion Add CorrectA.ServiceTests
 
+        #region Delete CorrectA.ServiceTests
         // 3 
         [Fact] // Zaliczony
         public void Delete_ShouldRemoveCorrectAnswerById_WhenValidEntityIsGiven() // Usuwa: poprawną odpowiedź, jeśli poprawnie podane jest entity
@@ -83,7 +79,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Assert - Liczba odpowiedzi nie powinna się zmienić
             Assert.Equal(initialCount, result);
         }
+        #endregion Delete CorrectA.ServiceTests
 
+        #region FindCorrectA. GetAll CorrectA.ServiceTests
         // 5
         [Fact] // Zaliczony
         public void FindCorrectAnswerContent_ShouldReturnErrorMessage_WhenChoiceServiceIsNull() // Znajduje: Jeśli serwis poprawności jest null - daje komunikat
@@ -116,7 +114,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Assert - Sprawdzam, czy liczba się zgadza
             Assert.Equal(initialActiveCount, result.Count());
         }
+        #endregion FindCorrectA. GetAll CorrectA.ServiceTests
 
+        #region Update CorrectA.ServiceTests
         // 7 
         [Fact] // Zaliczony
         public void Update_ShouldUpdateCorrectAnswer_WhenValidEntityIsGiven() // Aktualizuje: poprawną odpowiedź jeśli entity jest poprawnie podane
@@ -168,7 +168,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             var result = _correctAnswerService.GetCorrectAnswerForQuestion(11);
             Assert.Equal("Jesień", result.CorrectAnswerContent);
         }
+        #endregion Update CorrectA.ServiceTests
 
+        #region GetCorrectAforQuestion CorrectA.ServiceTests
         // 10
         [Fact] // Zaliczony
         public void GetCorrectAnswerForQuestion_ShouldReturnCorrectAnswer_WhenValidQuestionIdIsGiven() // Daje: poprawną odpowiedź, jeśli Id pytania jest poprawne
@@ -190,5 +192,6 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Assert
             Assert.Null(result);
         }
+        #endregion GetCorrectAforQuestion CorrectA.ServiceTests
     }
 }

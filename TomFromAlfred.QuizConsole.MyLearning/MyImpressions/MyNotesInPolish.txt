@@ -1,1 +1,6 @@
 ﻿Testy to jest niekończąca się historia. Masakra.
+Czy dla testów jednostkowych zawsze tworzę nowe instancje? To jest powtarzanie kodu...
+31.03.25 Dodałam regiony - segregację.
+Helpera dodać jak coś się wysypie: private readonly ITestOutputHelper _output;
+Warto sprawdzić pokrycie kodami - mam już zainstalowane, co trzeba.
+Jutro: test dla choice od regionu get all active!!!
