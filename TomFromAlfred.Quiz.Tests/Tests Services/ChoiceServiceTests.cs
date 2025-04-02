@@ -201,22 +201,23 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetAllActive_ShouldReturnOnlyChoicesWithIsActiveTrue() // Pobiera: wszystkie aktywne wybory
         {
             // Arrange - Wypełniam listę aktywnymi wyborami
-            _choiceService.Clear(); 
+            var choiceService = new ChoiceService();
 
-            _choiceService.Add(new Choice(40, 'A', "Jesień") { IsActive = true });
-            _choiceService.Add(new Choice(40, 'B', "Zima") { IsActive = true });
-            _choiceService.Add(new Choice(40, 'C', "Wiosna") { IsActive = true });
-            _choiceService.Add(new Choice(41, 'A', "Kraków") { IsActive = true });
-            _choiceService.Add(new Choice(41, 'B', "Warszawa") { IsActive = true });
-            _choiceService.Add(new Choice(41, 'C', "Poznań") { IsActive = true });
-            _choiceService.Add(new Choice(42, 'A', "Jabłko") { IsActive = true });
-            _choiceService.Add(new Choice(42, 'B', "Gruszka") { IsActive = true });
+            choiceService.Add(new Choice(40, 'A', "Jesień") { IsActive = true });
+            choiceService.Add(new Choice(40, 'B', "Zima") { IsActive = true });
+            choiceService.Add(new Choice(40, 'C', "Wiosna") { IsActive = true });
+            choiceService.Add(new Choice(41, 'A', "Kraków") { IsActive = true });
+            choiceService.Add(new Choice(41, 'B', "Warszawa") { IsActive = true });
+            choiceService.Add(new Choice(41, 'C', "Poznań") { IsActive = true });
+            choiceService.Add(new Choice(42, 'A', "Jabłko") { IsActive = true });
+            choiceService.Add(new Choice(42, 'B', "Gruszka") { IsActive = true });
 
             // Act
-            var activeChoices = _choiceService.GetAllActive();
+            var activeChoices = choiceService.GetAllActive();
 
             // Assert
-            Assert.Equal(8, activeChoices.Count());
+            activeChoices.Should().HaveCount(8, "8, bo wszystkie dodane wybory były aktywne.");
+            activeChoices.Should().OnlyContain(c => c.IsActive, "Metoda powinna zwracać tylko aktywne wybory.");
         }
 
         // 10
@@ -224,18 +225,20 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetAllActive_ShouldNotReturnInactiveChoices() // Pobiera: nie pobiera wyborów, które są nieaktywne
         {
             // Arrange
-            _choiceService.Clear();
+            var choiceService = new ChoiceService();
 
-            _choiceService.Add(new Choice(50, 'A', "Aktywna") { IsActive = true });
-            _choiceService.Add(new Choice(50, 'B', "Nieaktywna") { IsActive = false });
+            choiceService.Add(new Choice(50, 'A', "Aktywny") { IsActive = true });
+            choiceService.Add(new Choice(50, 'B', "Nieaktywny") { IsActive = false });
 
             // Act
-            var activeChoices = _choiceService.GetAllActive().ToList();
+            var activeChoices = choiceService.GetAllActive();
 
             // Assert
-            Assert.Single(activeChoices);
-            Assert.All(activeChoices, c => Assert.True(c.IsActive));
-            Assert.DoesNotContain(activeChoices, c => c.IsActive == false);
+            activeChoices.Should().ContainSingle(c => c.ChoiceLetter == 'A' && c.IsActive,
+                          "Bo tylko jedna aktywna odpowiedź została dodana.");
+
+            activeChoices.Should().NotContain(c => c.IsActive == false,
+                          "Bo GetAllActive() powinno pomijać nieaktywne odpowiedzi.");
         }
         #endregion GetAllActive ChoiceServiceTests
 
@@ -245,26 +248,28 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetChoicesForQuestion_ShouldReturnThreeChoicesInSet_WhenQuestionIdExists() // Podaje: 3 wybory w zestawie dla pytania o istniejacym Id
         {
             // Arrange
-            _choiceService.Clear();
+            var choiceService = new ChoiceService();
 
-            _choiceService.Add(new Choice(11, 'A', "Testowe A"));
-            _choiceService.Add(new Choice(11, 'B', "Testowe B"));
-            _choiceService.Add(new Choice(11, 'C', "Testowe C"));
+            choiceService.Add(new Choice(11, 'A', "Testowe A"));
+            choiceService.Add(new Choice(11, 'B', "Testowe B"));
+            choiceService.Add(new Choice(11, 'C', "Testowe C"));
 
             // Act
-            var result = _choiceService.GetChoicesForQuestion(11);
+            var result = choiceService.GetChoicesForQuestion(11);
 
             // Assert
-            Assert.Equal(3, result.Count());
+            result.Should().HaveCount(3, "Dla pytania 11 powinny istnieć 3 przypisane odpowiedzi.");
         }
 
         // 12
         [Fact] // Zaliczony
         public void GetChoicesForQuestion_ShouldReturnOnlyChoices_Set_WithGivenQuestionId() // Podaje: zestaw dla pytania o danym Id
         {
-            var result = _choiceService.GetChoicesForQuestion(11);
+            var choiceService = new ChoiceService();
 
-            Assert.All(result, c => Assert.Equal(11, c.ChoiceId));
+            var result = choiceService.GetChoicesForQuestion(11);
+
+            result.Should().OnlyContain(c => c.ChoiceId == 11, "Bo chcę tylko odpowiedzi dla pytania nr 11.");
         }
 
         // 13
@@ -275,14 +280,16 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetChoicesForQuestion_ShouldContainExpectedChoices(char letter, string content) // Podaje: przypisany zestaw = literę i treść
         {
             // Arrange
-            _choiceService.Clear();
-            _choiceService.Add(new Choice(11, 'A', "Testowe A"));
-            _choiceService.Add(new Choice(11, 'B', "Testowe B"));
-            _choiceService.Add(new Choice(11, 'C', "Testowe C"));
+            var choiceService = new ChoiceService();
 
-            var result = _choiceService.GetChoicesForQuestion(11);
+            choiceService.Add(new Choice(11, 'A', "Testowe A"));
+            choiceService.Add(new Choice(11, 'B', "Testowe B"));
+            choiceService.Add(new Choice(11, 'C', "Testowe C"));
 
-            Assert.Contains(result, c => c.ChoiceLetter == letter && c.ChoiceContent == content);
+            var result = choiceService.GetChoicesForQuestion(11);
+
+            result.Should().Contain(c => c.ChoiceLetter == letter && c.ChoiceContent == content,
+            $"Bo odpowiedź z literą '{letter}' i treścią '{content}' powinna się znajdować w zestawie.");
         }
 
         // 14
@@ -290,13 +297,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetChoicesForQuestion_ShouldReturnNothing_WhenQuestionIdNotFound() // Podaje: nie podaje wyborów, bo pytanie o danym Id nie istnieje
         {
             // Arrange - brak danych
+            var choiceService = new ChoiceService();
 
             // Act
-            var choicesForQuestion = _choiceService.GetChoicesForQuestion(100);
+            var choicesForQuestion = choiceService.GetChoicesForQuestion(100);
 
             // Assert
-            Assert.Empty(choicesForQuestion); // Nie ma wyboru dla pytania 100
-            Assert.NotNull(choicesForQuestion);
+            choicesForQuestion.Should().NotBeNull("Metoda nie powinna zwracać null, nawet jeśli brak wyników.");
+            choicesForQuestion.Should().BeEmpty("Bo pytanie o Id 100 nie istnieje.");
         }
         #endregion GetChoicesForQuestion ChoiceServiceTests
 
@@ -306,22 +314,24 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Update_ShouldUpdateChoiceContent_WhenChoiceExists() // Aktualizuje: zmienia treść wyboru, jeśli wybór istnieje
         {
             // Arrange
-            _choiceService.Clear();
+            var choiceService = new ChoiceService();
 
             var originalChoice = new Choice(11, 'A', "Jesień.");
-            _choiceService.Add(originalChoice);
+
+            choiceService.Add(originalChoice);
 
             var updatedChoice = new Choice(11, 'A', "Zmieniona Jesień.");
 
             // Act
-            _choiceService.Update(updatedChoice);
+            choiceService.Update(updatedChoice);
 
             // Assert
-            var result = _choiceService.GetChoicesForQuestion(11)
-                .FirstOrDefault(c => c.ChoiceLetter == 'A');
+            var result = choiceService.GetChoicesForQuestion(11)
+            .FirstOrDefault(c => c.ChoiceLetter == 'A');
 
-            Assert.NotNull(result);
-            Assert.Equal("Zmieniona Jesień.", result!.ChoiceContent);
+            result.Should().NotBeNull();
+
+            result!.ChoiceContent.Should().Be("Zmieniona Jesień.");
         }
 
         // 16
@@ -329,23 +339,22 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Update_ShouldReplaceLetterAndKeepContent_WhenChoiceExists() // Aktualizuje: aktualizuje literę wyboru, jeśli wybór istnieje
         {
             // Arrange
-            _choiceService.Clear();
+            var choiceService = new ChoiceService();
+
             var originalChoice = new Choice(12, 'A', "Kraków") { IsActive = true };
-            _choiceService.Add(originalChoice);
+
+            choiceService.Add(originalChoice);
 
             // Act
-            _choiceService.UpdateChoiceLetter(12, 'B');
+            choiceService.UpdateChoiceLetter(12, 'B');
 
             // Assert
-            var choices = _choiceService.GetChoicesForQuestion(12).ToList();
+            var choices = choiceService.GetChoicesForQuestion(12).ToList();
 
-            // Sprawdzam, że nowa litera istnieje
-            var updatedChoice = choices.FirstOrDefault(c => c.ChoiceLetter == 'B');
-            Assert.NotNull(updatedChoice);
-            Assert.Equal("Kraków", updatedChoice!.ChoiceContent);
+            choices.Should().ContainSingle(c => c.ChoiceLetter == 'B')
+                .Which.ChoiceContent.Should().Be("Kraków");
 
-            // Sprawdzam, że stara litera została usunięta
-            Assert.DoesNotContain(choices, c => c.ChoiceLetter == 'A');
+            choices.Should().NotContain(c => c.ChoiceLetter == 'A');
         }
 
         // 17
@@ -353,23 +362,21 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Update_ShouldNotModifyChoices_WhenChoiceDoesNotExist() // Aktualizacja: brak zmiany, jeśli dany wybór nie istnieje. Sprawdzam po Id wyboru.
         {
             // Arrange
-            _choiceService.Clear(); 
+            var choiceService = new ChoiceService();
 
-            var initialCount = _choiceService.GetAllActive().Count();
+            var initialChoiceCount = choiceService.GetAllActive().Count();
 
             var nonExistingChoice = new Choice(99, 'A', "Nieistniejąca opcja.");
 
             // Act
-            _choiceService.Update(nonExistingChoice);
+            choiceService.Update(nonExistingChoice);
 
             // Assert
-            var allChoices = _choiceService.GetAllActive();
+            var allChoices = choiceService.GetAllActive();
 
-            // Lista nie powinna się zmienić
-            Assert.Equal(initialCount, allChoices.Count());
+            allChoices.Count().Should().Be(initialChoiceCount);
 
-            // Sprawdzam, czy ten konkretny wybor nie istnieje
-            Assert.DoesNotContain(allChoices, c => c.ChoiceId == 99 && c.ChoiceLetter == 'A');
+            allChoices.Should().NotContain(c => c.ChoiceId == 99 && c.ChoiceLetter == 'A');
         }
 
         // 18
@@ -377,20 +384,23 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Update_ShouldNotChangeChoice_WhenContentIsSame() // Aktualizuje: nic nie robi, jeśli treść wyboru pozostaje ta sama
         {
             // Arrange
-            _choiceService.Clear();
+            var choiceService = new ChoiceService();
 
-            var existingChoice = new Choice(15, 'C', "Wąż z Afryki");
-            _choiceService.Add(existingChoice);
+            var existingChoice = new Choice(15, 'C', "Wąż z Afryki.");
 
-            var sameContentChoice = new Choice(15, 'C', "Wąż z Afryki");
+            choiceService.Add(existingChoice);
+
+            var sameContentChoice = new Choice(15, 'C', "Wąż z Afryki.");
 
             // Act
-            _choiceService.Update(sameContentChoice);
+            choiceService.Update(sameContentChoice);
 
             // Assert
-            var updated = _choiceService.GetChoicesForQuestion(15).First(c => c.ChoiceLetter == 'C');
-            Assert.Equal("Wąż z Afryki", updated.ChoiceContent);
-            Assert.Single(_choiceService.GetChoicesForQuestion(15)); // Upewniam się, że nie utworzono duplikatu
+            var updatedChoice = choiceService.GetChoicesForQuestion(15).First(c => c.ChoiceLetter == 'C');
+
+            updatedChoice.ChoiceContent.Should().Be("Wąż z Afryki.");
+
+            choiceService.GetChoicesForQuestion(15).Should().ContainSingle();
         }
 
         // 19
@@ -398,35 +408,37 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void UpdateChoiceLetter_ShouldDoNothing_WhenNewLetterIsTheSame() // Aktualizuje: nic nie robi - litera ta sama
         {
             // Arrange
-            _choiceService.Clear();
+            var choiceService = new ChoiceService();
 
             var originalChoice = new Choice(20, 'B', "Afryka") { IsActive = true };
-            _choiceService.Add(originalChoice);
 
-            var countChoicesBefore = _choiceService.GetChoicesForQuestion(20).Count();
+            choiceService.Add(originalChoice);
+
+            var countChoicesBefore = choiceService.GetChoicesForQuestion(20).Count();
 
             // Act – próbuję zaktualizować literę na tę samą
-            _choiceService.UpdateChoiceLetter(20, 'B');
+            choiceService.UpdateChoiceLetter(20, 'B');
 
             // Assert
-            var choicesAfterUpdate = _choiceService.GetChoicesForQuestion(20).ToList();
+            var choicesAfterUpdate = choiceService.GetChoicesForQuestion(20);
 
-            // Nie powinno być zmian w ilości
-            Assert.Equal(countChoicesBefore, choicesAfterUpdate.Count);
+            choicesAfterUpdate.Should().HaveCount(countChoicesBefore);
 
-            // Powinien nadal istnieć tylko jeden wybór z literą 'B'
-            Assert.Single(choicesAfterUpdate, c => c.ChoiceLetter == 'B' && c.ChoiceContent == "Afryka");
+            choicesAfterUpdate.Should().ContainSingle(c => c.ChoiceLetter == 'B' && c.ChoiceContent == "Afryka");
         }
 
         // 20
         [Fact] // Zaliczony
         public void Update_ShouldNotThrow_WhenChoiceIsNull() // Aktualizuje: nic się nie dzieje - jeśli choice = null
         {
+            //Arrange
+            var choiceService = new ChoiceService();
+
             // Act
-            var exception = Record.Exception(() => _choiceService.Update(null));
+            var exception = Record.Exception(() => choiceService.Update(null));
 
             // Assert
-            Assert.Null(exception); 
+            exception.Should().BeNull();
         }
 
         // 21
@@ -436,9 +448,15 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         [InlineData('$')] 
         public void ChoiceConstructor_Update_ShouldThrowArgumentException_WhenChoiceHasInvalidSign(char invalidLetter) // Aktualizuje: wyrzuca wyjątek, jeśli użytkownik poda niepoprawny znak
         {
-            // Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() => new Choice(99, invalidLetter, "Nieistniejąca opcja", true));
-            Assert.Equal("Niepoprawny znak. Litera odpowiedzi musi być w zakresie A-C.", ex.Message);
+            // Arrange
+            var choiceService = new ChoiceService();
+
+            // Act
+            var exception = Assert.Throws<ArgumentException>(() => new Choice(99, invalidLetter, "Nieistniejąca opcja", true));
+
+            // Assert
+            exception.Message.Should().Be("Niepoprawny znak. Litera odpowiedzi musi być w zakresie A-C.");
+
         }
 
         // 22
@@ -448,11 +466,14 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         [InlineData(101, 'C', "Opcja C", true)]
         public void ChoiceConstructor_Update_ShouldNotThrow_WhenChoiceHasValidLetter(int choiceId, char choiceLetter, string choiceContent, bool isActive) // Aktualizuje: przyjmuje wybór, jeśli system otrzymuje prawidłową literę z zakresu A-C
         {
+            // Arrange
+            var choiceService = new ChoiceService();
+
             // Act
             var exception = Record.Exception(() => new Choice(choiceId, choiceLetter, choiceContent, isActive));
 
             // Assert
-            Assert.Null(exception); // Konstruktor nie powinien rzucać wyjątku dla prawidłowych danych
+            exception.Should().BeNull(); // Konstruktor nie powinien rzucać wyjątku dla prawidłowych danych
         }
         #endregion Update ChoiceServiceTests
     }
