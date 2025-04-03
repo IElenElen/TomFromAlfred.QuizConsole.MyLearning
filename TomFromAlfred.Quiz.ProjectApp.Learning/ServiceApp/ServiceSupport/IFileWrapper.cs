@@ -10,7 +10,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport
     // Interfejs dla testu
     public interface IFileWrapper 
     {
-        bool Exists(string filePath);
+        bool Exists(string path);
+        string ReadAllText(string path);
+        void WriteAllText(string path, string content);
     }
 }
 

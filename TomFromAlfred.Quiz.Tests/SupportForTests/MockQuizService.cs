@@ -16,27 +16,25 @@ namespace TomFromAlfred.QuizConsole.Tests.SupportForTests
     class MockQuizService : QuizService
     {
         public MockQuizService(
-        QuestionService questionService,
-        ChoiceService choiceService,
-        CorrectAnswerService correctAnswerService,
-        JsonCommonClass jsonService,
-        IFileWrapper fileWrapper)
-        : base(questionService, choiceService, correctAnswerService, jsonService, fileWrapper)
+            QuestionService questionService,
+            ChoiceService choiceService,
+            CorrectAnswerService correctAnswerService,
+            JsonCommonClass jsonService,
+            IFileWrapper fileWrapper)
+            : base(questionService, choiceService, correctAnswerService, jsonService, fileWrapper)
         {
-            // Nadpisuję metody, aby nie ładowały plików
         }
 
-        // Blokuję odczyt JSON-a
-        public override void LoadQuestionsFromJson(string filePath) 
-        { 
-
-        }
-       
-        public override void LoadChoicesFromJson() { } 
+        // Zatrzymuję ładowanie plików
+        public override void LoadQuestionsFromJson(string filePath) { }
+        public override void LoadChoicesFromJson() { }
         public override void LoadCorrectSetFromJson() { }
 
-        // Metoda do ustawiania testowych pytań
-        public void SetTestData(List<Question> questions, Dictionary<int, List<Choice>> choices, Dictionary<int, string> correctAnswers)
+        // Pozwalam wstrzyknąć dane testowe
+        public void SetTestData(
+            List<Question> questions,
+            Dictionary<int, List<Choice>> choices,
+            Dictionary<int, string> correctAnswers)
         {
             this._jsonQuestions = questions;
             this._jsonChoices = choices;

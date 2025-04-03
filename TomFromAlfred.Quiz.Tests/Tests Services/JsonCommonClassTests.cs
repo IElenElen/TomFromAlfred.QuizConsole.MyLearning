@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using FluentAssertions;
+using Moq;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
@@ -15,32 +17,34 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
     public class JsonCommonClassTests
     {
-        private readonly Mock<JsonCommonClass> _mockJsonCommonClass;
-
-        public JsonCommonClassTests()
-        {
-            _mockJsonCommonClass = new Mock<JsonCommonClass> { CallBase = true};
-        }
-
+        #region Create JsonCC Tests
         // 1
         [Fact] // Zaliczony
         public void CreateDefaultFile_ShouldCreateFile_WhenFileDoesNotExist() // Tworzy plik: jeśli ten nie istnieje
         {
             // Arrange
+            var mockFile = new Mock<IFileWrapper>();
+
             string newFilePath = "defaultFile.json";
+
             var defaultNewData = new List<Question> { new Question(1, "pytanie przykładowe") };
 
-            // Mockowanie odczytu pliku → rzuca FileNotFoundException, czyli plik nie istnieje
-            _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Question>>(newFilePath)).Throws(new FileNotFoundException());
+            // Symuluję: plik nie istnieje → rzuca wyjątek
+            mockFile.Setup(x => x.Exists(newFilePath)).Returns(false);
 
-            // Mockowanie zapisu
-            _mockJsonCommonClass.Setup(x => x.WriteToFile(newFilePath, defaultNewData));
+            mockFile.Setup(x => x.ReadAllText(newFilePath)).Throws<FileNotFoundException>();
+
+            mockFile.Setup(x => x.WriteAllText(newFilePath, It.IsAny<string>()));
+
+            var jsonCommon = new JsonCommonClass(mockFile.Object);
 
             // Act
-            _mockJsonCommonClass.Object.CreateDefaultFile(newFilePath, defaultNewData);
+            Action act = () => jsonCommon.CreateDefaultFile(newFilePath, defaultNewData);
 
-            // Assert: Upewniam się, czy WriteToFile() zostało wywołane
-            _mockJsonCommonClass.Verify(x => x.WriteToFile(newFilePath, defaultNewData), Times.Once);
+            // Assert
+            act.Should().NotThrow(); // Nie powinno być wyjątku
+
+            mockFile.Verify(x => x.WriteAllText(newFilePath, It.IsAny<string>()), Times.Once);
         }
 
         // 2
@@ -48,27 +52,37 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void CreateDefaultFile_ShouldNotCreateFileAndShouldLogMessage_WhenFileAlreadyExists() // Nie tworzy: jeśli plik już istnieje i daje info
         {
             // Arrange
+            var mockFile = new Mock<IFileWrapper>();
+
             string existingFilePath = "existingFile.json";
+
             var defaultNewData = new List<Question> { new Question(1, "pytanie przykładowe") };
 
-            _mockJsonCommonClass.Setup(x => x.ReadFromFile<List<Question>>(existingFilePath))
-                                .Returns(defaultNewData);
+            string jsonData = JsonConvert.SerializeObject(defaultNewData);
 
-            _mockJsonCommonClass.Setup(x => x.WriteToFile(existingFilePath, defaultNewData));
+            mockFile.Setup(x => x.Exists(existingFilePath)).Returns(true);
 
-            using (var sw = new StringWriter())
-            {
-                Console.SetOut(sw); 
+            mockFile.Setup(x => x.ReadAllText(existingFilePath)).Returns(jsonData);
 
-                // Act
-                _mockJsonCommonClass.Object.CreateDefaultFile(existingFilePath, defaultNewData);
+            var jsonCommon = new JsonCommonClass(mockFile.Object);
 
-                // Assert
-                var logOutput = sw.ToString();
+            using var sw = new StringWriter();
 
-                Assert.Contains($"Plik {existingFilePath} już istnieje. Tworzenie domyślnego pliku pominięte.", logOutput);
-                _mockJsonCommonClass.Verify(x => x.WriteToFile(existingFilePath, defaultNewData), Times.Never);
-            }
+            var originalOut = Console.Out;
+
+            Console.SetOut(sw);
+
+            // Act
+            jsonCommon.CreateDefaultFile(existingFilePath, defaultNewData);
+
+            // Restore
+            Console.SetOut(originalOut);
+            var log = sw.ToString();
+
+            // Assert
+            log.Should().Contain($"Plik {existingFilePath} już istnieje. Tworzenie domyślnego pliku pominięte.");
+
+            mockFile.Verify(x => x.WriteAllText(existingFilePath, It.IsAny<string>()), Times.Never);
         }
 
         // 3
@@ -76,29 +90,50 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void CreateDefaultFile_ShouldThrow_WhenDefaultDataIsNull() // Nie tworzy: jeśli dana to null
         {
             // Arrange
+            var mockFile = new Mock<IFileWrapper>();
+
+            var jsonCommon = new JsonCommonClass(mockFile.Object);
+
             string path = "default.json";
-            var jsonCommon = new JsonCommonClass();
 
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => jsonCommon.CreateDefaultFile<object>(path, null));
+            // Act
+            Action act = () => jsonCommon.CreateDefaultFile<object>(path, null);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>()
+               .WithParameterName("data");
         }
+        #endregion Create JsonCC Tests
 
+        #region Write JsonCC Tests
         // 4
         [Fact] // Zaliczony
         public void WriteToFile_ShouldCreateFile_WithCorrectJson() // Zapisuje: jeśli dane poprawne
         {
             // Arrange
-            string testFilePath = "mockedFile.json";
-            var testData = new List<Question> { new Question(1, "Przykładowe pytanie") };
-            var mockJsonCommon = new Mock<JsonCommonClass> { CallBase = true };
+            var mockFile = new Mock<IFileWrapper>();
 
-            mockJsonCommon.Setup(x => x.WriteToFile(testFilePath, It.IsAny<List<Question>>()));
+            string testFilePath = "mockedFile.json";
+
+            var testData = new List<Question> { new Question(1, "Przykładowe pytanie") };
+
+            string? serializedJson = null;
+
+            mockFile
+                .Setup(x => x.WriteAllText(testFilePath, It.IsAny<string>()))
+                .Callback<string, string>((_, json) => serializedJson = json);
+
+            var jsonCommon = new JsonCommonClass(mockFile.Object);
 
             // Act
-            mockJsonCommon.Object.WriteToFile(testFilePath, testData);
+            jsonCommon.WriteToFile(testFilePath, testData);
 
             // Assert
-            mockJsonCommon.Verify(x => x.WriteToFile(testFilePath, testData), Times.Once);
+            serializedJson.Should().NotBeNullOrWhiteSpace();
+
+            serializedJson.Should().Contain("Przykładowe pytanie");
+
+            mockFile.Verify(x => x.WriteAllText(testFilePath, It.IsAny<string>()), Times.Once);
         }
 
         // 5
@@ -106,21 +141,27 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void WriteToFile_ShouldCreateEmptyJson_WhenDataIsEmptyList() // Zapisuje: tworzy pusty json, jeśli lista danych jest pusta
         {
             // Arrange
+            var mockFile = new Mock<IFileWrapper>();
+
             string testFilePath = "emptyList.json";
-            var emptyData = new List<Question>(); // Pusta lista
-            var jsonCommon = new JsonCommonClass();
+
+            var emptyData = new List<Question>();
+
+            string? writtenJson = null;
+
+            mockFile
+                .Setup(x => x.WriteAllText(testFilePath, It.IsAny<string>()))
+                .Callback<string, string>((_, json) => writtenJson = json);
+
+            var jsonCommon = new JsonCommonClass(mockFile.Object);
 
             // Act
             jsonCommon.WriteToFile(testFilePath, emptyData);
 
             // Assert
-            Assert.True(File.Exists(testFilePath));
+            writtenJson.Should().Be("[]");
 
-            string jsonContent = File.ReadAllText(testFilePath);
-            Assert.Equal("[]", jsonContent.Trim()); // JSON pustej listy powinien wyglądać jak []
-
-            // Cleanup
-            File.Delete(testFilePath);
+            mockFile.Verify(x => x.WriteAllText(testFilePath, "[]"), Times.Once);
         }
 
         // 6
@@ -128,11 +169,18 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void WriteToFile_ShouldThrowArgumentNullException_WhenDataIsNull() // Zapisuje: wyrzuca wyjątek, jeśli dane to null
         {
             // Arrange
-            string testFilePath = "nullData.json";
-            var jsonCommon = new JsonCommonClass();
+            var mockFile = new Mock<IFileWrapper>();
 
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => jsonCommon.WriteToFile<object>(testFilePath, null));
+            var jsonCommon = new JsonCommonClass(mockFile.Object);
+
+            string testFilePath = "nullData.json";
+
+            // Act
+            Action act = () => jsonCommon.WriteToFile<object>(testFilePath, null);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>()
+               .WithParameterName("data");
         }
         
         // 7
@@ -140,21 +188,29 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void WriteToFile_ShouldCreateFile_WithSingleObjectJson() // Zapisuje: tworzy plik z pojedynczym obiektem
         {
             // Arrange
+            var mockFile = new Mock<IFileWrapper>();
+
             string testFilePath = "singleObject.json";
+
             var question = new Question(0, "Z ilu części składa się powieść Alfreda Szklarskiego?");
-            var jsonCommon = new JsonCommonClass();
+
+            string? writtenJson = null;
+
+            mockFile
+                .Setup(x => x.WriteAllText(testFilePath, It.IsAny<string>()))
+                .Callback<string, string>((_, json) => writtenJson = json);
+
+            var jsonCommon = new JsonCommonClass(mockFile.Object);
 
             // Act
             jsonCommon.WriteToFile(testFilePath, question);
 
             // Assert
-            Assert.True(File.Exists(testFilePath));
+            writtenJson.Should().NotBeNullOrWhiteSpace();
 
-            string jsonContent = File.ReadAllText(testFilePath);
-            Assert.Contains("\"Z ilu części składa się powieść Alfreda Szklarskiego?\"", jsonContent);
+            writtenJson.Should().Contain("Z ilu części składa się powieść Alfreda Szklarskiego?");
 
-            // Cleanup
-            File.Delete(testFilePath);
+            mockFile.Verify(x => x.WriteAllText(testFilePath, It.IsAny<string>()), Times.Once);
         }
 
         // 8
@@ -162,36 +218,57 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void WriteToFile_ShouldThrowException_WhenFilePathIsInvalid() // Zapisuje: wyrzuca wyjątek, jeśli ścieżka pliku wadliwa
         {
             // Arrange
-            string invalidPath = "?:\\invalid\\path.json"; // Nieprawidłowa ścieżka
-            var testData = new List<Question> { new Question(1, "Z ilu części składa się powieść Alfreda Nowaka?") };
-            var jsonCommon = new JsonCommonClass();
+            var mockFile = new Mock<IFileWrapper>();
 
-            // Act & Assert
-            Assert.Throws<DirectoryNotFoundException>(() => jsonCommon.WriteToFile(invalidPath, testData));
+            string invalidPath = "?:\\invalid\\path.json";
+
+            var testData = new List<Question> { new Question(1, "Z ilu części składa się powieść Alfreda N?") };
+
+            mockFile
+                .Setup(x => x.WriteAllText(invalidPath, It.IsAny<string>()))
+                .Throws<DirectoryNotFoundException>();
+
+            var jsonCommon = new JsonCommonClass(mockFile.Object);
+
+            // Act
+            Action act = () => jsonCommon.WriteToFile(invalidPath, testData);
+
+            // Assert
+            act.Should().Throw<DirectoryNotFoundException>();
         }
+        #endregion  Write JsonCC Tests
 
+        #region Read JsonCC Tests
         // 9
         [Fact] // Zaliczony
         public void ReadFromFile_ShouldReturnCorrectData() // Odczytuje: zwraca poprawne dane
         {
             // Arrange
-            var filePath = "testRead.json";
-            var expected = new List<Question> { new Question(1, "Jakie zwierzę jest królem dżungli?") };
-            File.WriteAllText(filePath, JsonConvert.SerializeObject(expected));
+            var mockFile = new Mock<IFileWrapper>();
 
-            var jsonCommon = new JsonCommonClass();
+            var filePath = "testRead.json";
+
+            var expected = new List<Question> { new Question(1, "Jakie zwierzę jest królem dżungli?") };
+
+            string json = JsonConvert.SerializeObject(expected);
+
+            mockFile.Setup(x => x.Exists(filePath)).Returns(true);
+
+            mockFile.Setup(x => x.ReadAllText(filePath)).Returns(json);
+
+            var jsonCommon = new JsonCommonClass(mockFile.Object);
 
             // Act
             var result = jsonCommon.ReadFromFile<List<Question>>(filePath);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Single(result);
-            Assert.Equal(1, result[0].QuestionId);
-            Assert.Equal("Jakie zwierzę jest królem dżungli?", result[0].QuestionContent);
+            result.Should().NotBeNull();
 
-            // Cleanup
-            File.Delete(filePath);
+            result.Should().HaveCount(1);
+
+            result[0].QuestionId.Should().Be(1);
+
+            result[0].QuestionContent.Should().Be("Jakie zwierzę jest królem dżungli?");
         }
 
         // 10
@@ -199,11 +276,20 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void ReadFromFile_ShouldThrowFileNotFoundException_WhenFileDoesNotExist() // Odczytuje: wyrzuca wyjątek, jeśli plik nie istnieje
         {
             // Arrange
-            string nonExistentFile = "doesNotExist.json";
-            var jsonCommon = new JsonCommonClass();
+            var mockFile = new Mock<IFileWrapper>();
 
-            // Act & Assert
-            Assert.Throws<FileNotFoundException>(() => jsonCommon.ReadFromFile<List<Question>>(nonExistentFile));
+            string nonExistentFile = "doesNotExist.json";
+
+            mockFile.Setup(x => x.Exists(nonExistentFile)).Returns(false);
+
+            var jsonCommon = new JsonCommonClass(mockFile.Object);
+
+            // Act
+            Action act = () => jsonCommon.ReadFromFile<List<Question>>(nonExistentFile);
+
+            // Assert
+            act.Should().Throw<FileNotFoundException>()
+               .WithMessage($"Plik {nonExistentFile} nie istnieje.");
         }
 
         // 11
@@ -211,15 +297,22 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void ReadFromFile_ShouldThrowInvalidDataException_WhenFileIsEmpty() // Odczytuje: wyrzuca wyjątek, jeśli plik jest pusty
         {
             // Arrange
+            var mockFile = new Mock<IFileWrapper>();
+
             string emptyFilePath = "emptyFile.json";
-            File.WriteAllText(emptyFilePath, ""); // Tworzę pusty plik
-            var jsonCommon = new JsonCommonClass();
 
-            // Act & Assert
-            Assert.Throws<JsonReaderException>(() => jsonCommon.ReadFromFile<List<Question>>(emptyFilePath));
+            mockFile.Setup(x => x.Exists(emptyFilePath)).Returns(true);
 
-            // Cleanup
-            File.Delete(emptyFilePath);
+            mockFile.Setup(x => x.ReadAllText(emptyFilePath)).Returns(string.Empty);
+
+            var jsonCommon = new JsonCommonClass(mockFile.Object);
+
+            // Act
+            Action act = () => jsonCommon.ReadFromFile<List<Question>>(emptyFilePath);
+
+            // Assert
+            act.Should().Throw<JsonReaderException>()
+               .WithMessage($"Plik {emptyFilePath} jest pusty lub zawiera nieprawidłowe dane.");
         }
 
         // 12
@@ -227,16 +320,24 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void ReadFromFile_ShouldThrowJsonReaderException_WhenFileContainsInvalidJson() //Odczytuje: wyrzuca wyjatek, jeśli json ma błędny format
         {
             // Arrange
+            var mockFile = new Mock<IFileWrapper>();
+
             string invalidJsonFilePath = "invalidJson.json";
-            File.WriteAllText(invalidJsonFilePath, "{ niepoprawny JSON }"); // Niepoprawna struktura JSON
 
-            var jsonCommon = new JsonCommonClass();
+            string invalidJson = "{ niepoprawny JSON }"; // Błędny format
 
-            // Act & Assert
-            Assert.Throws<JsonReaderException>(() => jsonCommon.ReadFromFile<List<Question>>(invalidJsonFilePath));
+            mockFile.Setup(x => x.Exists(invalidJsonFilePath)).Returns(true);
 
-            // Cleanup
-            File.Delete(invalidJsonFilePath);
+            mockFile.Setup(x => x.ReadAllText(invalidJsonFilePath)).Returns(invalidJson);
+
+            var jsonCommon = new JsonCommonClass(mockFile.Object);
+
+            // Act
+            Action act = () => jsonCommon.ReadFromFile<List<Question>>(invalidJsonFilePath);
+
+            // Assert
+            act.Should().Throw<JsonReaderException>();
         }
+        #endregion Read JsonCC Tests
     }
 }

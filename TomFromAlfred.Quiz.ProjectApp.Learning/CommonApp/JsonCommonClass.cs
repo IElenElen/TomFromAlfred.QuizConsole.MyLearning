@@ -4,11 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 {
     public class JsonCommonClass // Klasa dla json = schemat działania plików
     {
+        private readonly IFileWrapper _fileService;
+
+        public JsonCommonClass(IFileWrapper fileService)
+        {
+            _fileService = fileService;
+        }
+
         public virtual void CreateDefaultFile<T>(string filePath, T defaultData)
         {
             try
@@ -25,32 +34,27 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 
         public virtual T ReadFromFile<T>(string filePath)
         {
-            if (!File.Exists(filePath))
-            {
+            if (!_fileService.Exists(filePath))
                 throw new FileNotFoundException($"Plik {filePath} nie istnieje.");
-            }
 
             Console.WriteLine($"Wczytuję plik: {filePath}");
-            string json = File.ReadAllText(filePath);
+            string json = _fileService.ReadAllText(filePath);
 
             if (string.IsNullOrWhiteSpace(json))
-            {
                 throw new JsonReaderException($"Plik {filePath} jest pusty lub zawiera nieprawidłowe dane.");
-            }
 
             var data = JsonConvert.DeserializeObject<T>(json);
 
-            // Uproszczone sprawdzenie null
-            return data ?? throw new JsonException($"Nie udało się zdeserializować danych z pliku {filePath}. Upewnij się, że plik zawiera poprawny JSON.");
+            return data ?? throw new JsonException($"Nie udało się zdeserializować danych z pliku {filePath}.");
         }
 
         public virtual void WriteToFile<T>(string filePath, T data)
         {
             if (data == null)
-                throw new ArgumentNullException(nameof(data), "Data cannot be null.");
+                throw new ArgumentNullException(nameof(data));
 
             string json = JsonConvert.SerializeObject(data);
-            File.WriteAllText(filePath, json);
+            _fileService.WriteAllText(filePath, json);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestPlatform.Utilities;
+﻿using FluentAssertions;
+using Microsoft.VisualStudio.TestPlatform.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,15 +17,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
  
     public class ScoreServiceTests 
     {
-        private readonly ITestOutputHelper _output;
-        private ScoreService _scoreService; // Testuję tę klasę
-
-        public ScoreServiceTests(ITestOutputHelper output) 
-        {
-            _output = output;
-            _scoreService = new ScoreService(); // Nowy obiekt na potrzeby testu
-        }
-
+        #region  Start ScoreS. Tests
         // 1
         [Theory] // Zaliczony
         [InlineData(5)]
@@ -34,34 +27,47 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void StartNewQuiz_ShouldResetScore_And_UpdateQuizSets(int newActiveQuestionsTotal) // Uruchamia nowy Quiz: resetuje punktację i ustawia nowy zestaw Quizu
         {
             // Arrange
-            for (int i = 0; i < 50; i++)
-            {
-                _scoreService.IncrementScore(); // Wcześniejszy wynik (po poprzednim uruchomieniu Quizu)
-            }
+            var scoreService = new ScoreService();
+
+            for (int i = 0; i < 50; i++) scoreService.IncrementScore();
 
             // Act
-            _scoreService.StartNewQuiz(newActiveQuestionsTotal);
+            scoreService.StartNewQuiz(newActiveQuestionsTotal);
 
             // Assert
-            Assert.Equal(0, _scoreService.GetScore());
-            Assert.Equal(newActiveQuestionsTotal, _scoreService.GetTotalActiveSets());
+            scoreService.GetScore().Should().Be(0);
+
+            scoreService.GetTotalActiveSets().Should().Be(newActiveQuestionsTotal);
         }
 
         // 2 
         [Fact] // Zaliczony
         public void StartNewQuiz_ShouldThrowException_WhenSetInQuizIsZero() // Uruchamia nowy Quiz: wyrzuca wyjątek, jeśli brak zestawu w Quizie
         {
-            // Act & Assert
-            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => _scoreService.StartNewQuiz(0));
-            Assert.Contains("Liczba pytań musi być większa niż 0.", exception.Message);
+            // Arrange
+            var scoreService = new ScoreService();
+
+            // Act
+            Action act = () => scoreService.StartNewQuiz(0);
+
+            // Assert
+            act.Should().Throw<ArgumentOutOfRangeException>()
+               .WithMessage("*Liczba pytań musi być większa niż 0.*");
         }
 
         // 3
         [Fact] // Zaliczony
         public void StartNewQuiz_ShouldThrowException_WhenQuizContainsNegativeQuestionCount() // Uruchamia nowy Quiz: wyrzuca wyjątek, jesli liczba zestawu minusowa
         {
-            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => _scoreService.StartNewQuiz(-5));
-            Assert.Contains("Liczba pytań musi być większa niż 0.", exception.Message);
+            // Arrange
+            var scoreService = new ScoreService();
+
+            // Act
+            Action act = () => scoreService.StartNewQuiz(-5);
+
+            // Assert
+            act.Should().Throw<ArgumentOutOfRangeException>()
+               .WithMessage("*Liczba pytań musi być większa niż 0.*");
         }
 
         // 4
@@ -69,26 +75,32 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void StartNewQuiz_ShouldHandleLargeQuizSets() // Wyświetla Quiz nawet z dużą liczbą zestawów
         {
             // Arrange
+            var scoreService = new ScoreService();
             int newTotalSet = 1000;
 
             // Act
-            _scoreService.StartNewQuiz(newTotalSet);
+            scoreService.StartNewQuiz(newTotalSet);
 
             // Assert
-            Assert.Equal(0, _scoreService.GetScore()); // Punkty nadal powinny wynosić 0
-            Assert.Equal(1000, newTotalSet); // Liczba pytań powinna być 1000
+            scoreService.GetScore().Should().Be(0);
+
+            scoreService.GetTotalActiveSets().Should().Be(newTotalSet);
         }
 
         // 5 
         [Fact] // Zaliczony
         public void StartNewQuiz_ShouldHandleMaxIntQuestionsWithoutOverflow() // Uruchamia Quiz: zachowanie przy max ilości zestawów Quizu
         {
+            // Arrange
+            var scoreService = new ScoreService();
+
             // Act
-            _scoreService.StartNewQuiz(int.MaxValue);
+            scoreService.StartNewQuiz(int.MaxValue);
 
             // Assert
-            Assert.Equal(int.MaxValue, _scoreService.GetTotalActiveSets());
-            Assert.Equal(0, _scoreService.GetScore()); // Sprawdzam, czy wynik pozostaje 0
+            scoreService.GetTotalActiveSets().Should().Be(int.MaxValue);
+
+            scoreService.GetScore().Should().Be(0);
         }
 
         // 6
@@ -96,33 +108,39 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void StartNewQuiz_ShouldResetScoreAndUpdateQuiz_WithEachCall() // Uruchamia Quiz: resetuje punkty i ustawia nowy Quiz przy każdym nowym wywołaniu
         {
             // Arrange
-            int firstQuizActiveQuestions = 10;
-            int secondQuizActiveQuestions = 30;
-            int thirdQuizActiveQuestions = 20;
+            var scoreService = new ScoreService();
 
             // Act
-            _scoreService.StartNewQuiz(firstQuizActiveQuestions);
-            _scoreService.StartNewQuiz(secondQuizActiveQuestions);
-            _scoreService.StartNewQuiz(thirdQuizActiveQuestions);
+            scoreService.StartNewQuiz(10);
+
+            scoreService.StartNewQuiz(30);
+
+            scoreService.StartNewQuiz(20);
 
             // Assert
-            Assert.Equal(0, _scoreService.GetScore()); // Po każdym wywołaniu punkty powinny być zresetowane
-            Assert.Equal(thirdQuizActiveQuestions, _scoreService.GetTotalActiveSets()); // Liczba zestawów powinna wynosić 30 w trzecim wywołaniu
-        }
+            scoreService.GetScore().Should().Be(0);
 
+            scoreService.GetTotalActiveSets().Should().Be(20);
+        }
+#endregion Start ScoreS. Tests
+
+        #region IncrementS. ScoreS. Tests
         // 7
         [Fact] // Zaliczony
         public void IncrementScore_ShouldIncreaseScoreByOne() // Zlicza punktację o 1
         {
             // Arrange
-            _scoreService.StartNewQuiz(10); // Inicjalizuję Quiz z 10 pytaniami
-            var initialScore = _scoreService.GetScore(); // Początkowy wynik
+            var scoreService = new ScoreService();
+
+            scoreService.StartNewQuiz(10);
+
+            var initialScore = scoreService.GetScore();
 
             // Act
-            _scoreService.IncrementScore(); 
+            scoreService.IncrementScore();
 
             // Assert
-            Assert.Equal(initialScore + 1, _scoreService.GetScore()); // Sprawdzam, czy wynik się zwiększył o 1
+            scoreService.GetScore().Should().Be(initialScore + 1);
         }
 
         // 8
@@ -130,16 +148,21 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void IncrementScore_ShouldWorkMultipleTimes() // Zlicza punktację po każdym zestawie
         {
             // Arrange
-            _scoreService.StartNewQuiz(10); // Inicjalizuję quiz z 10 pytaniami
-            var initialScore = _scoreService.GetScore(); // Początkowy wynik
+            var scoreService = new ScoreService();
+
+            scoreService.StartNewQuiz(10);
+
+            var initialScore = scoreService.GetScore();
 
             // Act
-            _scoreService.IncrementScore(); // Zwiększam wynik o 1
-            _scoreService.IncrementScore(); // Zwiększam wynik o 1
-            _scoreService.IncrementScore(); // Zwiększam wynik o 1
+            scoreService.IncrementScore();
+
+            scoreService.IncrementScore();
+
+            scoreService.IncrementScore();
 
             // Assert
-            Assert.Equal(initialScore + 3, _scoreService.GetScore()); // Sprawdzam, czy wynik został zwiększony 3 razy
+            scoreService.GetScore().Should().Be(initialScore + 3);
         }
 
         // 9
@@ -147,26 +170,35 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void IncrementScore_ShouldNotAffectTotalQuestions() // Zlicza punkty, liczba pytań pozostaje ta sama
         {
             // Arrange
-            _scoreService.StartNewQuiz(15); // Inicjalizuję quiz z 15 pytaniami
+            var scoreService = new ScoreService();
+
+            scoreService.StartNewQuiz(15);
 
             // Act
-            _scoreService.IncrementScore(); // Zwiększam wynik o 1
-            _scoreService.IncrementScore(); // Drugie zwiększenie wyniku
-            _scoreService.IncrementScore(); // Kolejne zwiększenie wyniku
+            scoreService.IncrementScore();
+
+            scoreService.IncrementScore();
+
+            scoreService.IncrementScore();
 
             // Assert
-            Assert.Equal(15, _scoreService.GetTotalActiveSets()); // Sprawdzam, czy liczba pytań pozostała niezmieniona
+            scoreService.GetTotalActiveSets().Should().Be(15);
         }
+#endregion IncrementS. ScoreS. Tests
 
+        #region GetScore ScoreS. Tests
         // 10
         [Fact] // Zaliczony
         public void GetScore_ShouldReturnZero_WhenQuizNotStarted() // Podaje 0, jeśli Quiz nie został uruchomiony
         {
+            // Arrange
+            var scoreService = new ScoreService();
+
             // Act
-            var score = _scoreService.GetScore();
+            var score = scoreService.GetScore();
 
             // Assert
-            Assert.Equal(0, score); // Sprawdzam, czy wynik wynosi 0, jeśli Quiz nie został rozpoczęty
+            score.Should().Be(0);
         }
 
         // 11
@@ -174,18 +206,21 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetScore_ShouldReturnCorrectScore_AfterMultipleIncrements() // Podaje wynik: poprawna punktacja, po zliczeniu poprawnych odpowiedzi
         {
             // Arrange
-            _scoreService.StartNewQuiz(25); // Inicjalizuję Quiz z 25 pytaniami
+            var scoreService = new ScoreService();
+
+            scoreService.StartNewQuiz(25);
 
             // Act
-            _scoreService.IncrementScore();
-            _scoreService.IncrementScore();
-            _scoreService.IncrementScore();
-            _scoreService.IncrementScore();
+            scoreService.IncrementScore();
 
-            var score = _scoreService.GetScore(); // Pobieram wynik
+            scoreService.IncrementScore();
+
+            scoreService.IncrementScore();
+
+            scoreService.IncrementScore();
 
             // Assert
-            Assert.Equal(4, score); // Sprawdzam, czy wynik wynosi 4 po kilkukrotnej inkrementacji
+            scoreService.GetScore().Should().Be(4);
         }
 
         // 12
@@ -193,14 +228,17 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetScore_ShouldReturnZero_AfterReset() // Podaje wynik: zwraca zero po resecie
         {
             // Arrange
-            _scoreService.StartNewQuiz(10); // Inicjalizuję quiz z 10 pytaniami
-            _scoreService.IncrementScore(); // Zwiększam wynik o 1
+            var scoreService = new ScoreService();
+
+            scoreService.StartNewQuiz(10);
+
+            scoreService.IncrementScore();
 
             // Act
-            _scoreService.ResetScore(); // Resetuję wynik
+            scoreService.ResetScore();
 
             // Assert
-            Assert.Equal(0, _scoreService.GetScore()); // Sprawdzam, czy wynik został zresetowany do 0
+            scoreService.GetScore().Should().Be(0);
         }
 
         // 13
@@ -208,66 +246,64 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetScore_ShouldReturnZero_AfterQuizStartedAndNoIncrement() // Podaje punktację: podaje 0, jeśli nie było inkrementacji
         {
             // Arrange
-            _scoreService.StartNewQuiz(5); // Inicjalizuję quiz
+            var scoreService = new ScoreService();
+
+            scoreService.StartNewQuiz(5);
 
             // Act
-            var scoreNoIncrement = _scoreService.GetScore(); // Pobieram wynik
+            var scoreNoIncrement = scoreService.GetScore();
 
             // Assert
-            Assert.Equal(0, scoreNoIncrement); // Sprawdzam, czy wynik wynosi 0, jeśli nie było inkrementacji
-        } 
+            scoreNoIncrement.Should().Be(0);
+        }
+#endregion GetScore ScoreS. Tests
 
         // 14
         [Fact] // Zaliczony
         public void ResetScore_ShouldSetScoreToZero_AfterMultipleIncrements_QuizBreak() // Podaje wynik: zwraca 0, po kilku odpowiedziach - przerwanie Quizu
         {
             // Arrange
-            _output.WriteLine("=== Start test ===");
-            _output.WriteLine($"Calling StartNewQuiz(8)");
-            _scoreService.StartNewQuiz(8); // Inicjalizuję Quiz
+            var scoreService = new ScoreService();
 
-            _output.WriteLine("StartNewQuiz() wywołane.");
-            _output.WriteLine($"Instance ID after StartNewQuiz: {_scoreService.GetHashCode()}");
+            scoreService.StartNewQuiz(8);
 
-            // Inkrementacja wyniku
-            _scoreService.IncrementScore();
-            _scoreService.IncrementScore();
-            _scoreService.IncrementScore();
+            scoreService.IncrementScore();
 
-            // Pobranie wyniku przed resetem
-            var scoreBeforeReset = _scoreService.GetScore();
-            _output.WriteLine($"Score before reset: {scoreBeforeReset}");
+            scoreService.IncrementScore();
 
-            // **🔹 Asercja przed resetem!**
-            Assert.True(scoreBeforeReset > 0, "Score should be greater than 0 before reset.");
+            scoreService.IncrementScore();
 
-            // Act - reset wyniku
-            _scoreService.ResetScore();
-            var scoreAfterReset = _scoreService.GetScore();
-            _output.WriteLine($"Score after reset: {scoreAfterReset}");
+            var scoreBeforeReset = scoreService.GetScore();
 
-            // Assert - wynik powinien być 0 po resecie
-            Assert.Equal(0, scoreAfterReset);
+            scoreBeforeReset.Should().BeGreaterThan(0);
 
-            _output.WriteLine("=== End test ===");
+            // Act
+            scoreService.ResetScore();
+
+            // Assert
+            scoreService.GetScore().Should().Be(0);
         }
 
+        #region GetPercentage ScoreS.Tests
         // 15
         [Fact] // Zaliczony
         public void GetPercentage_ShouldReturn100_WhenAllAnswersAreCorrect() // Podaje procenty: zwraca 100, jeśli wszystkie odpowiedzi użytkownika są dobre
         {
             // Arrange
-            _scoreService.StartNewQuiz(10); // Inicjalizuję Quiz z 10 pytaniami
+            var scoreService = new ScoreService();
+
+            scoreService.StartNewQuiz(10);
+
             for (int i = 0; i < 10; i++)
             {
-                _scoreService.IncrementScore(); // Inkrementacja wyniku dla każdej odpowiedzi
+                scoreService.IncrementScore();
             }
 
             // Act
-            var percentage = _scoreService.GetPercentage(); // Pobieram procent
+            var percentage = scoreService.GetPercentage();
 
             // Assert
-            Assert.Equal(100, percentage); // Oczekiwany wynik to 100%
+            percentage.Should().Be(100);
         }
 
         // 16
@@ -275,13 +311,15 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetPercentage_ShouldReturn0_WhenNoAnswersAreCorrect() // Podaje procenty: zwraca 0, bo nie było poprawnej odpowiedzi od użytkownika lub nastąpił reset
         {
             // Arrange
-            _scoreService.StartNewQuiz(9); // Inicjalizuję Quiz z 9 pytaniami
+            var scoreService = new ScoreService();
+
+            scoreService.StartNewQuiz(9);
 
             // Act
-            var percentage = _scoreService.GetPercentage(); // Pobieram procent
+            var percentage = scoreService.GetPercentage();
 
             // Assert
-            Assert.Equal(0, percentage); // Oczekiwany wynik to 0%, ponieważ nie zwiększałam wyniku
+            percentage.Should().Be(0);
         }
 
         // 17
@@ -289,15 +327,19 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetPercentage_ShouldReturnZero_AfterScoreReset() // Podaje procenty: zwraca 0, jeśli nastąpiło przerwanie Quizu
         {
             // Arrange
-            _scoreService.StartNewQuiz(9); // Quiz z 9 pytaniami
-            _scoreService.IncrementScore(); // Poprawna odpowiedź, wynik powinien się zwiększyć
-            _scoreService.ResetScore(); // Resetuję wynik
+            var scoreService = new ScoreService();
+
+            scoreService.StartNewQuiz(9);
+
+            scoreService.IncrementScore();
+
+            scoreService.ResetScore();
 
             // Act
-            var percentage = _scoreService.GetPercentage(); // Pobieram procent
+            var percentage = scoreService.GetPercentage();
 
             // Assert
-            Assert.Equal(0, percentage); // Powinno zwrócić 0%, bo wynik został zresetowany
+            percentage.Should().Be(0);
         }
 
         // 18
@@ -305,44 +347,48 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetPercentage_ShouldReturnCorrectPercentage_WhenSomeAnswersAreCorrect() // Podaje procent: zwraca poprawne %, jeśli kilka odpowiedzi użytkownika było dobrych
         {
             // Arrange
-            _scoreService.StartNewQuiz(10); // Powinno ustawić AllActiveQuizSets = 10
-            _scoreService.IncrementScore(); // Powinno zwiększyć Score o 1
+            var scoreService = new ScoreService();
 
-            _output.WriteLine($"Total Questions: {_scoreService.AllActiveQuizSets}");
-            _output.WriteLine($"Current Score: {_scoreService.Score}");
+            scoreService.StartNewQuiz(10);
+
+            scoreService.IncrementScore();
 
             // Act
-            var percentage = _scoreService.GetPercentage();
+            var percentage = scoreService.GetPercentage();
 
             // Assert
-            Assert.Equal(10, percentage); // Powinno zwrócić 10%
+            percentage.Should().Be(10);
         }
+#endregion GetPercentage ScoreS.Tests
 
         // 19
         [Fact] // Zaliczony
         public void DisplayScoreSummary_ShouldPrintCorrectSummary() // Wyświetla: podaje poprawny wynik użytkownika
         {
             // Arrange
-            _scoreService.StartNewQuiz(10);
-            _scoreService.IncrementScore(); // Poprawna odpowiedź
+            var scoreService = new ScoreService();
 
-            using (var sw = new StringWriter())
-            {
-                Console.SetOut(sw);
+            scoreService.StartNewQuiz(10);
 
-                // Act
-                _scoreService.DisplayScoreSummary();
+            scoreService.IncrementScore();
 
-                // Debugging - wyświetlenie outputu testu
-                string output = sw.ToString();
-                Console.WriteLine("=== OUTPUT TESTU ===");
-                Console.WriteLine(output);
-                Console.WriteLine("=====================");
+            using var sw = new StringWriter();
 
-                // Assert
-                Assert.Contains("Zdobyte punkty: 1/10", output);
-                Assert.Contains("Procent poprawnych odpowiedzi: 10.00%", output);
-            }
+            var originalOut = Console.Out;
+            Console.SetOut(sw);
+
+            // Act
+            scoreService.DisplayScoreSummary();
+
+            // Restore output
+            Console.SetOut(originalOut);
+
+            // Assert
+            var output = sw.ToString();
+
+            output.Should().Contain("Zdobyte punkty: 1/10");
+
+            output.Should().Contain("Procent poprawnych odpowiedzi: 10.00%");
         }
     }
 }

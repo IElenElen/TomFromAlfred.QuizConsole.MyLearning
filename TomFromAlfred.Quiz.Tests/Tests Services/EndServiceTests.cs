@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
+using FluentAssertions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
@@ -13,26 +14,22 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
      
     public class EndServiceTests
     {
-        private readonly EndService _endService;
-        private readonly Mock<IScoreService> _mockScoreService; // Mockowanie ScoreService
-
-        public EndServiceTests()
-        {
-            _mockScoreService = new Mock<IScoreService>(); // Tworzenie mocka
-            _endService = new EndService(_mockScoreService.Object); // Przekazanie mocka do EndService
-        }
-
         // 1 
         [Theory] // Zaliczony
         [InlineData("k")] // mała litera
         [InlineData("K")] // wielka litera
         public void ShouldEnd_ShouldReturnTrue_WhenInputIsK(string input) // Kończy Quiz: jeśli użytkownik wpisze "k"
         {
+            // Arrange
+            var mockScore = new Mock<IScoreService>();
+
+            var endService = new EndService(mockScore.Object);
+
             // Act
-            bool result = _endService.ShouldEnd(input);
+            var result = endService.ShouldEnd(input);
 
             // Assert
-            Assert.True(result);
+            result.Should().BeTrue();
         }
 
         // 2
@@ -43,39 +40,52 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         [InlineData("", false)]   
         public void ShouldEnd_ShouldReturnExpectedResult(string input, bool expected) // Kończy: NIE kończy, jeśli widzi inne zachowania niż wprowadzenie k
         {
+            // Arrange
+            var mockScore = new Mock<IScoreService>();
+
+            var endService = new EndService(mockScore.Object);
+
             // Act
-            bool result = _endService.ShouldEnd(input);
+            var result = endService.ShouldEnd(input);
 
             // Assert
-            Assert.Equal(expected, result);
+            result.Should().Be(expected);
         }
 
         // 3
         [Fact] // Zaliczony
         public void EndQuiz_ShouldReturnCompletionMessageAndDisplayScore_WhenQuizIsCompleted() // Kończy: zwraca info o uzyskanej punktacji, jeśli Quiz ukończony
         {
+            // Arrange
+            var mockScore = new Mock<IScoreService>();
+
+            var endService = new EndService(mockScore.Object);
+
             // Act
-            string result = _endService.EndQuiz(true);
+            var result = endService.EndQuiz(true);
 
             // Assert
-            Assert.Equal("Ukończyłeś / aś Quiz. Dziękujemy za udział!", result);
+            result.Should().Be("Ukończyłeś / aś Quiz. Dziękujemy za udział!");
 
-            // Sprawdzenie, czy metoda `DisplayScoreSummary()` została wywołana raz
-            _mockScoreService.Verify(s => s.DisplayScoreSummary(), Times.Once);
+            mockScore.Verify(s => s.DisplayScoreSummary(), Times.Once);
         }
 
         // 4
         [Fact] // Zaliczony
         public void EndQuiz_ShouldResetScore_WhenQuizIsNotCompleted() // Kończy: reset punktacji, jesli Quiz nie jest ukończony
         {
+            // Arrange
+            var mockScore = new Mock<IScoreService>();
+
+            var endService = new EndService(mockScore.Object);
+
             // Act
-            string result = _endService.EndQuiz(false);
+            var result = endService.EndQuiz(false);
 
             // Assert
-            Assert.Equal("Quiz został przerwany. Brak punktów.", result);
+            result.Should().Be("Quiz został przerwany. Brak punktów.");
 
-            // Sprawdzenie, czy `ResetScore()` zostało wywołane
-            _mockScoreService.Verify(s => s.ResetScore(), Times.Once);
+            mockScore.Verify(s => s.ResetScore(), Times.Once);
         }
     }
 }
