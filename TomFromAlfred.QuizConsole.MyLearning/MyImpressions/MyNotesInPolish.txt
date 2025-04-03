@@ -4,3 +4,4 @@ Czy dla testów jednostkowych zawsze tworzę nowe instancje? To jest powtarzanie
 Helpera dodać jak coś się wysypie: private readonly ITestOutputHelper _output;
 Warto sprawdzić pokrycie kodami - mam już zainstalowane, co trzeba.
 Quiz Service Test - prawie od początku go przeanalizować.
+Potem testy managera...

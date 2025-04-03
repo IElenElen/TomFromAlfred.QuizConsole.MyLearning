@@ -77,23 +77,22 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void InitializeJsonService_ShouldThrowArgumentNullException_WhenJsonServiceIsNull() // Inicjalizacja: wyrzuca wyjątek, jeśli JsonService jest null
         {
             // Arrange
-            _mockQuestionService = new Mock<QuestionService>(false); // zakładam parametr false
+            string validFilePath = "validFilePath.json";
 
-            // Przygotowanie minimalnych danych pytań, aby uniknąć wyjątku z LoadQuestionsFromJson
             var mockQuestions = new List<Question>
             {
                 new Question(1, "Z ilu części składa się powieść Alfreda Szklarskiego?")
             };
 
-            // Ustawienie mocka dla ReadFromFile, aby zwracał listę pytań
             _mockJsonCommonClass.Setup(s => s.ReadFromFile<List<Question>>(It.IsAny<string>()))
                 .Returns(mockQuestions);
 
-            // Act & Assert
-            var exception = Assert.Throws<ArgumentNullException>(() => _quizService.InitializeJsonService(null, "validFilePath.json"));
+            // Act
+            Action action = () => _quizService.InitializeJsonService(null, validFilePath);
 
-            // Sprawdzam, czy wyjątek dotyczy parametru `jsonService`
-            Assert.Equal("jsonService", exception.ParamName);
+            // Assert
+            action.Should().Throw<ArgumentNullException>()
+                .WithParameterName("jsonService");
         }
 
         // 3 
@@ -103,12 +102,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange
             string noExistingFilePath = "nonExistentFile.json"; // Plik nie istnieje
 
-            // Mockuję istnienie plików: tylko dla ścieżki, która faktycznie ma nie istnieć, zwracam false
             _mockFileWrapper.Setup(f => f.Exists(It.Is<string>(path => path == noExistingFilePath))).Returns(false);
-            _mockFileWrapper.Setup(f => f.Exists(It.Is<string>(path => path != noExistingFilePath))).Returns(true);
 
-            // Przygotowuję minimalne dane, aby konstruktor nie wyrzucał wyjątku
-            _mockQuestionService = new Mock<QuestionService>(false);
             var mockQuestions = new List<Question>
             {
                 new Question(1, "Z ilu części składa się powieść Alfreda Szklarskiego?")
@@ -117,13 +112,12 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             _mockJsonCommonClass.Setup(s => s.ReadFromFile<List<Question>>(It.IsAny<string>()))
                 .Returns(mockQuestions);
 
-           
-            // Act & Assert
-            var exception = Assert.Throws<FileNotFoundException>(() =>
-                _quizService.InitializeJsonService(_mockJsonCommonClass.Object, noExistingFilePath));
+            // Act
+            Action action = () => _quizService.InitializeJsonService(_mockJsonCommonClass.Object, noExistingFilePath);
 
-            // Sprawdzam, czy wyjątek dotyczy poprawnego komunikatu
-            Assert.Equal($"Plik {noExistingFilePath} nie istnieje.", exception.Message);
+            // Assert
+            action.Should().Throw<FileNotFoundException>()
+                .WithMessage($"Plik {noExistingFilePath} nie istnieje.");
         }
         #endregion InitializeJsonS QuizS. Tests
 
@@ -133,20 +127,17 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetAllQuestions_ShouldReturnQuestionsFromJsonAndService() // Zwraca: pytania z serwisu i pliku json
         {
             // Arrange
-            // Inicjalizacja mocka z argumentem false
-            _mockQuestionService = new Mock<QuestionService>(false);
-
             var mockQuestionsFromJson = new List<Question>
             {
-                new Question (1, "Pytanie 1" ),
-                new Question (2, "Pytanie 2")
-            };
-            var mockQuestionsFromService = new List<Question>
-            {
-            new Question (3, "Pytanie 3")
+                new Question(1, "Pytanie 1"),
+                new Question(2, "Pytanie 2")
             };
 
-            // Ustawienie mocków dla odczytu JSON i zwracania pytań z serwisu
+            var mockQuestionsFromService = new List<Question>
+            {
+                new Question(3, "Pytanie 3")
+            };
+
             _mockJsonCommonClass.Setup(s => s.ReadFromFile<List<Question>>(It.IsAny<string>()))
                 .Returns(mockQuestionsFromJson);
             _mockQuestionService.Setup(s => s.GetAllActive())
@@ -156,10 +147,10 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             var result = _quizService.GetAllQuestions().ToList();
 
             // Assert
-            Assert.Equal(3, result.Count);  // 2 z JSON + 1 z serwisu
-            Assert.Contains(result, q => q.QuestionId == 1);
-            Assert.Contains(result, q => q.QuestionId == 2);
-            Assert.Contains(result, q => q.QuestionId == 3);
+            result.Should().HaveCount(3)
+                .And.Contain(q => q.QuestionId == 1)
+                .And.Contain(q => q.QuestionId == 2)
+                .And.Contain(q => q.QuestionId == 3);
         }
 
         // 5
@@ -167,15 +158,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void GetAllQuestions_ShouldReturnQuestionsFromServiceWhenJsonIsEmpty() // Zwraca: pytania z serwisu, jeśli json pusty
         {
             // Arrange
-            _mockQuestionService = new Mock<QuestionService>(false);
+            var mockQuestionsFromJson = new List<Question>(); // Pusta lista pytań z JSON
 
-            var mockQuestionsFromJson = new List<Question>(); // Puste pytania JSON
             var mockQuestionsFromService = new List<Question>
             {
                 new Question(1, "Pytanie 1")
             };
 
-            // Ustawienie mocka, aby zwracał pustą listę
             _mockJsonCommonClass.Setup(s => s.ReadFromFile<List<Question>>(It.IsAny<string>()))
                 .Returns(mockQuestionsFromJson);
 
@@ -184,19 +173,12 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             _mockFileWrapper.Setup(f => f.Exists(It.IsAny<string>())).Returns(true);
 
-            mockQuizService.CallBase = true; // Wykonuje prawdziwe metody, chyba że zostały zamockowane
-
-            mockQuizService.Setup(q => q.LoadQuestionsFromJson(It.IsAny<string>()))
-                .Callback(() => { }); // Nic nie robi
-
-            _quizService = mockQuizService.Object;
-
             // Act
             var result = _quizService.GetAllQuestions().ToList();
 
             // Assert
-            Assert.Single(result);  // Powinno być tylko pytanie z serwisu
-            Assert.Contains(result, q => q.QuestionId == 1);
+            result.Should().HaveCount(1)
+                .And.Contain(q => q.QuestionId == 1);
         }
 
         // 6
