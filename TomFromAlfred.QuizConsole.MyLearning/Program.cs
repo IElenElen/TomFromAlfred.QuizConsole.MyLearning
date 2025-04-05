@@ -27,7 +27,7 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
      Budowa:
     
-     Interfejs jaki? dla serwisu Crud, aby lepiej się tesrowało - też dla główniejszych serwisów i dla managera
+     Interfejs jaki? dla serwisu Crud, aby lepiej się testowało - też dla główniejszych serwisów i dla managera
      
      Klasa wspólna: dla pracy na plikach json - klasa serwisowa
      
@@ -39,23 +39,20 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
      Dodanie [assembly: CollectionBehavior(DisableTestParallelization = true)] przed namespace w klasie testowej: ScoreServiceTests.
 
-     10 testów do analizy / 109 całość
-
-    //Test dla GitHuba - ok
+     Analiza testów: oblane: 64 / suma: 142 
      */
 
     public class Program // Zmiana widoczności kolejnych klas
     {
         static void Main(string[] args)
         {
-            // Utworzenie instancji wymaganych serwisów
+            var fileWrapper = new FileSupportWrapper();
+            var jsonService = new JsonCommonClass(fileWrapper); 
+
             var questionService = new QuestionService();
             var choiceService = new ChoiceService();
             var correctAnswerService = new CorrectAnswerService();
-            var jsonService = new JsonCommonClass(); // Serwis JSON
-            var fileWrapper = new FileSupportWrapper(); 
 
-            // Instancja QuizService
             var quizService = new QuizService(
                 questionService,
                 choiceService,
@@ -63,15 +60,11 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 jsonService,
                 fileWrapper
             );
-            
-            // Inicjalizacja serwisów pomocniczych
+
             var scoreService = new ScoreService();
             var endService = new EndService(scoreService);
-
-            // Nowa instancja - obsługa interfejsu użytkownika
             var userInterface = new ConsoleUserInterface();
 
-            // Utworzenie i uruchomienie QuizManager
             var quizManager = new QuizManager(quizService, scoreService, endService, userInterface);
             quizManager.ConductQuiz();
         }

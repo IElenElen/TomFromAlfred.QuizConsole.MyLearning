@@ -3,5 +3,5 @@ Czy dla testów jednostkowych zawsze tworzę nowe instancje? To jest powtarzanie
 31.03.25 Dodałam regiony - segregację.
 Helpera dodać jak coś się wysypie: private readonly ITestOutputHelper _output;
 Warto sprawdzić pokrycie kodami - mam już zainstalowane, co trzeba.
-Quiz Service Test - prawie od początku go przeanalizować.
-Potem testy managera...
+Quiz Service Test - przeanalizować jeszcze raz!
+Raport pokrycia: file:///C:/Users/Ilka/source/repos/TomFromAlfred.QuizConsole.MyLearning/coverage-report/index.html
