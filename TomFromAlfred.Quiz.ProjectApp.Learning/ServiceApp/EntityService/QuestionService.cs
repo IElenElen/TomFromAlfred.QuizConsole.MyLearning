@@ -17,6 +17,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
     public class QuestionService : ICrudService<Question>
     {
         private List<Question> _questions = new List<Question>(); // Lista pytań
+
         public int questionId = 0;
 
         public QuestionService() { } // PUSTY KONSTRUKTOR - na potrzeby testu

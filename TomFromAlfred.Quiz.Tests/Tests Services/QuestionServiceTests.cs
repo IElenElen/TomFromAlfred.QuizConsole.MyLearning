@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.Utilities;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
+using TomFromAlfred.QuizConsole.Tests.Z___SupportForTests;
 using Xunit.Abstractions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
@@ -24,6 +26,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             //Arrange
             var questionService = new QuestionService();
+
+            DataClearingCommonClass.ClearQuestions(questionService);
+
 
             var newQuestion = new Question(20, "Nowe pytanie: Kim był Alfred Szklarski?");
 
@@ -43,6 +48,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange
             var questionService = new QuestionService();
 
+            DataClearingCommonClass.ClearQuestions(questionService);
+
             var newQuestion = new Question(1, "Pytanie testowe dodawane do pustej listy.");
 
             // Act
@@ -60,6 +67,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var questionService = new QuestionService();
+
+            DataClearingCommonClass.ClearQuestions(questionService);
 
             var existingQuestion = new Question(1, "Istniejące pytanie x.");
 
@@ -83,10 +92,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange
             var questionService = new QuestionService();
 
+            DataClearingCommonClass.ClearQuestions(questionService);
+
             var countQuestionsBefore = questionService.GetAllActive().Count();
 
             // Act
             questionService.Add(null);
+
             var countQuestionsAfter = questionService.GetAllActive().Count();
 
             // Assert
@@ -101,6 +113,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var questionService = new QuestionService();
+
+            DataClearingCommonClass.ClearQuestions(questionService);
+
 
             var questionToDelete = new Question(20, "Czy Tomek jest chłopcem?");
 
@@ -125,6 +140,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange
             var questionService = new QuestionService();
 
+            DataClearingCommonClass.ClearQuestions(questionService);
+
+
             var nonExistentQuestion = new Question(999, "Pytanie, które nie istnieje.");
 
             // Act 
@@ -140,6 +158,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var questionService = new QuestionService();
+
+            DataClearingCommonClass.ClearQuestions(questionService);
+
 
             var nonExistentQuestion = new Question(998, "Nieistniejące pytanie.");
 
@@ -157,6 +178,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange 
             var questionService = new QuestionService();
 
+            DataClearingCommonClass.ClearQuestions(questionService);
+
             // Act
             var exception = Record.Exception(() => questionService.Delete(null));
 
@@ -172,6 +195,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var questionService = new QuestionService();
+
+            DataClearingCommonClass.ClearQuestions(questionService);
+
 
             var questionOrginal = new Question(12, "Pytanie do zmiany.");
 
@@ -194,6 +220,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var questionService = new QuestionService();
+
+            DataClearingCommonClass.ClearQuestions(questionService);
+
 
             var existingQuestionToUpdate = new Question(13, "Pytanie do aktualizacji.");
 
@@ -229,6 +258,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange
             var questionService = new QuestionService();
 
+            DataClearingCommonClass.ClearQuestions(questionService);
+
+
             // Act
             var exception = Record.Exception(() => questionService.Update(null));
 
@@ -242,6 +274,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var questionService = new QuestionService();
+
+            DataClearingCommonClass.ClearQuestions(questionService);
+
 
             var nonExistentQuestion = new Question(99, "To pytanie nie istnieje.");
 
@@ -260,6 +295,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var questionService = new QuestionService();
+
+            DataClearingCommonClass.ClearQuestions(questionService);
+
 
             int initialQuestionsCount = questionService.GetAllActive().Count(); // Zapisuję początkową liczbę pytań
 
@@ -283,12 +321,12 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange
             var questionService = new QuestionService();
 
-            var question1 = new Question(1, "Pytanie nr 1.");
+            DataClearingCommonClass.ClearQuestions(questionService);
 
+            var question1 = new Question(1, "Pytanie nr 1.");
             var question2 = new Question(2, "Pytanie nr 2.");
 
             questionService.Add(question1);
-
             questionService.Add(question2);
 
             // Act
@@ -296,9 +334,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Assert
             activeQuestions.Should().HaveCount(2);
-
             activeQuestions.Should().Contain(question1);
-
             activeQuestions.Should().Contain(question2);
         }
         #endregion GetAllActive for Questions

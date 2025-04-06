@@ -13,6 +13,7 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 using FluentAssertions;
 using NSubstitute;
 using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForManager;
+using TomFromAlfred.QuizConsole.Tests.Z___SupportForTests;
 
 namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
 {
@@ -52,6 +53,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
         public void ConductQuiz_ShouldEvaluateCorrectAnswersProperly()
         {
             // Arrange
+            DataClearingCommonClass.ClearAll(null, null, _correctAnswerService, _scoreService);
+
             var questions = new List<Question>
             {
                 new(1, "2+2=?"),
@@ -95,6 +98,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
         public void ConductQuiz_ShouldEvaluateIncorrectAnswersProperly()
         {
             // Arrange
+            DataClearingCommonClass.ClearAll(null, null, _correctAnswerService, _scoreService);
+
             var questions = new List<Question>
             {
                 new(1, "2+2=?"),

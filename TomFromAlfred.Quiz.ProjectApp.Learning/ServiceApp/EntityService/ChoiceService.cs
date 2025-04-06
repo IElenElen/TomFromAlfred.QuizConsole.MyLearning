@@ -12,10 +12,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
     {
         private List<Choice> _choices; // Lista danych zakodowanych twardo
 
-        public ChoiceService()
+        public ChoiceService(IEnumerable<Choice>? initialChoices = null)
         {
-            // Inicjalizacja wyborów w konstruktorze
-            _choices = new List<Choice>
+            _choices = initialChoices?.ToList() ?? new List<Choice>
             {
                 new Choice(11, 'A', "Jesień", true),
                 new Choice(11, 'B', "Zima", true),
@@ -105,11 +104,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
         public virtual IEnumerable<Choice> GetChoicesForQuestion(int questionId) // Filtrowanie odpowiedzi na podstawie id pytania
         {
             return _choices.Where(c => c.ChoiceId == questionId);
-        }
-
-        public void Clear()
-        {
-            _choices.Clear();
         }
 
         // Aktualizacja istniejącego wyboru - zmiana treści wyboru

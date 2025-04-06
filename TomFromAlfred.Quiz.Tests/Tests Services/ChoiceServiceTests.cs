@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using FluentAssertions.Execution;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
+using TomFromAlfred.QuizConsole.Tests.Z___SupportForTests;
 using Xunit.Abstractions;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
@@ -29,6 +31,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange
             var choiceService = new ChoiceService();
 
+            DataClearingCommonClass.ClearChoices(choiceService);
+
             var newChoice = new Choice(22, letter, content);
 
             // Act
@@ -47,6 +51,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var choiceService = new ChoiceService();
+
+            DataClearingCommonClass.ClearChoices(choiceService);
 
             var existingChoice = new Choice(25, 'A', "Opcja A");
 
@@ -70,6 +76,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var choiceService = new ChoiceService();
+
+            DataClearingCommonClass.ClearChoices(choiceService);
 
             var existingChoice = new Choice(25, 'A', "Opcja A");
 
@@ -97,6 +105,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange
             var choiceService = new ChoiceService();
 
+            DataClearingCommonClass.ClearChoices(choiceService);
+
             choiceService.Add(new Choice(50, 'A', "Opcja A"));
 
             choiceService.Add(new Choice(50, 'B', "Opcja B"));
@@ -119,6 +129,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var choiceService = new ChoiceService();
+
+            DataClearingCommonClass.ClearChoices(choiceService);
 
             choiceService.Add(new Choice(60, 'A', "Opcja A"));
 
@@ -144,6 +156,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange
             var choiceService = new ChoiceService();
 
+            DataClearingCommonClass.ClearChoices(choiceService);
+
             choiceService.Add(new Choice(70, 'A', "Opcja A."));
 
             // Act
@@ -166,6 +180,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange
             var choiceService = new ChoiceService();
 
+            DataClearingCommonClass.ClearChoices(choiceService);
+
             var initialChoicesCount = choiceService.GetAllActive().Count();
 
             var nonExistingChoice = new Choice(89, 'A', "Opcja nieistniejąca.");
@@ -187,6 +203,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange
             var choiceService = new ChoiceService();
 
+            DataClearingCommonClass.ClearChoices(choiceService);
+
             // Act
             var exception = Record.Exception(() => choiceService.Delete(null));
 
@@ -200,10 +218,12 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         [Fact] // Zaliczony
         public void GetAllActive_ShouldReturnOnlyChoicesWithIsActiveTrue() // Pobiera: wszystkie aktywne wybory
         {
-            // Arrange - Wypełniam listę aktywnymi wyborami
+            // Arrange
             var choiceService = new ChoiceService();
 
-            choiceService.Add(new Choice(40, 'A', "Jesień") { IsActive = true });
+            DataClearingCommonClass.ClearChoices(choiceService);
+
+            choiceService.Add(new Choice(40, 'A', "Jesień") { IsActive = true }); // Wypełniam listę aktywnymi wyborami
             choiceService.Add(new Choice(40, 'B', "Zima") { IsActive = true });
             choiceService.Add(new Choice(40, 'C', "Wiosna") { IsActive = true });
             choiceService.Add(new Choice(41, 'A', "Kraków") { IsActive = true });
@@ -221,11 +241,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 10
-        [Fact] // Zaliczony
+        [Fact] // Zaliczony // Poprawiony 06.04.25
         public void GetAllActive_ShouldNotReturnInactiveChoices() // Pobiera: nie pobiera wyborów, które są nieaktywne
         {
             // Arrange
             var choiceService = new ChoiceService();
+
+            DataClearingCommonClass.ClearChoices(choiceService);
 
             choiceService.Add(new Choice(50, 'A', "Aktywny") { IsActive = true });
             choiceService.Add(new Choice(50, 'B', "Nieaktywny") { IsActive = false });
@@ -235,7 +257,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Assert
             activeChoices.Should().ContainSingle(c => c.ChoiceLetter == 'A' && c.IsActive,
-                          "Bo tylko jedna aktywna odpowiedź została dodana.");
+                          "Tylko jedna aktywna odpowiedź została dodana.");
 
             activeChoices.Should().NotContain(c => c.IsActive == false,
                           "Bo GetAllActive() powinno pomijać nieaktywne odpowiedzi.");
@@ -249,6 +271,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var choiceService = new ChoiceService();
+
+            DataClearingCommonClass.ClearChoices(choiceService);
 
             choiceService.Add(new Choice(11, 'A', "Testowe A"));
             choiceService.Add(new Choice(11, 'B', "Testowe B"));
@@ -267,29 +291,33 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             var choiceService = new ChoiceService();
 
+            DataClearingCommonClass.ClearChoices(choiceService);
+
             var result = choiceService.GetChoicesForQuestion(11);
 
             result.Should().OnlyContain(c => c.ChoiceId == 11, "Bo chcę tylko odpowiedzi dla pytania nr 11.");
         }
 
         // 13
-        [Theory] // Zaliczony
+        [Theory] // Zaliczony // Poprawiony 06.04.25
         [InlineData('A', "Testowe A")]
         [InlineData('B', "Testowe B")]
         [InlineData('C', "Testowe C")]
-        public void GetChoicesForQuestion_ShouldContainExpectedChoices(char letter, string content) // Podaje: przypisany zestaw = literę i treść
+        public void GetChoicesForQuestion_ShouldContainExpectedChoices(char letter, string content) // Podaje: przypisany zestaw = literę i treść wyboru do konkretnego pytania
         {
             // Arrange
             var choiceService = new ChoiceService();
+
+            DataClearingCommonClass.ClearChoices(choiceService);
 
             choiceService.Add(new Choice(11, 'A', "Testowe A"));
             choiceService.Add(new Choice(11, 'B', "Testowe B"));
             choiceService.Add(new Choice(11, 'C', "Testowe C"));
 
-            var result = choiceService.GetChoicesForQuestion(11);
+            var resultGetChoicesForQuestion = choiceService.GetChoicesForQuestion(11);
 
-            result.Should().Contain(c => c.ChoiceLetter == letter && c.ChoiceContent == content,
-            $"Bo odpowiedź z literą '{letter}' i treścią '{content}' powinna się znajdować w zestawie.");
+            resultGetChoicesForQuestion.Should().Contain(c => c.ChoiceLetter == letter && c.ChoiceContent == content,
+            $"Odpowiedź z literą '{letter}' i treścią '{content}' powinna się znajdować w zestawie.");
         }
 
         // 14
@@ -298,6 +326,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange - brak danych
             var choiceService = new ChoiceService();
+
+            DataClearingCommonClass.ClearChoices(choiceService);
 
             // Act
             var choicesForQuestion = choiceService.GetChoicesForQuestion(100);
@@ -315,6 +345,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var choiceService = new ChoiceService();
+
+            DataClearingCommonClass.ClearChoices(choiceService);
 
             var originalChoice = new Choice(11, 'A', "Jesień.");
 
@@ -335,26 +367,32 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 16
-        [Fact] // Zaliczony
+        [Fact] // Zaliczony // Poprawiany 06.04.25
         public void Update_ShouldReplaceLetterAndKeepContent_WhenChoiceExists() // Aktualizuje: aktualizuje literę wyboru, jeśli wybór istnieje
         {
             // Arrange
             var choiceService = new ChoiceService();
 
-            var originalChoice = new Choice(12, 'A', "Kraków") { IsActive = true };
+            DataClearingCommonClass.ClearChoices(choiceService); // Czyszczenie z danych
 
-            choiceService.Add(originalChoice);
+            var choiceA = new Choice(12, 'A', "Kraków") { IsActive = true };
+            var choiceC = new Choice(12, 'C', "Warszawa") { IsActive = true };
+
+            choiceService.Add(choiceA);
+            choiceService.Add(choiceC);
 
             // Act
-            choiceService.UpdateChoiceLetter(12, 'B');
+            choiceService.UpdateChoiceLetter(12, 'B'); // Zamieniam 'A' na 'B'
 
             // Assert
-            var choices = choiceService.GetChoicesForQuestion(12).ToList();
+            var result = choiceService.GetChoicesForQuestion(12).ToList();
 
-            choices.Should().ContainSingle(c => c.ChoiceLetter == 'B')
-                .Which.ChoiceContent.Should().Be("Kraków");
-
-            choices.Should().NotContain(c => c.ChoiceLetter == 'A');
+            using (new FluentAssertions.Execution.AssertionScope())
+            {
+                result.Should().ContainSingle(c => c.ChoiceLetter == 'B' && c.ChoiceContent == "Kraków");
+                result.Should().ContainSingle(c => c.ChoiceLetter == 'C');
+                result.Should().NotContain(c => c.ChoiceLetter == 'A');
+            }
         }
 
         // 17
@@ -363,6 +401,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var choiceService = new ChoiceService();
+
+            DataClearingCommonClass.ClearChoices(choiceService);
 
             var initialChoiceCount = choiceService.GetAllActive().Count();
 
@@ -386,6 +426,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange
             var choiceService = new ChoiceService();
 
+            DataClearingCommonClass.ClearChoices(choiceService);
+
             var existingChoice = new Choice(15, 'C', "Wąż z Afryki.");
 
             choiceService.Add(existingChoice);
@@ -404,11 +446,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         }
 
         // 19
-        [Fact] // Zaliczony
+        [Fact] // Zaliczony // Poprawiony 06.04.25
         public void UpdateChoiceLetter_ShouldDoNothing_WhenNewLetterIsTheSame() // Aktualizuje: nic nie robi - litera ta sama
         {
             // Arrange
             var choiceService = new ChoiceService();
+
+            DataClearingCommonClass.ClearChoices(choiceService);
 
             var originalChoice = new Choice(20, 'B', "Afryka") { IsActive = true };
 
@@ -434,6 +478,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             //Arrange
             var choiceService = new ChoiceService();
 
+            DataClearingCommonClass.ClearChoices(choiceService);
+
             // Act
             var exception = Record.Exception(() => choiceService.Update(null));
 
@@ -450,6 +496,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var choiceService = new ChoiceService();
+
+            DataClearingCommonClass.ClearChoices(choiceService);
 
             // Act
             var exception = Assert.Throws<ArgumentException>(() => new Choice(99, invalidLetter, "Nieistniejąca opcja", true));
@@ -468,6 +516,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var choiceService = new ChoiceService();
+
+            DataClearingCommonClass.ClearChoices(choiceService);
 
             // Act
             var exception = Record.Exception(() => new Choice(choiceId, choiceLetter, choiceContent, isActive));

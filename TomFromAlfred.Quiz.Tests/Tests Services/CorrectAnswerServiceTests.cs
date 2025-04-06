@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
+using TomFromAlfred.QuizConsole.Tests.Z___SupportForTests;
 
 namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 {
@@ -20,6 +21,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var correctAnswerService = new CorrectAnswerService();
+
+            DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
             var correctAnswerToAdd = new CorrectAnswer(14, "Zima", true);
 
@@ -38,6 +41,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         {
             // Arrange
             var correctAnswerService = new CorrectAnswerService();
+
+            DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
             var originalAnswer = new CorrectAnswer(11, "Jesień", true);
 
@@ -65,6 +70,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 // Arrange
                 var correctAnswerService = new CorrectAnswerService();
 
+                DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
+
+
                 var correctAnswerToDelete = new CorrectAnswer(12, "Warszawa", true);
 
                 // Nowa instancja z tym samym CorrectAnswerId
@@ -85,6 +93,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             {
                 // Arrange
                 var correctAnswerService = new CorrectAnswerService();
+
+                DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
                 var initialCount = correctAnswerService.GetAllActive().Count();
 
@@ -109,8 +119,10 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 // Arrange
                 var correctAnswerService = new CorrectAnswerService();
 
-                // Act
-                var result = correctAnswerService.FindCorrectAnswerContent(11, 'A');
+                DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
+
+            // Act
+            var result = correctAnswerService.FindCorrectAnswerContent(11, 'A');
 
                 // Assert
                 result.Should().Be("Nieznana odpowiedź.");
@@ -122,6 +134,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             {
                 // Arrange
                 var correctAnswerService = new CorrectAnswerService();
+
+                DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
                 correctAnswerService.Add(new CorrectAnswer(1, "Wiosna", true));
 
@@ -150,6 +164,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 // Arrange
                 var correctAnswerService = new CorrectAnswerService();
 
+                DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
+
                 var correctAnswerToUpdate = new CorrectAnswer(11, "Zmieniona zima", true);
 
                 // Act
@@ -170,6 +186,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 // Arrange
                 var correctAnswerService = new CorrectAnswerService();
 
+                DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
+
                 var nonExistingCorrectAnswer = new CorrectAnswer(999, "Brak", true);
 
                 // Act
@@ -187,6 +205,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             {
                 // Arrange
                 var correctAnswerService = new CorrectAnswerService();
+
+                DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
                 var existingAnswer = new CorrectAnswer(11, "Jesień", true);
 
@@ -221,6 +241,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 //Arrange
                 var correctAnswerService = new CorrectAnswerService();
 
+                DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
+
                 // Act
                 var result = correctAnswerService.GetCorrectAnswerForQuestion(12);
 
@@ -237,8 +259,10 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 // Arrange
                 var correctAnswerService = new CorrectAnswerService();
 
-                // Act
-                var result = correctAnswerService.GetCorrectAnswerForQuestion(999);
+                DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
+
+            // Act
+            var result = correctAnswerService.GetCorrectAnswerForQuestion(999);
 
                 // Assert
                 result.Should().BeNull();                

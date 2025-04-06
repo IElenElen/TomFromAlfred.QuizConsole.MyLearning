@@ -16,7 +16,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
     {
         private ChoiceService _choiceService;
 
-        private readonly Dictionary<int, CorrectAnswer> _correctAnswers = new Dictionary<int, CorrectAnswer>
+        private Dictionary<int, CorrectAnswer> _correctAnswers = new Dictionary<int, CorrectAnswer>
         {
             { 11, new CorrectAnswer(11, "Jesień", true) },
             { 12, new CorrectAnswer(12, "Warszawa", true) },
