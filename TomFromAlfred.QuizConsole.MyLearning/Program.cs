@@ -42,9 +42,9 @@ namespace TomFromAlfred.QuizConsole.MyLearning
      Analiza testów: oblane: 62 / suma: 142 
      */
 
-    public class Program // Zmiana widoczności kolejnych klas
+    public static class Program // Zmiana widoczności kolejnych klas
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             var fileWrapper = new FileSupportWrapper();
             var jsonService = new JsonCommonClass(fileWrapper); 
