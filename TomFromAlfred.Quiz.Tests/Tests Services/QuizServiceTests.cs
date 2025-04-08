@@ -25,7 +25,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         private Mock<IFileWrapper> _mockFileWrapper;
         private MockQuizService _quizService;
 
-        private readonly ITestOutputHelper _output;
+        private readonly ITestOutputHelper _output; // Potrzebne???
 
         public QuizServiceTests(ITestOutputHelper output)
         {

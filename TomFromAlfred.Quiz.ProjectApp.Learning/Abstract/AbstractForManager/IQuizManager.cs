@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForManager
 {
-    public interface IQuizManager
+    public interface IQuizManager // Jest mi potrzebny??? być może dla testów???
     {
         void ConductQuiz();
     }
