@@ -15,9 +15,14 @@ namespace TomFromAlfred.Quiz.ProjectDomain.Learning.Entity
         
         public char ChoiceLetter { get; set; }
 
-        public string ChoiceContent { get; set; }
+        public string ChoiceContent { get; init; } // Może być pusty
 
-        public bool IsActive { get; set; } 
+        public bool IsActive { get; set; }
+
+        public Choice() // Pusty konstruktor - ważny
+        {
+            ChoiceContent = string.Empty;
+        }
 
         public Choice(int choiceId, char choiceLetter, string choiceContent, bool isActive = true)
         {

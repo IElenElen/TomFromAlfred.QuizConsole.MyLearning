@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
@@ -35,9 +35,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         private readonly ChoiceService _choiceService;
         private readonly CorrectAnswerService _correctAnswerService;
 
-        protected List<Question> _jsonQuestions = new();
-        protected Dictionary<int, List<Choice>> _jsonChoices = new();
-        protected Dictionary<int, string> _correctAnswers = new();
+        protected List<Question> _jsonQuestions = [];
+        protected Dictionary<int, List<Choice>> _jsonChoices = [];
+        protected Dictionary<int, string> _correctAnswers = [];
 
         public QuizService(
                 QuestionService questionService,
@@ -58,8 +58,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         }
         public virtual void AddQuestionToJson(Question question)
         {
-            if (question == null)
-                throw new ArgumentNullException(nameof(question));
+            ArgumentNullException.ThrowIfNull(question);
 
             _jsonQuestions.Add(question);
             SaveQuestionsToJson();
@@ -72,9 +71,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 Console.WriteLine($"Mapowanie liter: Nowa: {mapping.Key}, Oryginalna: {mapping.Value}");
             }
 
-            // Pobierz zamapowaną literę użytkownika
-            char originalLetter;
+            // Inlinowanie przypisania oryginalnej litery
+            char originalLetter = letterMapping != null && letterMapping.TryGetValue(userChoiceLetter, out var mapped)
+                ? mapped
+                : userChoiceLetter;
 
+            Console.WriteLine($"Sprawdzanie odpowiedzi: Użytkownik: {userChoiceLetter}, Zamapowana: {originalLetter}");
+
+            // Pobierz zamapowaną literę użytkownika
             if (letterMapping != null && letterMapping.TryGetValue(userChoiceLetter, out originalLetter))
             {
                 Console.WriteLine($"Sprawdzanie odpowiedzi: Użytkownik: {userChoiceLetter}, Zamapowana: {originalLetter}");
@@ -137,7 +141,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
             var choices = GetChoicesForQuestion(questionId).ToList();
 
-            if (!choices.Any())
+            if (choices.Count == 0)
             {
                 Console.WriteLine($"Brak odpowiedzi dla pytania {questionId}.");
                 return null;
@@ -156,14 +160,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public virtual IEnumerable<Question> GetAllQuestions()
         {
-            if (_jsonQuestions.Any())
+            if (_jsonQuestions.Count > 0)
             {
                 Console.WriteLine($"Priorytet JSON: {_jsonQuestions.Count} pytań wczytano z JSON.");
                 Console.WriteLine("Łączenie pytań z JSON i serwisu. Priorytet: JSON.");
 
-                // Łącz dane, ale unikaj duplikatów
                 var jsonQuestionIds = _jsonQuestions.Select(q => q.QuestionId).ToHashSet();
-                var remainingServiceQuestions = _questionService.GetAllActive().Where(q => !jsonQuestionIds.Contains(q.QuestionId));
+                var remainingServiceQuestions = _questionService.GetAllActive()
+                    .Where(q => !jsonQuestionIds.Contains(q.QuestionId));
+
                 Console.WriteLine($"Liczba pytań z serwisu dodanych do JSON: {remainingServiceQuestions.Count()}");
                 return _jsonQuestions.Concat(remainingServiceQuestions);
             }
@@ -175,7 +180,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
         public virtual IEnumerable<Choice> GetChoicesForQuestion(int questionId)
         {
             // Najpierw sprawdź dane z JSON
-            if (_jsonChoices.ContainsKey(questionId))
+            if (_jsonChoices.TryGetValue(questionId, out var choicesFromJson)) // Nie upraszczać
             {
                 Console.WriteLine($"Pobrano wybory z JSON dla pytania {questionId}");
                 return _jsonChoices[questionId];
@@ -190,7 +195,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             }
 
             Console.WriteLine($"Brak wyborów dla pytania o Id {questionId}.");
-            return Enumerable.Empty<Choice>();
+            return Enumerable.Empty<Choice>(); // Nie upraszczać
         }
 
         public IEnumerable<Choice> GetShuffledChoicesForQuestion(int questionId, out Dictionary<char, char> letterMapping)
@@ -204,11 +209,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             int attempts = 0;
             do
             {
-                shuffledChoices = choices.OrderBy(_ => random.Next()).ToList();
+                shuffledChoices = choices.OrderBy(_ => random.Next()).ToList(); // Nie upraszczać
                 attempts++;
             } while (attempts < maxAttempts && shuffledChoices.SequenceEqual(choices));
 
-            letterMapping = new Dictionary<char, char>();
+            letterMapping = new Dictionary<char, char>(); // Nie upraszczać
             char newLetter = 'A';
 
             var finalChoices = new List<Choice>();
@@ -219,14 +224,20 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 Console.WriteLine($"Mapowanie: {newLetter} → {choice.ChoiceLetter}");
 
                 // Tworzę nowy obiekt zamiast modyfikować oryginał
-                finalChoices.Add(new Choice(choice.ChoiceId, newLetter, choice.ChoiceContent));
+                finalChoices.Add(new Choice
+                {
+                    ChoiceId = choice.ChoiceId,
+                    ChoiceLetter = newLetter,
+                    ChoiceContent = choice.ChoiceContent,
+                    IsActive = true
+                });
                 newLetter++;
             }
 
             return finalChoices;
         }
 
-        private IEnumerable<Choice> ShuffleChoices(IEnumerable<Choice> choices)
+        private static List<Choice> ShuffleChoices(IEnumerable<Choice> choices)
         {
             var random = new Random();
             var shuffledChoices = choices.OrderBy(_ => random.Next()).ToList();
@@ -247,8 +258,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         public void InitializeJsonService(JsonCommonClass jsonService, string jsonFilePath)
         {
-            if (jsonService == null)
-                throw new ArgumentNullException(nameof(jsonService));
+               ArgumentNullException.ThrowIfNull(jsonService);
 
             if (!_fileWrapper.Exists(jsonFilePath))
                 throw new FileNotFoundException($"Plik {jsonFilePath} nie istnieje.");
@@ -265,7 +275,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                 return;
             }
 
-            var jsonChoices = _jsonService.ReadFromFile<List<Choice>>(ChoicesFilePath) ?? new List<Choice>();
+            var jsonChoices = _jsonService.ReadFromFile<List<Choice>>(ChoicesFilePath) ?? new List<Choice>(); // Nie upraszczać
             _jsonChoices = jsonChoices
                 .GroupBy(c => c.ChoiceId)
                 .ToDictionary(g => g.Key, g => g.ToList());
@@ -286,12 +296,15 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                     return;
                 }
 
-                var correctSet = _jsonService.ReadFromFile<List<JsonHelper>>(CorrectSetFilePath) ?? new List<JsonHelper>();
+                var correctSet = _jsonService.ReadFromFile<List<JsonHelper>>(CorrectSetFilePath) ?? new List<JsonHelper>(); // Nie upraszczać
 
                 foreach (var correct in correctSet)
                 {
                     // Mapowanie QuestionNumber → CorrectAnswerId
                     int questionId = correct.QuestionNumber;
+
+                    if (string.IsNullOrWhiteSpace(correct.ContentCorrectAnswer))
+                        throw new InvalidOperationException("Brak treści poprawnej odpowiedzi.");
 
                     // Mapowanie poprawnej odpowiedzi do encji
                     var correctAnswer = new CorrectAnswer(
@@ -305,6 +318,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
                     // Dodanie do słownika dla JSON
                     if (!_correctAnswers.ContainsKey(questionId))
                     {
+                        if (correct.LetterCorrectAnswer is null)
+                            throw new InvalidOperationException("Brak litery poprawnej odpowiedzi.");
+
                         _correctAnswers[questionId] = correct.LetterCorrectAnswer; // Tylko litera
                     }
 
@@ -330,15 +346,10 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
             try
             {
                 // Wczytanie JSON
-                _jsonQuestions = _jsonService.ReadFromFile<List<Question>>(filePath) ?? new List<Question>();
+                _jsonQuestions = _jsonService.ReadFromFile<List<Question>>(filePath) ?? new List<Question>(); // Nie upraszczać
 
                 // Jeżeli lista jest pusta, rzucam wyjątek
-                if (_jsonQuestions == null)
-                {
-                    Console.WriteLine("JsonQuestions jest NULL!");
-                }
-
-                else if (_jsonQuestions.Count == 0)
+                if (_jsonQuestions.Count == 0)
                 {
                     Console.WriteLine("JSON pytania są puste - rzucam wyjątek!");
                     throw new JsonException("JSON does not contain any questions");

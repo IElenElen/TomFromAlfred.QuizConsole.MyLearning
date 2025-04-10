@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using Moq;
@@ -25,8 +25,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
         private readonly Mock<IFileWrapper> _mockFileWrapper = new();
         private readonly Mock<JsonCommonClass> _mockJsonCommon = new();
         private readonly ScoreService _scoreService = new();
-        private readonly CorrectAnswerService _correctAnswerService = new();
-
+        private readonly CorrectAnswerService _correctAnswerService = new CorrectAnswerService(new ChoiceService()); // Nie upraszczać
         private QuizService CreateQuizServiceWithData(List<Question> questions, List<Choice> choices, List<JsonHelper> corrects)
         {
             _mockFileWrapper.Setup(f => f.Exists(It.IsAny<string>())).Returns(true);

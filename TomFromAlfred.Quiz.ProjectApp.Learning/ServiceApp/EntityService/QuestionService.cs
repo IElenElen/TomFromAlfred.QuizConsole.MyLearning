@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
-namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
+namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService
 {
     // Kolejne metody posortowanie alfabetycznie
 
@@ -16,7 +16,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
 
     public class QuestionService : ICrudService<Question>
     {
-        private List<Question> _questions = new List<Question>(); // Lista pytań
+        private readonly List<Question> _questions = new List<Question>(); // Lista pytań Nie upraszczać
 
         public int questionId = 0;
 

@@ -10,7 +10,7 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 using TomFromAlfred.QuizConsole.Tests.SupportForTests;
@@ -28,7 +28,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         [Fact] // Zaliczony
         public void Constructor_ShouldThrowException_WhenQuestionsAreNull() // Konstruktor: podaje wyjątek, jeśli pytania = null
         {
-            var act = () => new ManagerHelper(null, Mock.Of<IQuizService>());
+            var act = () => new ManagerHelper(default!, Mock.Of<IQuizService>());
 
             act.Should().Throw<ArgumentNullException>()
                 .WithParameterName("questions");
@@ -106,9 +106,9 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         {
             var questions = new List<Question>
             {
-                new Question(1, "Q1"),
-                new Question(2, "Q2"),
-                new Question(3, "Q3")
+                new Question(1, "Q1"), // Nie upraszczać
+                new Question(2, "Q2"), // -II-
+                new Question(3, "Q3") // - II -
             };
 
             var helper = new ManagerHelper(questions, Mock.Of<IQuizService>());
@@ -124,7 +124,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
 
         private static ManagerHelper CreateHelper(params Question[] questions)
         {
-            return new ManagerHelper(questions.ToList(), Mock.Of<IQuizService>());
+            return new ManagerHelper(questions.ToList(), Mock.Of<IQuizService>()); // Nie upraszczać
         }
     }
 }

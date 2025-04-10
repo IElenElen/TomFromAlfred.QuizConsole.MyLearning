@@ -11,7 +11,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     public class ScoreService : IScoreService 
     {
         private int _score; // Liczba poprawnych odpowiedzi
-        private int _newActiveQuestions; // Liczba aktywnych pytań w quizie (w domyśle - zestawy)
         private int _allActiveQuizSets; // Liczba wszystkich aktywnych zestawów Quizu
 
         public int Score => _score; // Publiczny getter do testów

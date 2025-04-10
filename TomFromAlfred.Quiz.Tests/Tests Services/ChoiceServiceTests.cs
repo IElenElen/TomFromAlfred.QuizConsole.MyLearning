@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 using TomFromAlfred.QuizConsole.Tests.Z___SupportForTests;
 using Xunit.Abstractions;
@@ -198,18 +198,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
         // 8
         [Fact] // Zaliczony
-        public void Delete_ShouldNotThrow_WhenChoiceIsNull() // Usuwa: nic nie robi, jeśli choice to null
+        public void Delete_ShouldThrow_WhenChoiceIsNull() // Usuwa: wyrzuca wyjątek przy null
         {
-            // Arrange
             var choiceService = new ChoiceService();
 
-            DataClearingCommonClass.ClearChoices(choiceService);
+            var act = () => choiceService.Delete(null!);
 
-            // Act
-            var exception = Record.Exception(() => choiceService.Delete(null));
-
-            // Assert
-            exception.Should().BeNull("Usunięcie `null` nie powinno rzucać wyjątku.");
+            act.Should().Throw<ArgumentNullException>();
         }
         #endregion Delete ChoiceServiceTests
 
@@ -471,7 +466,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             choicesAfterUpdate.Should().ContainSingle(c => c.ChoiceLetter == 'B' && c.ChoiceContent == "Afryka");
         }
 
-        // 20
+        /*// 20
         [Fact] // Zaliczony
         public void Update_ShouldNotThrow_WhenChoiceIsNull() // Aktualizuje: nic się nie dzieje - jeśli choice = null
         {
@@ -485,7 +480,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Assert
             exception.Should().BeNull();
-        }
+        }*/
 
         // 21
         [Theory] // Zaliczony

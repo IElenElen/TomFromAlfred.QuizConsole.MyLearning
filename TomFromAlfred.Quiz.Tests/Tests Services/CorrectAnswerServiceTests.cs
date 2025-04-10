@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 using TomFromAlfred.QuizConsole.Tests.Z___SupportForTests;
 
@@ -20,7 +20,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Add_ShouldAddCorrectAnswer_WhenValidEntityIsGiven() // Dodaje: poprawną odpowiedź, jeśli entity jest poprawnie podane
         {
             // Arrange
-            var correctAnswerService = new CorrectAnswerService();
+            var choiceService = new ChoiceService();
+            var correctAnswerService = new CorrectAnswerService(choiceService);
 
             DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
@@ -40,7 +41,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
         public void Add_ShouldNotAddDuplicateCorrectAnswer_WhenSameIdIsGiven() // Dodaje: nie dodaje duplikatów, kiedy Id jest takie samo
         {
             // Arrange
-            var correctAnswerService = new CorrectAnswerService();
+            var choiceService = new ChoiceService();
+            var correctAnswerService = new CorrectAnswerService(choiceService);
 
             DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
@@ -68,12 +70,13 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             public void Delete_ShouldRemoveCorrectAnswerById_WhenValidEntityIsGiven() // Usuwa: poprawną odpowiedź, jeśli poprawnie podane jest entity
             {
                 // Arrange
-                var correctAnswerService = new CorrectAnswerService();
+                var choiceService = new ChoiceService();
+                var correctAnswerService = new CorrectAnswerService(choiceService);
 
                 DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
 
-                var correctAnswerToDelete = new CorrectAnswer(12, "Warszawa", true);
+                var correctAnswerToDelete = new CorrectAnswer(12, "Warszawa", true); // Potrzebne aspekt
 
                 // Nowa instancja z tym samym CorrectAnswerId
                 var sameIdCorrectAnswer = new CorrectAnswer(12, "Zamość", true);
@@ -92,7 +95,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             public void Delete_ShouldNotRemoveCorrectAnswer_WhenEntityDoesNotExist() // Usuwa: nic, jeżeli entity nie istnieje
             {
                 // Arrange
-                var correctAnswerService = new CorrectAnswerService();
+                var choiceService = new ChoiceService();
+                var correctAnswerService = new CorrectAnswerService(choiceService);
 
                 DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
@@ -117,7 +121,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             public void FindCorrectAnswerContent_ShouldReturnErrorMessage_WhenCorrectAnswerNotFound_OrIsNull_InCAService() // Znajduje: Jeśli dane w serwisie poprawności: są null lub nie zostały znalezione - daje komunikat
             {
                 // Arrange
-                var correctAnswerService = new CorrectAnswerService();
+                var choiceService = new ChoiceService();
+                var correctAnswerService = new CorrectAnswerService(choiceService);
 
                 DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
@@ -133,7 +138,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             public void GetAll_ShouldReturnAllCorrectActiveAnswers() // Podaje: wszystkie poprawne aktywne odpowiedzi
             {
                 // Arrange
-                var correctAnswerService = new CorrectAnswerService();
+                var choiceService = new ChoiceService();
+                var correctAnswerService = new CorrectAnswerService(choiceService);
 
                 DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
@@ -152,7 +158,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 result.Should().OnlyContain(c => c.IsActive, "GetAllActive() powinno zwracać tylko aktywne odpowiedzi.");
 
                 result.Select(c => c.CorrectAnswerContent)
-                      .Should().Contain(new[] { "Wiosna", "Lato" });
+                      .Should().Contain(new[] { "Wiosna", "Lato" }); // Nie upraszczać
         }
             #endregion FindCorrectA. GetAll CorrectA.ServiceTests
 
@@ -162,7 +168,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             public void Update_ShouldUpdateCorrectAnswer_WhenValidEntityIsGiven() // Aktualizuje: poprawną odpowiedź jeśli entity jest poprawnie podane
             {
                 // Arrange
-                var correctAnswerService = new CorrectAnswerService();
+                var choiceService = new ChoiceService();
+                var correctAnswerService = new CorrectAnswerService(choiceService);
 
                 DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
@@ -184,7 +191,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             public void Update_ShouldNotUpdateCorrectAnswer_WhenEntityDoesNotExist() // Aktualizuje: nic nie robi, jeśli entity nie istnieje
             {
                 // Arrange
-                var correctAnswerService = new CorrectAnswerService();
+                var choiceService = new ChoiceService();
+                var correctAnswerService = new CorrectAnswerService(choiceService);
 
                 DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
@@ -204,7 +212,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             public void Update_ShouldNotChangeCorrectAnswerById_WhenContentIsSame() // Aktualizuje: pomija aktualizację, jeśli treść ta sama dla tego samego Id
             {
                 // Arrange
-                var correctAnswerService = new CorrectAnswerService();
+                var choiceService = new ChoiceService();
+                var correctAnswerService = new CorrectAnswerService(choiceService);
 
                 DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
@@ -239,7 +248,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             public void GetCorrectAnswerForQuestion_ShouldReturnCorrectAnswer_WhenValidQuestionIdIsGiven() // Daje: poprawną odpowiedź, jeśli Id pytania jest poprawne
             {
                 //Arrange
-                var correctAnswerService = new CorrectAnswerService();
+                var choiceService = new ChoiceService();
+                var correctAnswerService = new CorrectAnswerService(choiceService);
 
                 DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 
@@ -257,7 +267,8 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             public void GetCorrectAnswerForQuestion_ShouldReturnNull_WhenInvalidQuestionIdIsGiven() // Daje: zwrot nulla, jeśli Id pytania jest niepoprawne
             {
                 // Arrange
-                var correctAnswerService = new CorrectAnswerService();
+                var choiceService = new ChoiceService();
+                var correctAnswerService = new CorrectAnswerService(choiceService);
 
                 DataClearingCommonClass.ClearCorrectAnswers(correctAnswerService);
 

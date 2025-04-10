@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp

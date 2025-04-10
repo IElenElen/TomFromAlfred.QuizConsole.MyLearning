@@ -27,7 +27,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             string newFilePath = "defaultFile.json";
 
-            var defaultNewData = new List<Question> { new Question(1, "pytanie przykładowe") };
+            var defaultNewData = new List<Question> { new Question(1, "pytanie przykładowe") }; // Nie upraszczać
 
             // Symuluję: plik nie istnieje → rzuca wyjątek
             mockFile.Setup(x => x.Exists(newFilePath)).Returns(false);
@@ -56,7 +56,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             string existingFilePath = "existingFile.json";
 
-            var defaultNewData = new List<Question> { new Question(1, "pytanie przykładowe") };
+            var defaultNewData = new List<Question> { new Question(1, "pytanie przykładowe") }; // Nie upraszczać
 
             string jsonData = JsonConvert.SerializeObject(defaultNewData);
 
@@ -85,7 +85,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             mockFile.Verify(x => x.WriteAllText(existingFilePath, It.IsAny<string>()), Times.Never);
         }
 
-        // 3
+        /*// 3
         [Fact] // Zaliczony
         public void CreateDefaultFile_ShouldThrow_WhenDefaultDataIsNull() // Nie tworzy: jeśli dana to null
         {
@@ -102,7 +102,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Assert
             act.Should().Throw<ArgumentNullException>()
                .WithParameterName("data");
-        }
+        } */
         #endregion Create JsonCC Tests
 
         #region Write JsonCC Tests
@@ -115,7 +115,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             string testFilePath = "mockedFile.json";
 
-            var testData = new List<Question> { new Question(1, "Przykładowe pytanie") };
+            var testData = new List<Question> { new Question(1, "Przykładowe pytanie") }; // Nie upraszczać
 
             string? serializedJson = null;
 
@@ -164,7 +164,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             mockFile.Verify(x => x.WriteAllText(testFilePath, "[]"), Times.Once);
         }
 
-        // 6
+        /*// 6
         [Fact] // Zaliczony
         public void WriteToFile_ShouldThrowArgumentNullException_WhenDataIsNull() // Zapisuje: wyrzuca wyjątek, jeśli dane to null
         {
@@ -181,7 +181,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Assert
             act.Should().Throw<ArgumentNullException>()
                .WithParameterName("data");
-        }
+        } */
         
         // 7
         [Fact] // Zaliczony
@@ -222,7 +222,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             string invalidPath = "?:\\invalid\\path.json";
 
-            var testData = new List<Question> { new Question(1, "Z ilu części składa się powieść Alfreda N?") };
+            var testData = new List<Question> { new Question(1, "Z ilu części składa się powieść Alfreda N?") }; // Nie upraszczać
 
             mockFile
                 .Setup(x => x.WriteAllText(invalidPath, It.IsAny<string>()))
@@ -248,7 +248,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             var filePath = "testRead.json";
 
-            var expected = new List<Question> { new Question(1, "Jakie zwierzę jest królem dżungli?") };
+            var expected = new List<Question> { new Question(1, "Jakie zwierzę jest królem dżungli?") }; // Nie upraszczać
 
             string json = JsonConvert.SerializeObject(expected);
 

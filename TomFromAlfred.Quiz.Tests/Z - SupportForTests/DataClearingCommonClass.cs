@@ -5,17 +5,17 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.QuizConsole.Tests.Z___SupportForTests
 {
     public static class DataClearingCommonClass
     {
-        public static void ClearAll(
-        QuestionService questionService,
-        ChoiceService choiceService,
-        CorrectAnswerService correctAnswerService,
+        public static void ClearAll(                 // Nullable
+        QuestionService? questionService,
+        ChoiceService? choiceService,
+        CorrectAnswerService? correctAnswerService,
         ScoreService? score)
         {
             if (questionService is not null)
@@ -57,8 +57,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Z___SupportForTests
         public static void ClearScore(ScoreService score)
         {
             var field = score.GetType().GetField("_score", BindingFlags.NonPublic | BindingFlags.Instance);
-            if (field == null)
-                throw new InvalidOperationException("Nie znaleziono pola '_score' w ScoreService.");
+            ArgumentNullException.ThrowIfNull(field);
 
             field.SetValue(score, 0);
         }

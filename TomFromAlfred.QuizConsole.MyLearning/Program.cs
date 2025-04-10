@@ -1,7 +1,7 @@
 ﻿using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 
 namespace TomFromAlfred.QuizConsole.MyLearning
@@ -44,14 +44,14 @@ namespace TomFromAlfred.QuizConsole.MyLearning
 
     public static class Program // Zmiana widoczności kolejnych klas
     {
-        public static void Main(string[] args)
+        public static void Main(string[] args) // Nie upraszczać
         {
             var fileWrapper = new FileSupportWrapper();
             var jsonService = new JsonCommonClass(fileWrapper); 
 
             var questionService = new QuestionService();
             var choiceService = new ChoiceService();
-            var correctAnswerService = new CorrectAnswerService();
+            var correctAnswerService = new CorrectAnswerService(choiceService);
 
             var quizService = new QuizService(
                 questionService,

@@ -2,7 +2,7 @@
 using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
@@ -35,10 +35,20 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             Console.WriteLine();
 
             var questions = ManagerHelper.Shuffle(_quizService.GetAllQuestions().ToList());
+
+            _userInterface.WriteLine($"Ilość pytań po shuffle: {questions.Count}");
+
+            if (questions.Count == 0)
+            {
+                _userInterface.WriteLine("Brak dostępnych pytań do przeprowadzenia quizu.");
+                return;
+            }
+
             var managerHelper = new ManagerHelper(questions, _quizService);
             _scoreService.StartNewQuiz(questions.Count);
             int displayNumber = 1;
-            bool completedAllQuestions = false;
+            //bool completedAllQuestions = false; // system sugeruje usunięcie
+
 
             int iterationCount = 0;
             int maxIterations = 50; // Zapobiegam nieskończonej pętli
@@ -71,7 +81,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 while (!hasAnswered)
                 {
                     // Wymuszanie poprawnej akcji (1, 2)
-                    string userInput = string.Empty; // Inicjalizacja na pusty ciąg znaków
+                    string userInput;
                     do
                     {
                         Console.Write("Twoja akcja (1, 2, K): ");
@@ -146,10 +156,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             }
 
             // Użytkownik dotarł do końca quizu
-            completedAllQuestions = true;
+
+            //completedAllQuestions = true; - usunąć
 
             _userInterface.WriteLine("Koniec pytań.");
-            _endService.EndQuiz(completedAllQuestions);
+            //_endService.EndQuiz(completedAllQuestions);
+            _endService.EndQuiz(true);
         }
     }
 }

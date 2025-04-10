@@ -6,3 +6,5 @@ Warto sprawdzić pokrycie kodami - mam już zainstalowane, co trzeba.
 Raport pokrycia: file:///C:/Users/Ilka/source/repos/TomFromAlfred.QuizConsole.MyLearning/coverage-report/index.html
 06.04 dodaję klasę czyszczenia
 start coveragereport/index.html - sprawdzenie wyników w przeglądarce 
+Null - wyjątkowanie, to ogarnąć
+Testy - mam ich dość

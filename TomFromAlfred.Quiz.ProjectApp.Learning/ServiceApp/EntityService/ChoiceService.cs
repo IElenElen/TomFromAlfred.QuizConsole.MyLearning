@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
-namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
+namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService
 {
     public class ChoiceService : ICrudService<Choice>
     {
-        private List<Choice> _choices; // Lista danych zakodowanych twardo
+        private readonly List<Choice> _choices; // Lista danych zakodowanych twardo tzn. dane poza plikiem json
 
         public ChoiceService(IEnumerable<Choice>? initialChoices = null)
         {
-            _choices = initialChoices?.ToList() ?? new List<Choice>
+            _choices = initialChoices?.ToList() ?? new List<Choice> // Nie upraszczać
             {
-                new Choice(11, 'A', "Jesień", true),
+                new Choice(11, 'A', "Jesień", true),        // -II-
                 new Choice(11, 'B', "Zima", true),
                 new Choice(11, 'C', "Wiosna", true),
                 new Choice(12, 'A', "Kraków", true),
@@ -24,7 +24,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
                 new Choice(12, 'C', "Wrocław", true),
                 new Choice(13, 'A', "Kilimandżaro", true),
                 new Choice(13, 'B', "Mount Everest", true),
-                new Choice(13, 'C', "K2", true)
+                new Choice(13, 'C', "K2", true)                // -II-
             };
         }
 
@@ -49,11 +49,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
         // Usunięcie wyboru
         public void Delete(Choice choice)
         {
-            if (choice == null)
-            {
-                Console.WriteLine("Nie można usunąć pustego wyboru.");
-                return;
-            }
+            ArgumentNullException.ThrowIfNull(choice); // Brak akcepracji nulla
 
             var toRemove = _choices.FirstOrDefault(c =>
                 c.ChoiceId == choice.ChoiceId &&
@@ -73,7 +69,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
         {
             var toRemove = _choices.Where(c => c.ChoiceId == choiceId).ToList();
 
-            if (!toRemove.Any())
+            if (toRemove.Count == 0)
             {
                 Console.WriteLine($"Nie znaleziono żadnych wyborów z Id = {choiceId}");
                 return;
@@ -91,12 +87,12 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
         {
             Console.WriteLine($"Liczba wyborów w _choices: {_choices?.Count ?? 0}");
 
-            foreach (var choice in _choices ?? new List<Choice>())
+            foreach (var choice in _choices ?? new List<Choice>()) // Nie upraszczać
             {
                 Console.WriteLine($"ChoiceId: {choice.ChoiceId}, IsActive: {choice.IsActive}");
             }
 
-            return (_choices ?? new List<Choice>())
+            return (_choices ?? new List<Choice>()) // Nie upraszczać
                    .Where(choice => choice.IsActive) // Tylko aktywne
                    .AsEnumerable();
         }
@@ -129,8 +125,20 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
                 return;
             }
 
-            existingChoice.ChoiceContent = updatedChoice.ChoiceContent;
-            Console.WriteLine($"Zaktualizowano wybór: Id {existingChoice.ChoiceId}, Treść: {existingChoice.ChoiceContent}");
+            // Tworzę nową instancję z nową treścią
+            var updated = new Choice
+            {
+                ChoiceId = existingChoice.ChoiceId,
+                ChoiceLetter = existingChoice.ChoiceLetter,
+                ChoiceContent = updatedChoice.ChoiceContent,
+                IsActive = existingChoice.IsActive
+            };
+
+            // Wymieniam stary obiekt na nowy
+            _choices.Remove(existingChoice);
+            _choices.Add(updated);
+
+            Console.WriteLine($"Zaktualizowano wybór: Id {updated.ChoiceId}, Treść: {updated.ChoiceContent}");
         }
 
         // Aktualizacja litery wyboru

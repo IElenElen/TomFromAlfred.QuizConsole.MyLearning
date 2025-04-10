@@ -11,7 +11,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
     {
         private readonly IScoreService _scoreService;
 
-        public EndService(IScoreService scoreService)
+        public EndService(IScoreService scoreService) // Nie upraszczać
         {
             _scoreService = scoreService ?? throw new ArgumentNullException(nameof(scoreService));
         }

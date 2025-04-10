@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
-namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
+namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService
 {
     /*
      Tu zamiast inicjalizacji dodaję dane w nowym prywatnym słowniku do odczytu.
@@ -14,9 +15,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
     public class CorrectAnswerService : ICrudService<CorrectAnswer>
 
     {
-        private ChoiceService _choiceService;
+        private readonly ChoiceService _choiceService;
 
-        private Dictionary<int, CorrectAnswer> _correctAnswers = new Dictionary<int, CorrectAnswer>
+        public CorrectAnswerService(ChoiceService choiceService) // Nie upraszczać
+        {
+            _choiceService = choiceService ?? throw new ArgumentNullException(nameof(choiceService));
+        }
+
+        private readonly Dictionary<int, CorrectAnswer> _correctAnswers = new Dictionary<int, CorrectAnswer> // Nie upraszczać
         {
             { 11, new CorrectAnswer(11, "Jesień", true) },
             { 12, new CorrectAnswer(12, "Warszawa", true) },
@@ -102,9 +108,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service
             Console.WriteLine($"Zaktualizowano poprawną odpowiedź o Id {entity.CorrectAnswerId}");
         }
 
-        public virtual CorrectAnswer GetCorrectAnswerForQuestion(int questionId)
+        public virtual CorrectAnswer? GetCorrectAnswerForQuestion(int questionId)
         {
-            return _correctAnswers.TryGetValue(questionId, out var correctAnswer) ? correctAnswer : null;
+            return _correctAnswers.TryGetValue(questionId, out var correctAnswer)
+                ? correctAnswer
+                : null;
         }
     }
 }

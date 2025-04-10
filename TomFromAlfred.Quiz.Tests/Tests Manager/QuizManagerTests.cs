@@ -10,7 +10,7 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 using TomFromAlfred.QuizConsole.Tests.SupportForTests;
@@ -65,7 +65,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         [Fact]
         public void ConductQuiz_ShouldHandleNoQuestionsAvailable()
         {
-            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(new List<Question>());
+            _mockQuizService.Setup(q => q.GetAllQuestions()).Returns(new List<Question>());  // Nie upraszczać
 
             _quizManager.ConductQuiz();
 

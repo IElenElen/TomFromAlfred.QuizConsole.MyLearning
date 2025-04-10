@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 
@@ -15,7 +15,7 @@ namespace TomFromAlfred.QuizConsole.Tests.SupportForTests
 
     class MockQuizService : QuizService
     {
-        public MockQuizService(
+        public MockQuizService(                      // Nie upraszczać
             QuestionService questionService,
             ChoiceService choiceService,
             CorrectAnswerService correctAnswerService,

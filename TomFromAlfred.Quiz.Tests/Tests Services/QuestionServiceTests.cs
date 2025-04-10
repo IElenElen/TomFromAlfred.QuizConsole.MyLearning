@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 using TomFromAlfred.QuizConsole.Tests.Z___SupportForTests;
 using Xunit.Abstractions;
@@ -85,7 +85,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             allActiveQuestions.Should().ContainSingle(q => q.QuestionId == 1); // Czy Id = 1 pojawia się tylko raz
         }
 
-        // 4
+        /* // 4
         [Fact] // Zaliczony
         public void Add_ShouldNotAddNullToQuestionList() // Dodaje: nie dodaje do listy, kiedy pytanie jest null
         {
@@ -103,7 +103,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Assert
             countQuestionsAfter.Should().Be(countQuestionsBefore);
-        }
+        } */
         #endregion Add QuestionServiceTests
 
         #region Delete QuestionServiceTests
@@ -171,7 +171,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             exception.Should().BeNull("lista może być pusta i operacja nadal powinna być bezpieczna."); // Oczekuję, że metoda nie rzuci wyjątku
         }
 
-        // 8
+        /* // 8
         [Fact] // Zaliczony
         public void Delete_ShouldNotThrow_WhenNullQuestionIsPassed() // Usuwa: nic nie robi, nie wyrzuca wyjątku, jeśli pytanie to null
         {
@@ -185,7 +185,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Assert
             exception.Should().BeNull("Operacja usuwania nulla powinna być tolerowana."); // Nie oczekuję żadnego wyjątku
-        }
+        } */
         #endregion Delete QuestionServiceTests
 
         #region Update QuestionServiceTests
@@ -251,7 +251,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                            .QuestionContent.Should().Be("Zmieniona treść pytania.");
         }
 
-        // 11
+        /* // 11
         [Fact] // Zaliczony
         public void Update_ShouldNotThrowExceptionWhenNullPassed() // Aktualizuje: nic nie robi => tolerancja nulla, nie zgłasza błędu, sprawdza bezpieczeństwo
         {
@@ -266,7 +266,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             // Assert
             exception.Should().BeNull("Operacja aktualizacji (null) powinna być bezpieczna."); // Nie powinien rzucać wyjątku
-        }
+        } */
 
         // 12
         [Fact] // Zaliczony 

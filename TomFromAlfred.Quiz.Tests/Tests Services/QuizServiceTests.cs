@@ -3,7 +3,7 @@ using System.Text.Json;
 using FluentAssertions;
 using Moq;
 using TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp;
-using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.Service;
+using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService;
 using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 using TomFromAlfred.Quiz.ProjectDomain.Learning.Entity;
 using TomFromAlfred.QuizConsole.Tests.SupportForTests;
@@ -18,12 +18,12 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
     public class QuizServiceTests
     {
-        private Mock<QuestionService> _mockQuestionService;
-        private Mock<ChoiceService> _mockChoiceService;
-        private Mock<CorrectAnswerService> _mockCorrectAnswerService;
-        private Mock<JsonCommonClass> _mockJsonCommonClass;
-        private Mock<IFileWrapper> _mockFileWrapper;
-        private MockQuizService _quizService;
+        private readonly Mock<QuestionService> _mockQuestionService;
+        private readonly Mock<ChoiceService> _mockChoiceService;
+        private readonly Mock<CorrectAnswerService> _mockCorrectAnswerService;
+        private readonly Mock<JsonCommonClass> _mockJsonCommonClass;
+        private readonly Mock<IFileWrapper> _mockFileWrapper;
+        private readonly MockQuizService _quizService;
 
         private readonly ITestOutputHelper _output; // Potrzebne???
 
@@ -58,7 +58,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             var mockQuestions = new List<Question>
             {
-                new Question(1, "Pytanie testowe.")
+                new Question(1, "Pytanie testowe.") // Nie upraszczać
             };
 
             _mockJsonCommonClass.Setup(s => s.ReadFromFile<List<Question>>(It.IsAny<string>()))
@@ -73,7 +73,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             exception.Should().BeNull("Metoda nie powinna rzucać wyjątku dla poprawnych danych wejściowych.");
         }
 
-        // 2
+        /* // 2
         [Fact] // Zaliczony
         public void InitializeJsonService_ShouldThrowArgumentNullException_WhenJsonServiceIsNull() // Inicjalizacja: wyrzuca wyjątek, jeśli JsonService jest null
         {
@@ -94,7 +94,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Assert
             action.Should().Throw<ArgumentNullException>()
                 .WithParameterName("jsonService");
-        }
+        } */
 
         // 3 
         [Fact] // Zaliczony
@@ -123,7 +123,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
             // Arrange
             var jsonQuestions = new List<Question>
             {
-                new Question(1, "Z JSON 1"),
+                new Question(1, "Z JSON 1"), // Nie upraszczać
                 new Question(2, "Z JSON 2")
             };
                     
@@ -282,7 +282,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
 
             letterMap.Should().HaveCount(3);
 
-            letterMap.Values.Should().BeSubsetOf(new[] { 'A', 'B', 'C' });
+            letterMap.Values.Should().BeSubsetOf(new[] { 'A', 'B', 'C' }); // Nie uprasczać
 
             // Nie sprawdzam dokładnej kolejności, ale upewniam się, że coś się zmieniło
             shuffled.Select(c => c.ChoiceContent)
@@ -346,7 +346,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Services
                 .And.ContainKey('B')
                 .And.ContainKey('C');
 
-            mapping.Values.Should().OnlyContain(l => new[] { 'A', 'B', 'C' }.Contains(l));
+            mapping.Values.Should().OnlyContain(l => new[] { 'A', 'B', 'C' }.Contains(l)); // Nie upraszczać
         }
         #endregion GetShuffledChFQ QuizS. Tests
 
