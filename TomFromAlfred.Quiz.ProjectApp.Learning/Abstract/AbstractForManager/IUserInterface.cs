@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForManager
 {
-    public interface IUserInterface
+    public interface IConsoleUserInterface
     {
-        string ReadLine();
-        void WriteLine(string message);
+        string ReadInputLine();
+        void WriteOutputLine(string message);
     }
 }

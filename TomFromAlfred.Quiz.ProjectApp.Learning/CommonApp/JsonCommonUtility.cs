@@ -9,13 +9,13 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 {
-    public class JsonCommonClass // Klasa dla json = schemat działania plików
+    public class JsonCommonUtility // Klasa dla json = schemat działania plików
     {
-        private readonly IFileWrapper _fileService;
+        private readonly IFileWrapper _fileWrapper;
 
-        public JsonCommonClass(IFileWrapper fileService)
+        public JsonCommonUtility(IFileWrapper fileWrapper)
         {
-            _fileService = fileService;
+            _fileWrapper = fileWrapper;
         }
 
         public virtual void CreateDefaultFile<T>(string filePath, T defaultData)
@@ -34,11 +34,11 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
 
         public virtual T ReadFromFile<T>(string filePath)
         {
-            if (!_fileService.Exists(filePath))
+            if (!_fileWrapper.Exists(filePath))
                 throw new FileNotFoundException($"Plik {filePath} nie istnieje.");
 
             Console.WriteLine($"Wczytuję plik: {filePath}");
-            string json = _fileService.ReadAllText(filePath);
+            string json = _fileWrapper.ReadAllText(filePath);
 
             if (string.IsNullOrWhiteSpace(json))
                 throw new JsonReaderException($"Plik {filePath} jest pusty lub zawiera nieprawidłowe dane.");
@@ -54,7 +54,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.CommonApp
                 throw new ArgumentNullException(nameof(data));
 
             string json = JsonConvert.SerializeObject(data);
-            _fileService.WriteAllText(filePath, json);
+            _fileWrapper.WriteAllText(filePath, json);
         }
     }
 }

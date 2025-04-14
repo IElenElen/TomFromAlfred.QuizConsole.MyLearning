@@ -46,8 +46,8 @@ namespace TomFromAlfred.QuizConsole.MyLearning
     {
         public static void Main(string[] args) // Nie upraszczać
         {
-            var fileWrapper = new FileSupportWrapper();
-            var jsonService = new JsonCommonClass(fileWrapper); 
+            var fileSupportWrapper = new FileSupportWrapper();
+            var jsonFileCommon = new JsonCommonUtility(fileSupportWrapper); 
 
             var questionService = new QuestionService();
             var choiceService = new ChoiceService();
@@ -57,8 +57,8 @@ namespace TomFromAlfred.QuizConsole.MyLearning
                 questionService,
                 choiceService,
                 correctAnswerService,
-                jsonService,
-                fileWrapper
+                jsonFileCommon,
+                fileSupportWrapper
             );
 
             var scoreService = new ScoreService();

@@ -12,9 +12,9 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
         private readonly IQuizService _quizService; // Używam interfejsu
         private readonly IScoreService _scoreService;
         private readonly IEndService _endService;
-        public readonly IUserInterface _userInterface;
+        public readonly IConsoleUserInterface _userInterface;
 
-        public QuizManager(IQuizService quizService, IScoreService scoreService, IEndService endService, IUserInterface userInterface)
+        public QuizManager(IQuizService quizService, IScoreService scoreService, IEndService endService, IConsoleUserInterface userInterface)
         {
             _quizService = quizService ?? throw new ArgumentNullException(nameof(quizService));
             _scoreService = scoreService ?? throw new ArgumentNullException(nameof(scoreService));
@@ -25,22 +25,22 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
         public void ConductQuiz()
         {
             Console.WriteLine();
-            _userInterface.WriteLine("Witamy w Quiz. Sprawdź, jak dobrze znasz Tomka Wilmowskiego i jego niezwykłe przygody :-).");
-            _userInterface.WriteLine("Każdy zestaw ma tylko jedną poprawną odpowiedź. Do wyboru: A, B lub C.");
-            _userInterface.WriteLine("Jeżeli chcesz zakończyć quiz nacisnij K.");
+            _userInterface.WriteOutputLine("Witamy w Quiz. Sprawdź, jak dobrze znasz Tomka Wilmowskiego i jego niezwykłe przygody :-).");
+            _userInterface.WriteOutputLine("Każdy zestaw ma tylko jedną poprawną odpowiedź. Do wyboru: A, B lub C.");
+            _userInterface.WriteOutputLine("Jeżeli chcesz zakończyć quiz nacisnij K.");
             Console.WriteLine();
-            _userInterface.WriteLine("Jeśli przejdziesz cały Quiz (możesz pytanie pominąć), otrzymasz informację o ilości i procencie uzyskanych punktów.");
+            _userInterface.WriteOutputLine("Jeśli przejdziesz cały Quiz (możesz pytanie pominąć), otrzymasz informację o ilości i procencie uzyskanych punktów.");
             Console.WriteLine();
-            _userInterface.WriteLine("Opcje: 1 - Odpowiedź na pytanie, 2 - Przejście do następnego pytania.");
+            _userInterface.WriteOutputLine("Opcje: 1 - Odpowiedź na pytanie, 2 - Przejście do następnego pytania.");
             Console.WriteLine();
 
             var questions = ManagerHelper.Shuffle(_quizService.GetAllQuestions().ToList());
 
-            _userInterface.WriteLine($"Ilość pytań po shuffle: {questions.Count}");
+            _userInterface.WriteOutputLine($"Ilość pytań po shuffle: {questions.Count}");
 
             if (questions.Count == 0)
             {
-                _userInterface.WriteLine("Brak dostępnych pytań do przeprowadzenia quizu.");
+                _userInterface.WriteOutputLine("Brak dostępnych pytań do przeprowadzenia quizu.");
                 return;
             }
 
@@ -59,21 +59,21 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                 iterationCount++;
                 if (iterationCount > maxIterations)
                 {
-                    _userInterface.WriteLine("Przekroczono limit iteracji, przerywamy pętlę!");
+                    _userInterface.WriteOutputLine("Przekroczono limit iteracji, przerywamy pętlę!");
                     break;
                 }
 
-                _userInterface.WriteLine("Iteracja {iterationCount}");
+                _userInterface.WriteOutputLine("Iteracja {iterationCount}");
 
                 var currentQuestion = managerHelper.GetCurrentQuestion();
 
-                _userInterface.WriteLine($"{displayNumber}, {currentQuestion.QuestionContent}");
+                _userInterface.WriteOutputLine($"{displayNumber}, {currentQuestion.QuestionContent}");
 
                 var choices = _quizService.GetShuffledChoicesForQuestion(currentQuestion.QuestionId, out var letterMapping).ToList();
 
                 foreach (var choice in choices)
                 {
-                    _userInterface.WriteLine($"{choice.ChoiceLetter}: {choice.ChoiceContent}");
+                    _userInterface.WriteOutputLine($"{choice.ChoiceLetter}: {choice.ChoiceContent}");
                 }
 
                 bool hasAnswered = false;
@@ -91,14 +91,14 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
                         if (_endService.ShouldEnd(userInput))
                         {
                             // Jeśli nie ma więcej pytań, Quiz uznany za ukończony
-                            _userInterface.WriteLine(_endService.EndQuiz(managerHelper.HasNext() == false));
+                            _userInterface.WriteOutputLine(_endService.EndQuiz(managerHelper.HasNext() == false));
 
                             return; // TERAZ NAPRAWDĘ KOŃCZĘ QUIZ!
                         }
 
                         if (userInput != "1" && userInput != "2")
                         {
-                            _userInterface.WriteLine("Nieprawidłowa opcja. Wybierz poprawną akcję: 1, 2 lub K.");
+                            _userInterface.WriteOutputLine("Nieprawidłowa opcja. Wybierz poprawną akcję: 1, 2 lub K.");
                         }
                     } while (userInput != "1" && userInput != "2");
 
@@ -126,18 +126,18 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
                                     if (_quizService.CheckAnswer(currentQuestion.QuestionId, userChoiceLetter, letterMapping))
                                     {
-                                        _userInterface.WriteLine("Poprawna odpowiedź!");
+                                        _userInterface.WriteOutputLine("Poprawna odpowiedź!");
                                         _scoreService.IncrementScore();
                                     }
                                     else
                                     {
-                                        _userInterface.WriteLine("Zła odpowiedź.");
+                                        _userInterface.WriteOutputLine("Zła odpowiedź.");
                                     }
                                     hasAnswered = true;
                                 }
                                 else
                                 {
-                                    _userInterface.WriteLine("Nieprawidłowy wybór. Wprowadź literę A, B, C.");
+                                    _userInterface.WriteOutputLine("Nieprawidłowy wybór. Wprowadź literę A, B, C.");
                                 }
                             } while (!validAnswer);
 
@@ -145,7 +145,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
                         case "2":
                             // Pominięcie pytania
-                            _userInterface.WriteLine("Pytanie pominięte.");
+                            _userInterface.WriteOutputLine("Pytanie pominięte.");
                             hasAnswered = true;
                             break;
                     }
@@ -159,7 +159,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 
             //completedAllQuestions = true; - usunąć
 
-            _userInterface.WriteLine("Koniec pytań.");
+            _userInterface.WriteOutputLine("Koniec pytań.");
             //_endService.EndQuiz(completedAllQuestions);
             _endService.EndQuiz(true);
         }

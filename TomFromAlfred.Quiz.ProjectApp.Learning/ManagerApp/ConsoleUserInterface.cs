@@ -7,11 +7,9 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForManager;
 
 namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
 {
-    public class ConsoleUserInterface : IUserInterface
+    public class ConsoleUserInterface : IConsoleUserInterface
     {
-        //public virtual string? ReadLine() => Console.ReadLine(); ???
-
-        public virtual string ReadLine()
+        public virtual string ReadInputLine()
         {
             string? userInput;
 
@@ -25,6 +23,6 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ManagerApp
             return userInput;
         }
 
-        public virtual void WriteLine(string message) => Console.WriteLine(message);
+        public virtual void WriteOutputLine(string message) => Console.WriteLine(message);
     }
 }

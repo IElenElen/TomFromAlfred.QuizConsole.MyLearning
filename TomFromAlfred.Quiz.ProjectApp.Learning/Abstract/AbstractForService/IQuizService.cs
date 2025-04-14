@@ -10,7 +10,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.Abstract.AbstractForService
 {
     public interface IQuizService
     {
-        void InitializeJsonService(JsonCommonClass jsonService, string jsonFilePath);
+        void InitializeJsonService(JsonCommonClass jsonFileCommon, string jsonFilePath);
 
         IEnumerable<Question> GetAllQuestions();
         IEnumerable<Choice> GetChoicesForQuestion(int questionId);

@@ -30,7 +30,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp
 
         private readonly IFileWrapper _fileWrapper;
 
-        private JsonCommonClass _jsonService;
+        private JsonCommonUtility _jsonService;
         private readonly QuestionService _questionService;
         private readonly ChoiceService _choiceService;
         private readonly CorrectAnswerService _correctAnswerService;

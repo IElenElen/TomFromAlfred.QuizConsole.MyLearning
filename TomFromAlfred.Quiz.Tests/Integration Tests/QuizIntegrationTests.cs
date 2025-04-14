@@ -21,7 +21,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
     // Oblane: 2 / 2
     public class QuizIntegrationTests
     {
-        private readonly Mock<IUserInterface> _mockUserInterface = new();
+        private readonly Mock<IConsoleUserInterface> _mockUserInterface = new();
         private readonly Mock<IFileWrapper> _mockFileWrapper = new();
         private readonly Mock<JsonCommonClass> _mockJsonCommon = new();
         private readonly ScoreService _scoreService = new();
@@ -77,7 +77,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
             var quizService = CreateQuizServiceWithData(questions, choices, correctAnswers);
             var endService = new EndService(_scoreService);
 
-            _mockUserInterface.SetupSequence(ui => ui.ReadLine())
+            _mockUserInterface.SetupSequence(ui => ui.ReadInputLine())
                 .Returns("1")
                 .Returns("A")
                 .Returns("1")
@@ -122,7 +122,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Integration_Tests
             var quizService = CreateQuizServiceWithData(questions, choices, correctAnswers);
             var endService = new EndService(_scoreService);
 
-            _mockUserInterface.SetupSequence(ui => ui.ReadLine())
+            _mockUserInterface.SetupSequence(ui => ui.ReadInputLine())
                 .Returns("1")
                 .Returns("B") // błędna
                 .Returns("1")

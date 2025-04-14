@@ -23,7 +23,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
         private readonly Mock<IQuizService> _mockQuizService = new();
         private readonly Mock<IScoreService> _mockScoreService = new();
         private readonly Mock<IEndService> _mockEndService = new();
-        private readonly Mock<IUserInterface> _mockUserInterface = new();
+        private readonly Mock<IConsoleUserInterface> _mockUserInterface = new();
         private readonly QuizManager _quizManager;
 
         public QuizManagerTests()
@@ -120,7 +120,7 @@ namespace TomFromAlfred.QuizConsole.Tests.Tests_Manager
 
         private void SetupUserInputSequence(params string[] inputs)
         {
-            var sequence = _mockUserInterface.SetupSequence(x => x.ReadLine());
+            var sequence = _mockUserInterface.SetupSequence(x => x.ReadInputLine());
             foreach (var input in inputs)
                 sequence = sequence.Returns(input);
         }

@@ -8,3 +8,4 @@ Raport pokrycia: file:///C:/Users/Ilka/source/repos/TomFromAlfred.QuizConsole.My
 start coveragereport/index.html - sprawdzenie wyników w przeglądarce 
 Null - wyjątkowanie, to ogarnąć
 Testy - mam ich dość
+W serwisie - sprawdzić czy mam adekwatne nazwy.

@@ -65,6 +65,7 @@ namespace TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.EntityService
             Console.WriteLine($"Usunięto wybór: Id {toRemove.ChoiceId}, Litera {toRemove.ChoiceLetter}");
         }
 
+        // Usunięcie wyboru po id
         public void DeleteChoiceById(int choiceId)
         {
             var toRemove = _choices.Where(c => c.ChoiceId == choiceId).ToList();
