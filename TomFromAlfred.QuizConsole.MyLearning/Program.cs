@@ -7,6 +7,8 @@ using TomFromAlfred.Quiz.ProjectApp.Learning.ServiceApp.ServiceSupport;
 namespace TomFromAlfred.QuizConsole.MyLearning
 {
     /*
+    Na razie długa przerwa... 
+
      Projekt: Quiz.
 
      Funkcjonalności:
